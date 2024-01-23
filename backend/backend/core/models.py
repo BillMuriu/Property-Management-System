@@ -47,6 +47,11 @@ class Landlord(models.Model):
 
 
 class Property(models.Model):
+    RENT_PENALTY_TYPE_CHOICES = (
+        ('fixed', 'Fixed Amount'),
+        ('percentage', 'Percentage'),
+    )
+
     name = models.CharField(max_length=255)
     number_of_units = models.PositiveIntegerField()
     city = models.CharField(max_length=100)
@@ -54,8 +59,12 @@ class Property(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True)
     electricity_rate = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
-    rent_payment_penalty = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True)
+    rent_penalty_type = models.CharField(
+        max_length=10, choices=RENT_PENALTY_TYPE_CHOICES, blank=True, null=True)
+    rent_penalty_amount = models.DecimalField(
+        max_digits=8, decimal_places=2, blank=True, null=True)
+    rent_penalty_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True)
     # mpesa paybill
     tax_rate = models.DecimalField(
         max_digits=5, decimal_places=2, null=True, blank=True)
@@ -64,8 +73,6 @@ class Property(models.Model):
     street_name = models.CharField(max_length=100, null=True, blank=True)
     company_name = models.CharField(max_length=100, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
-    other_recurring_bills = models.ManyToManyField(
-        'OtherRecurringBill', related_name='properties', blank=True)
 
     def __str__(self):
         return self.name
@@ -73,7 +80,9 @@ class Property(models.Model):
 # other recurring bills
 
 
-class OtherRecurringBill(models.Model):
+class PropertyOtherRecurringBill(models.Model):
+    property = models.ForeignKey(
+        'Property', on_delete=models.CASCADE, related_name='propertyrecurringbill')
     bill_type = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -92,12 +101,20 @@ class Unit(models.Model):
     occupied = models.BooleanField(default=False)
     tax_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True,
                                    blank=True, help_text='Enter as percentage (e.g., 10.50 for 10.50%)')
-    other_recurring_bills = models.ManyToManyField(
-        'OtherRecurringBill', related_name='units', blank=True)
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.property.name} - {self.unit_id_or_name}"
+
+
+class UnitOtherRecurringBill(models.Model):
+    unit = models.ForeignKey(
+        'Unit', on_delete=models.CASCADE,  related_name='unitrecurringbill')
+    bill_type = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.bill_type} - {self.amount}"
 
 
 class Utilities(models.Model):

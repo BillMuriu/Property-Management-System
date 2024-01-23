@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     # Internal apps
     'core',
+    'tenant',
+    'financials',
 ]
 
 MIDDLEWARE = [
