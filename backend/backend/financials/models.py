@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Property
+from core.models import Property, Unit
 from tenant.models import Tenant
 
 # Create your models here.
@@ -58,3 +58,26 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment #{self.id} - {self.property.name} - {self.tenant.first_name} {self.tenant.last_name}"
+
+
+class Expense(models.Model):
+    EXPENSE_STATUS_CHOICES = (
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+    )
+
+    property = models.ForeignKey(
+        Property, on_delete=models.CASCADE, related_name='expenses')
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE,
+                             null=True, blank=True, related_name='unit_expenses')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=50)
+    expense_category = models.CharField(max_length=100)
+    expense_date = models.DateField()
+    status = models.CharField(max_length=20, choices=EXPENSE_STATUS_CHOICES)
+    notes = models.TextField(blank=True, null=True)
+    file_upload = models.FileField(
+        upload_to='property_expenses/', blank=True, null=True)
+
+    def __str__(self):
+        return f"Expense #{self.id} - {self.property.name} - {self.expense_category}"
