@@ -120,13 +120,37 @@ class UnitOtherRecurringBill(models.Model):
 
 
 class Utilities(models.Model):
+    WATER = 'Water'
+    ELECTRICITY = 'Electricity'
+
+    UTILITY_ITEM_CHOICES = [
+        (WATER, 'Water'),
+        (ELECTRICITY, 'Electricity'),
+    ]
+
+    MONTH_CHOICES = [
+        ('January', 'January'),
+        ('February', 'February'),
+        ('March', 'March'),
+        ('April', 'April'),
+        ('May', 'May'),
+        ('June', 'June'),
+        ('July', 'July'),
+        ('August', 'August'),
+        ('September', 'September'),
+        ('October', 'October'),
+        ('November', 'November'),
+        ('December', 'December'),
+    ]
+
     property = models.ForeignKey(
         'Property', on_delete=models.CASCADE, related_name='utilities')
     unit = models.ForeignKey(
         'Unit', on_delete=models.CASCADE, related_name='utilities')
-    utility_item = models.CharField(max_length=100)
+    utility_item = models.CharField(
+        max_length=100, choices=UTILITY_ITEM_CHOICES)
     current_reading = models.DecimalField(max_digits=10, decimal_places=2)
-    month = models.CharField(max_length=10)
+    month = models.CharField(max_length=20, choices=MONTH_CHOICES)
     previous_reading = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
 

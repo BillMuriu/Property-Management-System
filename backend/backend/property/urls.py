@@ -18,7 +18,10 @@ from .views import (
     PropertyOtherRecurringBillRetrieveUpdateDestroyAPIView,
 
     UnitOtherRecurringBillListCreateAPIView,
-    UnitOtherRecurringBillRetrieveUpdateDestroyAPIView
+    UnitOtherRecurringBillRetrieveUpdateDestroyAPIView,
+
+    UtilitiesListCreateAPIView,
+    UtilitiesRetrieveUpdateDestroyAPIView,
 )
 
 urlpatterns = [
@@ -57,4 +60,10 @@ urlpatterns = [
          name='unit-other-recurring-bill-list'),
     path('unit-other-recurring-bills/<int:pk>/',
          UnitOtherRecurringBillRetrieveUpdateDestroyAPIView.as_view(), name='unit-other-recurring-bill-detail'),
+
+
+    # UTILITIES URLS
+    path('utilities/', UtilitiesListCreateAPIView.as_view(), name='utilities-list'),
+    path('utilities/<int:pk>/',
+         UtilitiesRetrieveUpdateDestroyAPIView.as_view(), name='utilities-detail'),
 ]

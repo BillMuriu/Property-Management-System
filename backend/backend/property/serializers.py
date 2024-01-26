@@ -36,3 +36,9 @@ class UnitOtherRecurringBillSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitOtherRecurringBill
         fields = '__all__'
+
+
+class UtilitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Utilities
+        fields = '__all__'
