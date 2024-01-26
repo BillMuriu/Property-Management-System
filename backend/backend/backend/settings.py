@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # Internal apps
     'core',
+    'property',
     'tenant',
     'financials',
 ]
