@@ -11,6 +11,21 @@ class PropertyListView(generics.ListAPIView):
     serializer_class = PropertySerializer
 
 
+class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializer
+
+
 class PropertyCreateView(generics.CreateAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializer
+
+
+class PropertyUpdateView(generics.UpdateAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializer
+
+
+class PropertyDeleteView(generics.DestroyAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
