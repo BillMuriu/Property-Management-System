@@ -4,13 +4,15 @@ from .models import (
     Property,
     Unit,
     Maintenance,
-    PropertyOtherRecurringBill
+    PropertyOtherRecurringBill,
+    UnitOtherRecurringBill
 )
 from .serializers import (
     PropertySerializer,
     UnitSerializer,
     MaintenanceSerializer,
-    PropertyOtherRecurringBillSerializer
+    PropertyOtherRecurringBillSerializer,
+    UnitOtherRecurringBillSerializer
 
 )
 
@@ -97,3 +99,18 @@ class PropertyOtherRecurringBillListCreateAPIView(generics.ListCreateAPIView):
 class PropertyOtherRecurringBillRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PropertyOtherRecurringBill.objects.all()
     serializer_class = PropertyOtherRecurringBillSerializer
+
+
+'''
+UNIT RECURRING BILLS CRUD
+'''
+
+
+class UnitOtherRecurringBillListCreateAPIView(generics.ListCreateAPIView):
+    queryset = UnitOtherRecurringBill.objects.all()
+    serializer_class = UnitOtherRecurringBillSerializer
+
+
+class UnitOtherRecurringBillRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UnitOtherRecurringBill.objects.all()
+    serializer_class = UnitOtherRecurringBillSerializer
