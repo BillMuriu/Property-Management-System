@@ -3,12 +3,15 @@ from rest_framework import generics
 from .models import (
     Property,
     Unit,
-    Maintenance
+    Maintenance,
+    PropertyOtherRecurringBill
 )
 from .serializers import (
     PropertySerializer,
     UnitSerializer,
-    MaintenanceSerializer
+    MaintenanceSerializer,
+    PropertyOtherRecurringBillSerializer
+
 )
 
 '''
@@ -79,3 +82,18 @@ class MaintenanceListCreateAPIView(generics.ListCreateAPIView):
 class MaintenanceRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Maintenance.objects.all()
     serializer_class = MaintenanceSerializer
+
+
+'''
+PROPERTY RECURRING BILLS CRUD
+'''
+
+
+class PropertyOtherRecurringBillListCreateAPIView(generics.ListCreateAPIView):
+    queryset = PropertyOtherRecurringBill.objects.all()
+    serializer_class = PropertyOtherRecurringBillSerializer
+
+
+class PropertyOtherRecurringBillRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PropertyOtherRecurringBill.objects.all()
+    serializer_class = PropertyOtherRecurringBillSerializer

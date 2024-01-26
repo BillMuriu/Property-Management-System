@@ -38,14 +38,35 @@ class Property(models.Model):
 
 
 class PropertyOtherRecurringBill(models.Model):
+    WATER = 'water'
+    ELECTRICITY = 'electricity'
+    GARBAGE = 'garbage'
+    SECURITY = 'security'
+    INTERNET = 'internet'
+    CLEANING = 'cleaning'
+    SERVICE = 'service'
+    PARKING_FEE = 'parking fee'
+    VAT = 'VAT'
+
+    BILL_TYPE_CHOICES = [
+        (WATER, 'Water'),
+        (ELECTRICITY, 'Electricity'),
+        (GARBAGE, 'Garbage'),
+        (SECURITY, 'Security'),
+        (INTERNET, 'Internet'),
+        (CLEANING, 'Cleaning'),
+        (SERVICE, 'Service'),
+        (PARKING_FEE, 'Parking Fee'),
+        (VAT, 'VAT'),
+    ]
+
     property = models.ForeignKey(
         'Property', on_delete=models.CASCADE, related_name='propertyrecurringbill')
-    bill_type = models.CharField(max_length=100)
+    bill_type = models.CharField(max_length=100, choices=BILL_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"{self.bill_type} - {self.amount}"
-
+        return f"{self.get_bill_type_display()} - {self.amount}"
 
 # properties_app/models.py
 

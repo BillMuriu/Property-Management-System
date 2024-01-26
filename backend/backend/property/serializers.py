@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Property, Unit, PropertyOtherRecurringBill, Utilities, UnitOtherRecurringBill, Maintenance
+from .models import (Property,
+                     Unit,
+                     PropertyOtherRecurringBill,
+                     Utilities,
+                     UnitOtherRecurringBill,
+                     Maintenance
+                     )
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -17,4 +23,10 @@ class UnitSerializer(serializers.ModelSerializer):
 class MaintenanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maintenance
+        fields = '__all__'
+
+
+class PropertyOtherRecurringBillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyOtherRecurringBill
         fields = '__all__'
