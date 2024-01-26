@@ -9,3 +9,8 @@ from .serializers import PropertySerializer
 class PropertyListView(generics.ListAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
+
+
+class PropertyCreateView(generics.CreateAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializer
