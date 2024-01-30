@@ -151,6 +151,7 @@ class Utilities(models.Model):
         max_length=100, choices=UTILITY_ITEM_CHOICES)
     current_reading = models.DecimalField(max_digits=10, decimal_places=2)
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
+    #add invoice number.
     previous_reading = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
 
