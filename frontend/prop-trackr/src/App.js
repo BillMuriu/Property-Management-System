@@ -16,6 +16,7 @@ import Sidenavbar from "./scenes/global/Sidenavbar";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import { SidebarProvider } from "./components/SidebarContext";
+import { SidebarToggleProvider } from "./components/SidebarToggleContext";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -24,14 +25,16 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <SidebarProvider>
-          <div className="app">
-            <Sidenavbar />
-            <main className="content">
-              <Topbar />
-            </main>
-          </div>
-        </SidebarProvider>
+        <SidebarToggleProvider>
+          <SidebarProvider>
+            <div className="app">
+              <Sidenavbar />
+              <main className="content">
+                <Topbar />
+              </main>
+            </div>
+          </SidebarProvider>
+        </SidebarToggleProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

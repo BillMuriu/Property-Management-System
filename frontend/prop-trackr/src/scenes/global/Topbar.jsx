@@ -2,6 +2,7 @@ import { Box, IconButton, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext } from "../../theme";
 import { useSidebar } from "../../components/SidebarContext";
+import { useSidebarToggle } from "../../components/SidebarToggleContext";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -12,13 +13,13 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 const Topbar = () => {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
-  const { setCollapsed } = useSidebar();
+  const { setToggled } = useSidebarToggle();
 
   return (
     <Box display="flex" justifyContent="space-between" p={1}>
       {/* collapse menu */}
       <Box>
-        <IconButton onClick={() => setCollapsed(prev => !prev)}>
+        <IconButton onClick={() => setToggled((prev) => !prev)}>
           <MenuOutlinedIcon />
         </IconButton>
       </Box>

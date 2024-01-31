@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { useSidebar } from "../../components/SidebarContext";
+import { useSidebarToggle } from "../../components/SidebarToggleContext";
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -19,11 +20,11 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
 
 const Sidenavbar = () => {
-    const { collapsed } = useSidebar();
+    const { toggled, setToggled } = useSidebarToggle();
 
     return (
     <Box style={{ display: 'flex', height: '100%', minHeight: '400px', }}>
-        <Sidebar collapsed={collapsed}>
+        <Sidebar onBackdropClick={() => setToggled(false)} toggled={toggled} breakPoint="always">
         <Menu>
             <MenuItem> Documentation</MenuItem>
             <MenuItem> Calendar</MenuItem>
