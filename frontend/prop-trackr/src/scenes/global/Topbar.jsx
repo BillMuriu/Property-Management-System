@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme, useMediaQuery } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext } from "../../theme";
 import { useSidebar } from "../../components/SidebarContext";
@@ -14,15 +14,18 @@ const Topbar = () => {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
   const { setToggled } = useSidebarToggle();
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
 
   return (
     <Box display="flex" justifyContent="space-between" p={1}>
       {/* collapse menu */}
+      {isSmallScreen && (
       <Box>
         <IconButton onClick={() => setToggled((prev) => !prev)}>
           <MenuOutlinedIcon />
         </IconButton>
       </Box>
+      )}
       {/* ICONS */}
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
