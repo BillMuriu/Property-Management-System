@@ -24,7 +24,11 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       <MenuItem
         active={selected === title}
         style={{
-          color: colors.grey[400]
+          color: colors.grey[400],
+          '&:hover': {
+            backgroundColor: colors.grey[400],
+            color: 'black',
+          },
         }}
         onClick={() => setSelected(title)}
         icon={icon}
@@ -62,21 +66,28 @@ const Sidenavbar = () => {
             menuItemStyles={{
                 button: ({ level, active, disabled }) => {
                   // only apply styles on first level elements of the tree
-                  if (level === 0)
+                  if (level === 0 || 1)
                     return {
                       color: active ? colors.grey[900] : colors.grey[400],
-                      backgroundColor: active ? '#eecef9' : undefined,
+                      backgroundColor: active ? colors.primary[400] : undefined,
+                      marginLeft: "5px",
+                      marginRight: "5px",
+                      borderRadius: "5px",
+                      '&:hover': {
+                        backgroundColor: colors.primary[400],
+                      },
                     };
                 },
               }}
         >
             {collapsed === false ? (
-                <Box
+            <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
                 ml="15px"
-              >
+                mb="32px"
+            >
                 <Box
                     display="flex"
                     justifyContent="space-between"
@@ -109,6 +120,14 @@ const Sidenavbar = () => {
 
 
             <Box >
+                <Typography
+                    variant="h6"
+                    color={colors.grey[300]}
+                    sx={{ m: "15px 0 5px 20px" }}
+                >
+                    General
+                </Typography>
+
                 <Item
                     title="Dashboard"
                     to="/"
@@ -117,67 +136,81 @@ const Sidenavbar = () => {
                     setSelected={setSelected}
                 />
 
-                <Typography
-                    variant="h6"
-                    color={colors.grey[300]}
-                    sx={{ m: "15px 0 5px 20px" }}
-                >
-                    Data
-                </Typography>
-
-                <Item
-                    title="Manage Team"
-                    to="/team"
-                    icon={<PeopleOutlinedIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
-
-
                 <SubMenu
-                    active={true}
-                    label="Charts"
+                    label="Property"
                     icon={<ContactsOutlinedIcon />}
                     rootStyles={{
-                        ['& > .' + menuClasses.button]: {
-                            backgroundColor: '#eaabff',
-                            color: '#9f0099',
-                            '&:hover': {
-                                backgroundColor: '#eecef9',
-                            },
-                            '&:active': {
-                                backgroundColor: '#000'
-                            }
+                        ['.' + menuClasses.subMenuContent]: {
+                          backgroundColor: colors.primary[700],
                         },
                         ['.' + menuClasses.subMenuContent]: {
-                          backgroundColor: '#fbedff',
-                        },
+                            backgroundColor: colors.primary[700],
+                            marginLeft: '30px'
+                          },
                       }}
-                    
                 >
-                    <MenuItem > Pie charts</MenuItem>
-                    <MenuItem > Line charts</MenuItem>
-                    <MenuItem > Bar charts</MenuItem>
+                    <Item
+                        title="Units"
+                        to="/underchat"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
+                        title="Maintenance"
+                        to="/linechart"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
+                        title="Expenses"
+                        to="/barchart"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                </SubMenu>
+                
+                <SubMenu
+                    label="Tenants"
+                    icon={<ContactsOutlinedIcon />}
+                    rootStyles={{
+                        ['.' + menuClasses.subMenuContent]: {
+                          backgroundColor: colors.primary[700],
+                        },
+                        ['.' + menuClasses.subMenuContent]: {
+                            backgroundColor: colors.primary[700],
+                            marginLeft: '30px'
+                          },
+                      }}
+                >
+                    <Item
+                        title="Tenants"
+                        to="/underchat"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
+                        title="Invoices"
+                        to="/linechart"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
+                        title="Payments"
+                        to="/barchart"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
                 </SubMenu>
 
                 <Item
-                    title="Invoices Balances"
+                    title="Financials"
                     to="/invoices"
                     icon={<ReceiptOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
-
-                <Typography
-                    variant="h6"
-                    color={colors.grey[300]}
-                    sx={{ m: "15px 0 5px 20px" }}
-                >
-                    Pages
-                </Typography>
-
                 <Item
-                    title="Profile Form"
+                    title="Reports"
                     to="/form"
                     icon={<PersonOutlinedIcon />}
                     selected={selected}
@@ -185,14 +218,14 @@ const Sidenavbar = () => {
                 />
 
                 <Item
-                    title="Calendar"
+                    title="Messaging"
                     to="/calendar"
                     icon={<CalendarTodayOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
                 <Item
-                    title="FAQ Page"
+                    title="Admin Settings"
                     to="/faq"
                     icon={<HelpOutlineOutlinedIcon />}
                     selected={selected}
@@ -204,11 +237,11 @@ const Sidenavbar = () => {
                     color={colors.grey[300]}
                     sx={{ m: "15px 0 5px 20px" }}
                 >
-                    Charts
+                    Extras
                 </Typography>
 
                 <Item
-                    title="Bar Chart"
+                    title="My account"
                     to="/bar"
                     icon={<BarChartOutlinedIcon />}
                     selected={selected}
@@ -216,25 +249,9 @@ const Sidenavbar = () => {
                 />
 
                 <Item
-                    title="Pie Chart"
+                    title="Documentation"
                     to="/pie"
                     icon={<PieChartOutlineOutlinedIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
-
-                <Item
-                    title="Line Chart"
-                    to="/line"
-                    icon={<TimelineOutlinedIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
-
-                <Item
-                    title="Geography Chart"
-                    to="/geography"
-                    icon={<MapOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
