@@ -21,21 +21,22 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
-      <MenuItem
-        active={selected === title}
-        style={{
-          color: colors.grey[400],
-          '&:hover': {
-            backgroundColor: colors.grey[400],
-            color: 'black',
-          },
-        }}
-        onClick={() => setSelected(title)}
-        icon={icon}
-      >
-        <Typography>{title}</Typography>
-        <Link to={to} />
-      </MenuItem>
+    <Link to={to} style={{ textDecoration: 'none' }}>
+        <MenuItem
+          active={selected === title}
+          style={{
+            color: colors.grey[400],
+            '&:hover': {
+              backgroundColor: colors.grey[400],
+              color: 'black',
+            },
+          }}
+          onClick={() => setSelected(title)}
+          icon={icon}
+        >
+          <Typography>{title}</Typography>
+        </MenuItem>
+    </Link>
     );
   };
   
@@ -145,25 +146,25 @@ const Sidenavbar = () => {
                         },
                         ['.' + menuClasses.subMenuContent]: {
                             backgroundColor: colors.primary[700],
-                            marginLeft: '30px'
+                            paddingLeft: '30px'
                           },
                       }}
                 >
                     <Item
                         title="Units"
-                        to="/underchat"
+                        to="/units"
                         selected={selected}
                         setSelected={setSelected}
                     />
                     <Item
                         title="Maintenance"
-                        to="/linechart"
+                        to="/maintenance"
                         selected={selected}
                         setSelected={setSelected}
                     />
                     <Item
                         title="Expenses"
-                        to="/barchart"
+                        to="/expenses"
                         selected={selected}
                         setSelected={setSelected}
                     />
@@ -178,25 +179,25 @@ const Sidenavbar = () => {
                         },
                         ['.' + menuClasses.subMenuContent]: {
                             backgroundColor: colors.primary[700],
-                            marginLeft: '30px'
+                            paddingLeft: '30px'
                           },
                       }}
                 >
                     <Item
                         title="Tenants"
-                        to="/underchat"
+                        to="/tenants"
                         selected={selected}
                         setSelected={setSelected}
                     />
                     <Item
                         title="Invoices"
-                        to="/linechart"
+                        to="/invoices"
                         selected={selected}
                         setSelected={setSelected}
                     />
                     <Item
                         title="Payments"
-                        to="/barchart"
+                        to="/payments"
                         selected={selected}
                         setSelected={setSelected}
                     />
@@ -204,14 +205,14 @@ const Sidenavbar = () => {
 
                 <Item
                     title="Financials"
-                    to="/invoices"
+                    to="/financials"
                     icon={<ReceiptOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
                 <Item
                     title="Reports"
-                    to="/form"
+                    to="/reports"
                     icon={<PersonOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
@@ -219,14 +220,14 @@ const Sidenavbar = () => {
 
                 <Item
                     title="Messaging"
-                    to="/calendar"
+                    to="/messaging"
                     icon={<CalendarTodayOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
                 <Item
                     title="Admin Settings"
-                    to="/faq"
+                    to="/settings"
                     icon={<HelpOutlineOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
@@ -242,7 +243,7 @@ const Sidenavbar = () => {
 
                 <Item
                     title="My account"
-                    to="/bar"
+                    to="/myaccount"
                     icon={<BarChartOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
@@ -250,7 +251,7 @@ const Sidenavbar = () => {
 
                 <Item
                     title="Documentation"
-                    to="/pie"
+                    to="/documentation"
                     icon={<PieChartOutlineOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}

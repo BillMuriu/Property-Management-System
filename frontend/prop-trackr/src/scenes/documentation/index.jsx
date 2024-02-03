@@ -3,14 +3,14 @@ import Header from "../../components/Header";
 
 import React from 'react'
 
-const Maintenance = () => {
+const Documentation = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Maintenance" subtitle="Welcome to the Maintenance page" />
+            <Header title="Documentation" subtitle="Welcome to the Documentation page" />
         </Box>
     </div>
   )
 }
 
-export default Maintenance
+export default Documentation
