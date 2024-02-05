@@ -5,6 +5,7 @@ import Sidenavbar from "./scenes/global/Sidenavbar";
 import Dashboard from "./scenes/dashboard";
 import Expenses from "./scenes/expenses";
 import Properties from "./scenes/properties";
+import AddProperty from "./scenes/properties/CreateProperty";
 import Units from "./scenes/units";
 import Maintenance from "./scenes/maintenance";
 import Tenants from "./scenes/tenants";
@@ -36,6 +37,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/properties" element={<Properties />} />
+                  <Route path="/add-property" element={<AddProperty />} />
                   <Route path="/units" element={<Units />} />
                   <Route path="/maintenance" element={<Maintenance />} />
                   <Route path="/expenses" element={<Expenses />} />
