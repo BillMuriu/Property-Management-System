@@ -1,14 +1,21 @@
 import { Box, Button, IconButton, Typography, useTheme, TextField} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
+// import useMediaQuery from "@mui/material/useMediaQuery";
+import { tokens } from "../../theme";
 import Header from "../../components/Header";
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import React from 'react'
 
 const AddProperty = () => {
-
-    const isNonMobile = useMediaQuery("(min-width:600px)");
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
 
     const handleFormSubmit = (values) => {
         console.log(values);
@@ -74,47 +81,155 @@ const AddProperty = () => {
                             helperText={touched.city && errors.city}
                             sx={{ gridColumn: "span 4" }}
                         />
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Contact Number"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.contact}
-                            name="contact"
-                            error={!!touched.contact && !!errors.contact}
-                            helperText={touched.contact && errors.contact}
-                            sx={{ gridColumn: "span 4" }}
-                        />
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Address 1"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.address1}
-                            name="address1"
-                            error={!!touched.address1 && !!errors.address1}
-                            helperText={touched.address1 && errors.address1}
-                            sx={{ gridColumn: "span 4" }}
-                        />
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Address 2"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.address2}
-                            name="address2"
-                            error={!!touched.address2 && !!errors.address2}
-                            helperText={touched.address2 && errors.address2}
-                            sx={{ gridColumn: "span 4" }}
-                        />
+
+
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ArrowDownwardIcon />}
+                                aria-controls="panel1-content"
+                                id="panel1-header"
+                                sx={{
+                                    backgroundColor: colors.primary[400],
+                                }}
+                            >
+                                <Typography>Other Items</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails
+                                sx={{
+                                    maxWidth: "100%", // Corrected colon (:) instead of equals (=)
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "20px",
+                                    backgroundColor: colors.primary[400],
+                                }}
+                            >
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="number"
+                                    label="Water Rate (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.waterRate}
+                                    name="waterRate"
+                                    error={!!touched.waterRate && !!errors.waterRate}
+                                    helperText={touched.waterRate && errors.waterRate}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="number"
+                                    label="Electricity Rate (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.electricityRate}
+                                    name="electricityRate"
+                                    error={!!touched.electricityRate && !!errors.electricityRate}
+                                    helperText={touched.electricityRate && errors.electricityRate}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="text"
+                                    label="Rent Penalty Type (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.rentPenaltyType}
+                                    name="rentPenaltyType"
+                                    error={!!touched.rentPenaltyType && !!errors.rentPenaltyType}
+                                    helperText={touched.rentPenaltyType && errors.rentPenaltyType}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="number"
+                                    label="Rent Penalty Amount (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.rentPenaltyAmount}
+                                    name="rentPenaltyAmount"
+                                    error={!!touched.rentPenaltyAmount && !!errors.rentPenaltyAmount}
+                                    helperText={touched.rentPenaltyAmount && errors.rentPenaltyAmount}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="number"
+                                    label="Rent Penalty Percentage (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.rentPenaltyPercentage}
+                                    name="rentPenaltyPercentage"
+                                    error={!!touched.rentPenaltyPercentage && !!errors.rentPenaltyPercentage}
+                                    helperText={touched.rentPenaltyPercentage && errors.rentPenaltyPercentage}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="number"
+                                    label="Tax Rate (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.taxRate}
+                                    name="taxRate"
+                                    error={!!touched.taxRate && !!errors.taxRate}
+                                    helperText={touched.taxRate && errors.taxRate}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="number"
+                                    label="Management Fee (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.managementFee}
+                                    name="managementFee"
+                                    error={!!touched.managementFee && !!errors.managementFee}
+                                    helperText={touched.managementFee && errors.managementFee}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="text"
+                                    label="Street Name (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.streetName}
+                                    name="streetName"
+                                    error={!!touched.streetName && !!errors.streetName}
+                                    helperText={touched.streetName && errors.streetName}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="filled"
+                                    type="text"
+                                    label="Company Name (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.companyName}
+                                    name="companyName"
+                                    error={!!touched.companyName && !!errors.companyName}
+                                    helperText={touched.companyName && errors.companyName}
+                                />
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    variant="filled"
+                                    type="text"
+                                    label="Notes (optional)"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.notes}
+                                    name="notes"
+                                    error={!!touched.notes && !!errors.notes}
+                                    helperText={touched.notes && errors.notes}
+                                />
+
+                            </AccordionDetails>
+                        </Accordion>
                     </Box>
-                    <Box display="flex" justifyContent="end" mt="20px" mr="75px">
+                    <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
                         <Button type="submit" color="secondary" variant="contained">
                             Create New User
                         </Button>
