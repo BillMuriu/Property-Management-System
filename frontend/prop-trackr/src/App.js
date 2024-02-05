@@ -4,6 +4,7 @@ import Topbar from "./scenes/global/Topbar";
 import Sidenavbar from "./scenes/global/Sidenavbar";
 import Dashboard from "./scenes/dashboard";
 import Expenses from "./scenes/expenses";
+import Properties from "./scenes/properties";
 import Units from "./scenes/units";
 import Maintenance from "./scenes/maintenance";
 import Tenants from "./scenes/tenants";
@@ -34,6 +35,7 @@ function App() {
                 <Topbar />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
+                  <Route path="/properties" element={<Properties />} />
                   <Route path="/units" element={<Units />} />
                   <Route path="/maintenance" element={<Maintenance />} />
                   <Route path="/expenses" element={<Expenses />} />

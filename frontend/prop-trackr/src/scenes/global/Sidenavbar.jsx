@@ -151,6 +151,12 @@ const Sidenavbar = () => {
                       }}
                 >
                     <Item
+                        title="Properties"
+                        to="/properties"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
                         title="Units"
                         to="/units"
                         selected={selected}
