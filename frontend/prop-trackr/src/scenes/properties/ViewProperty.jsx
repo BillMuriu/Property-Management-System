@@ -13,7 +13,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import React from 'react'
 
-const AddProperty = () => {
+const ViewProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -34,7 +34,7 @@ const AddProperty = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Add a property"/>
+            <Header title="View Property"/>
             <Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -58,7 +58,7 @@ const AddProperty = () => {
                     >
                         <TextField
                             fullWidth
-                            variant="filled"
+                            variant="standard"
                             type="text"
                             label="Property Name *"
                             onBlur={handleBlur}
@@ -67,10 +67,23 @@ const AddProperty = () => {
                             name="propertyName"
                             error={!!touched.propertyName && !!errors.propertyName}
                             helperText={touched.propertyName && errors.propertyName}
+                            disabled
+                            sx={{
+                                '& .MuiInputLabel-root': {
+                                    color: colors.grey[100], // Change the color of the label
+                                    fontWeight: 'bold', // Make the label bold
+                                    // Add any other label-specific styles here
+                                },
+                                '& .MuiInputBase-input': {
+                                    color: colors.grey[100], // Change the color of the input text
+                                    fontStyle: 'bold', // Make the input text italic
+                                    // Add any other input text-specific styles here
+                                },
+                              }}
                         />
                         <TextField
                             fullWidth
-                            variant="filled"
+                            variant="standard"
                             type="number"
                             label="Number of Units *"
                             onBlur={handleBlur}
@@ -79,10 +92,11 @@ const AddProperty = () => {
                             name="numberOfUnits"
                             error={!!touched.numberOfUnits && !!errors.numberOfUnits}
                             helperText={touched.numberOfUnits && errors.numberOfUnits}
+                            disabled
                         />
                         <TextField
                             fullWidth
-                            variant="filled"
+                            variant="standard"
                             type="text"
                             label="City"
                             onBlur={handleBlur}
@@ -92,6 +106,7 @@ const AddProperty = () => {
                             error={!!touched.city && !!errors.city}
                             helperText={touched.city && errors.city}
                             sx={{ gridColumn: "span 4" }}
+                            disabled
                         />
 
 
@@ -117,7 +132,7 @@ const AddProperty = () => {
                             >
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     type="number"
                                     label="Water Rate (optional)"
                                     onBlur={handleBlur}
@@ -126,10 +141,11 @@ const AddProperty = () => {
                                     name="waterRate"
                                     error={!!touched.waterRate && !!errors.waterRate}
                                     helperText={touched.waterRate && errors.waterRate}
+                                    disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     type="number"
                                     label="Electricity Rate (optional)"
                                     onBlur={handleBlur}
@@ -138,10 +154,11 @@ const AddProperty = () => {
                                     name="electricityRate"
                                     error={!!touched.electricityRate && !!errors.electricityRate}
                                     helperText={touched.electricityRate && errors.electricityRate}
+                                    disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     select
                                     label="Rent Penalty Type (optional)"
                                     onBlur={handleBlur}
@@ -155,6 +172,7 @@ const AddProperty = () => {
                                     name="rentPenaltyType"
                                     error={!!touched.rentPenaltyType && !!errors.rentPenaltyType}
                                     helperText={touched.rentPenaltyType && errors.rentPenaltyType}
+                                    disabled
                                 >
                                     {rentPenaltyOptions.map((option) => (
                                         <MenuItem key={option.value} value={option.value}>
@@ -166,7 +184,7 @@ const AddProperty = () => {
                                 {values.rentPenaltyType === 'rentPenaltyAmount' && (
                                     <TextField
                                         fullWidth
-                                        variant="filled"
+                                        variant="standard"
                                         type="number"
                                         label="Rent Penalty Amount (optional)"
                                         onBlur={handleBlur}
@@ -175,13 +193,14 @@ const AddProperty = () => {
                                         name="rentPenaltyAmount"
                                         error={!!touched.rentPenaltyAmount && !!errors.rentPenaltyAmount}
                                         helperText={touched.rentPenaltyAmount && errors.rentPenaltyAmount}
+                                        disabled
                                     />
                                 )}
 
                                 {values.rentPenaltyType === 'rentPenaltyPercentage' && (
                                     <TextField
                                         fullWidth
-                                        variant="filled"
+                                        variant="standard"
                                         type="number"
                                         label="Rent Penalty Percentage (optional)"
                                         onBlur={handleBlur}
@@ -190,11 +209,12 @@ const AddProperty = () => {
                                         name="rentPenaltyPercentage"
                                         error={!!touched.rentPenaltyPercentage && !!errors.rentPenaltyPercentage}
                                         helperText={touched.rentPenaltyPercentage && errors.rentPenaltyPercentage}
+                                        disabled
                                     />
                                 )}
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     type="number"
                                     label="Tax Rate (optional)"
                                     onBlur={handleBlur}
@@ -203,10 +223,11 @@ const AddProperty = () => {
                                     name="taxRate"
                                     error={!!touched.taxRate && !!errors.taxRate}
                                     helperText={touched.taxRate && errors.taxRate}
+                                    disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     type="number"
                                     label="Management Fee (optional)"
                                     onBlur={handleBlur}
@@ -215,10 +236,11 @@ const AddProperty = () => {
                                     name="managementFee"
                                     error={!!touched.managementFee && !!errors.managementFee}
                                     helperText={touched.managementFee && errors.managementFee}
+                                    disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     type="text"
                                     label="Street Name (optional)"
                                     onBlur={handleBlur}
@@ -227,10 +249,11 @@ const AddProperty = () => {
                                     name="streetName"
                                     error={!!touched.streetName && !!errors.streetName}
                                     helperText={touched.streetName && errors.streetName}
+                                    disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    variant="filled"
+                                    variant="standard"
                                     type="text"
                                     label="Company Name (optional)"
                                     onBlur={handleBlur}
@@ -239,12 +262,14 @@ const AddProperty = () => {
                                     name="companyName"
                                     error={!!touched.companyName && !!errors.companyName}
                                     helperText={touched.companyName && errors.companyName}
+                                    disabled
                                 />
                                 <TextField
+                                    disabled
                                     fullWidth
                                     multiline
                                     rows={4}
-                                    variant="filled"
+                                    variant="standard"
                                     type="text"
                                     label="Notes (optional)"
                                     onBlur={handleBlur}
@@ -292,24 +317,23 @@ const checkoutSchema = yup.object().shape({
 
 // Define the initial values for the form fields
 const initialValues = {
-    propertyName: "",
-    numberOfUnits: "",
-    city: "",
-    waterRate: null,
-    electricityRate: null,
-    rentPenaltyType: null,
-    rentPenaltyAmount: null,
-    rentPenaltyPercentage: null,
-    taxRate: null,
-    managementFee: null,
-    streetName: "",
-    companyName: "",
-    notes: "",
+  propertyName: "Sample Property",
+  numberOfUnits: 10,
+  city: "Sample City",
+  waterRate: 20.5,
+  electricityRate: 0.15,
+  rentPenaltyType: "fixed",
+  rentPenaltyAmount: 100.0,
+  rentPenaltyPercentage: null,
+  taxRate: 5.0,
+  managementFee: 150.0,
+  streetName: "Sample Street",
+  companyName: "Sample Company",
+  notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 };
 
 
 
 
-export default AddProperty
 
-
+export default ViewProperty

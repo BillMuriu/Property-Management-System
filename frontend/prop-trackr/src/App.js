@@ -6,6 +6,8 @@ import Dashboard from "./scenes/dashboard";
 import Expenses from "./scenes/expenses";
 import Properties from "./scenes/properties";
 import AddProperty from "./scenes/properties/CreateProperty";
+import ViewProperty from "./scenes/properties/ViewProperty";
+import UpdateProperty from "./scenes/properties/UpdateProperty";
 import Units from "./scenes/units";
 import Maintenance from "./scenes/maintenance";
 import Tenants from "./scenes/tenants";
@@ -38,6 +40,8 @@ function App() {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/properties" element={<Properties />} />
                   <Route path="/add-property" element={<AddProperty />} />
+                  <Route path="/view-property" element={<ViewProperty />} />
+                  <Route path="/update-property" element={<UpdateProperty />} />
                   <Route path="/units" element={<Units />} />
                   <Route path="/maintenance" element={<Maintenance />} />
                   <Route path="/expenses" element={<Expenses />} />

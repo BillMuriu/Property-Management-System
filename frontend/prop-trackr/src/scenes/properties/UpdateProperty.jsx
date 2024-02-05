@@ -13,7 +13,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import React from 'react'
 
-const AddProperty = () => {
+const UpdateProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -34,7 +34,7 @@ const AddProperty = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Add a property"/>
+            <Header title="Update the {} Property"/>
             <Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -292,24 +292,23 @@ const checkoutSchema = yup.object().shape({
 
 // Define the initial values for the form fields
 const initialValues = {
-    propertyName: "",
-    numberOfUnits: "",
-    city: "",
-    waterRate: null,
-    electricityRate: null,
-    rentPenaltyType: null,
-    rentPenaltyAmount: null,
+    propertyName: "Sample Property",
+    numberOfUnits: 10,
+    city: "Sample City",
+    waterRate: 20.5,
+    electricityRate: 0.15,
+    rentPenaltyType: "fixed",
+    rentPenaltyAmount: 100.0,
     rentPenaltyPercentage: null,
-    taxRate: null,
-    managementFee: null,
-    streetName: "",
-    companyName: "",
-    notes: "",
-};
+    taxRate: 5.0,
+    managementFee: 150.0,
+    streetName: "Sample Street",
+    companyName: "Sample Company",
+    notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  };
+  
 
 
 
 
-export default AddProperty
-
-
+export default UpdateProperty
