@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, Card, CardContent } from "@mui/material";
 import Header from "../../components/Header";
 import { PropertyData } from "../../mock-data/propertydata/propertydata";
 import { DataGrid } from "@mui/x-data-grid";
@@ -22,13 +22,54 @@ const Properties = () => {
     ]
 
     return (
-        <Box style={{marginLeft: "20px"}}>
+        <Box
+            style={{marginLeft: "20px"}}
+        >
             <Header title="Properties" subtitle="Welcome to the Properties page" />
+            <Card
+                sx={{
+                    backgroundColor: colors.blueAccent[900],
+                    maxWidth: '95%',
+                    padding: 2,
+                }}
+                >
+                <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                        Total Properties: {PropertyData.length}
+                    </Typography>
+                    <Typography variant="body1" component="div">
+                        Total Vacancies: 20
+                    </Typography>
+                </CardContent>
+            </Card>
             <Box
                 m="40px 0 0 0"
-                height="75vh" 
+                height="75vh"
+                overflow-x='hidden'
             >
-                <DataGrid checkboxSelection rows={PropertyData} columns={columns} />
+                <DataGrid
+                    sx={{ 
+                        // overflowX: 'scroll',
+                        // overflowY: 'scroll',
+                        maxWidth: '95%',
+                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
+                            width: '10px',
+                        },
+                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-track': {
+                            background: colors.grey[700],
+                        },
+                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
+                            backgroundColor: colors.primary[600],
+                            borderRadius: '5px',
+                        },
+                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover': {
+                        background: '#555',
+                        },
+                    }}
+                    checkboxSelection 
+                    rows={PropertyData} 
+                    columns={columns} 
+                />
             </Box>
         </Box>
     )

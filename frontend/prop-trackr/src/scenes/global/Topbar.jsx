@@ -17,7 +17,11 @@ const Topbar = () => {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
   return (
-    <Box display="flex" justifyContent="space-between" p={1}>
+    <Box 
+      display="flex" 
+      justifyContent="space-between" 
+      p={1}
+    >
       {/* collapse menu */}
       {isSmallScreen && (
       <Box>

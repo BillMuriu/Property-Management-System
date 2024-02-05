@@ -53,7 +53,16 @@ const Sidenavbar = () => {
 
     
     return (
-        <Box style={{ display: 'flex', height: '100%', minHeight: '400px', }}>
+        <Box
+            position="sticky"
+            top={0}           
+            zIndex={1000} 
+            style={{ 
+                display: 'flex', 
+                height: '100%', 
+                minHeight: '400px',
+            }}
+        >
         <Sidebar 
             collapsed={broken ? false : collapsed}
             onBackdropClick={() => setToggled(false)} 

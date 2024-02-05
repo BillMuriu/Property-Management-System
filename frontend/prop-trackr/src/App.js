@@ -29,7 +29,7 @@ function App() {
         <CssBaseline />
         <SidebarToggleProvider>
           <SidebarProvider>
-            <div className="app">
+            <div className="app" style={{ position: 'relative' }}>
               <Sidenavbar />
               <main className="content">
                 <Topbar />

@@ -10,9 +10,16 @@ body,
   font-family: "Source Sans Pro", sans-serif;
 }
 
+body {
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
 .app {
   display: flex;
   position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
 
 ::-webkit-scrollbar {
