@@ -15,6 +15,8 @@ import ViewUnit from "./scenes/units/ViewUnit";
 import UpdateUnit from "./scenes/units/UpdateUnit";
 
 import Maintenance from "./scenes/maintenance";
+import AddMaintenance from "./scenes/maintenance/AddMaintenance";
+
 import Tenants from "./scenes/tenants";
 import Invoices from "./scenes/invoices";
 import Payments from "./scenes/payments";
@@ -55,6 +57,9 @@ function App() {
 
 
                   <Route path="/maintenance" element={<Maintenance />} />
+                  <Route path="/add-maintenance" element={<AddMaintenance />} />
+
+
                   <Route path="/expenses" element={<Expenses />} />
                   <Route path="/tenants" element={<Tenants />} />
                   <Route path="/invoices" element={<Invoices />} />
