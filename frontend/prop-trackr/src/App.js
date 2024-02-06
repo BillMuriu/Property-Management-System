@@ -16,9 +16,19 @@ import UpdateUnit from "./scenes/units/UpdateUnit";
 
 import Maintenance from "./scenes/maintenance";
 import AddMaintenance from "./scenes/maintenance/AddMaintenance";
+import ViewMaintenanceIssue from "./scenes/maintenance/ViewMaintenanceIssue";
+import UpdateIssue from "./scenes/maintenance/UpdateIssue";
 
 import Tenants from "./scenes/tenants";
+import AddTenant from "./scenes/tenants/AddTenant";
+import UpdateTenant from "./scenes/tenants/UpdateTenant";
+import ViewTenant from "./scenes/tenants/ViewTenant";
+
 import Invoices from "./scenes/invoices";
+import AddInvoice from "./scenes/invoices/AddInvoice";
+import UpdateInvoice from "./scenes/invoices/UpdateInvoice";
+import ViewInvoice from "./scenes/invoices/ViewInovice";
+
 import Payments from "./scenes/payments";
 import Reports from "./scenes/reports";
 import Messaging from "./scenes/messaging";
@@ -58,11 +68,24 @@ function App() {
 
                   <Route path="/maintenance" element={<Maintenance />} />
                   <Route path="/add-maintenance" element={<AddMaintenance />} />
+                  <Route path="/view-maintenance-issue" element={<ViewMaintenanceIssue />} />
+                  <Route path="/update-issue" element={<UpdateIssue />} />
+
+
+                  <Route path="/tenants" element={<Tenants />} />
+                  <Route path="/add-tenant" element={<AddTenant />} />
+                  <Route path="/update-tenant" element={<UpdateTenant />} />
+                  <Route path="/view-tenant" element={<ViewTenant />} />
 
 
                   <Route path="/expenses" element={<Expenses />} />
-                  <Route path="/tenants" element={<Tenants />} />
+
                   <Route path="/invoices" element={<Invoices />} />
+                  <Route path="/add-invoice" element={<AddInvoice />} />
+                  <Route path="/update-invoice" element={<UpdateInvoice />} />
+                  <Route path="/view-invoice" element={<ViewInvoice />} />
+
+
                   <Route path="/payments" element={<Payments />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/messaging" element={<Messaging />} />

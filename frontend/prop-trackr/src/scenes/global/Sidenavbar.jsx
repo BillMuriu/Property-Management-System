@@ -108,7 +108,6 @@ const Sidenavbar = () => {
                         alt="company-logo"
                         width="50px"
                         height="50px"
-                        src={`https://cdn.freebiesupply.com/logos/large/2x/react-1-logo-png-transparent.png`}
                         style={{ borderRadius: "50%" }}
                     />
                     <Typography variant="h3" color={colors.grey[100] } sx={{ marginLeft: '20px' }}>
