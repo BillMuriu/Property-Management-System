@@ -41,8 +41,17 @@ class Tenant(models.Model):
 
 
 class RentDeposit(models.Model):
+    RENT_DEPOSIT_CHOICES = (
+        ('rent', 'Rent'),
+        ('water', 'Water'),
+        ('electricity', 'Electricity'),
+        ('service_charge', 'Service Charge'),
+        ('other', 'Other'),
+    )
+
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    deposit_type = models.CharField(max_length=50)
+    deposit_type = models.CharField(
+        max_length=50, choices=RENT_DEPOSIT_CHOICES)
     amount_paid = models.DecimalField(
         max_digits=8, decimal_places=2, default=0)
     amount_returned = models.DecimalField(
