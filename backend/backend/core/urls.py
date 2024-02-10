@@ -7,7 +7,8 @@ from .views import (
     PropertyManagerListCreateAPIView, PropertyManagerRetrieveUpdateDestroyAPIView,
     UserCreateAPIView,
     MyTokenObtainPairView,
-    user_landlord
+    user_landlord,
+    user_propertymanager
 
 )
 
@@ -31,5 +32,8 @@ urlpatterns = [
 
     path('user_landlord/', user_landlord,
          name='check_landlord_status'),
+
+    path('user_propertymanager/', user_propertymanager,
+         name='check_manager_status'),
 
 ]

@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from .permissions import IsAdminUser
 
 # Token View
 
@@ -42,9 +43,27 @@ class PropertyManagerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroy
     serializer_class = PropertyManagerSerializer
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_propertymanager(request):
+    # Get the requesting user
+    user = request.user
+
+    # Filter the Landlord queryset based on the requesting user
+    try:
+        landlord = PropertyManager.objects.get(user=user)
+    except Landlord.DoesNotExist:
+        return Response({"message": "Property not found for the user."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Serialize the landlord object
+    serializer = PropertyManagerSerializer(landlord)
+    return Response(serializer.data)
+
+
 class LandlordListCreateAPIView(generics.ListCreateAPIView):
     queryset = Landlord.objects.all()
     serializer_class = LandlordSerializer
+    permission_classes = [IsAdminUser]
 
 
 class LandlordRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

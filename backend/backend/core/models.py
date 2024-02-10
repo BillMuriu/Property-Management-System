@@ -16,7 +16,7 @@ class PropertyManager(models.Model):
 
     DEFAULT_ROLE = 'viewer'
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default='user')
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     roles = models.CharField(
