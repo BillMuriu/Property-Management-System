@@ -14,11 +14,13 @@ class PropertyManager(models.Model):
         # Add other roles as needed
     )
 
+    DEFAULT_ROLE = 'viewer'
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     roles = models.CharField(
-        max_length=50, choices=ROLE_CHOICES, blank=True, null=True)
+        max_length=50, choices=ROLE_CHOICES, default=DEFAULT_ROLE)
     property = models.ManyToManyField(
         Property, related_name='property_managers', blank=True)
     first_name = models.CharField(max_length=30, null=True, blank=True)
@@ -29,8 +31,9 @@ class PropertyManager(models.Model):
 
 
 # Landlord model
+
 class Landlord(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=15)
@@ -40,7 +43,7 @@ class Landlord(models.Model):
     krapin = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     next_of_kin = models.CharField(max_length=50, null=True, blank=True)
-    next_of_kin_phone = models.CharField(max_length=15, )
+    next_of_kin_phone = models.CharField(max_length=15)
     notes = models.TextField(null=True, blank=True)
     disbursment_date = models.DateField(null=True, blank=True)
 

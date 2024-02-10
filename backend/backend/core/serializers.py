@@ -8,17 +8,19 @@ class PropertyManagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyManager
         fields = '__all__'
-        extra_kwargs = {
-            # Do not allow changing the user field directly
-            'user': {'read_only': True},
-        }
 
 
+# Serializer for creating a new User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        # Define the fields you want to include
+        fields = ['username', 'password']
+
+    # Override create method to set password properly
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
 
 class LandlordSerializer(serializers.ModelSerializer):

@@ -8,7 +8,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 # Token View
@@ -26,6 +27,21 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+class UserCreateAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class PropertyManagerListCreateAPIView(generics.ListCreateAPIView):
+    queryset = PropertyManager.objects.all()
+    serializer_class = PropertyManagerSerializer
+
+
+class PropertyManagerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PropertyManager.objects.all()
+    serializer_class = PropertyManagerSerializer
+
+
 class LandlordListCreateAPIView(generics.ListCreateAPIView):
     queryset = Landlord.objects.all()
     serializer_class = LandlordSerializer
@@ -36,9 +52,18 @@ class LandlordRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     serializer_class = LandlordSerializer
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def user_landlord(request):
+    # Get the requesting user
     user = request.user
-    user_name = user.get_full_name() if user.get_full_name() else user.username
-    landlord_objects = Landlord.objects.filter(user=user)
-    landlord_names = [landlord.first_name for landlord in landlord_objects]
-    return JsonResponse({'user_name': user_name, 'landlord_names': landlord_names})
+
+    # Filter the Landlord queryset based on the requesting user
+    try:
+        landlord = Landlord.objects.get(user=user)
+    except Landlord.DoesNotExist:
+        return Response({"message": "Landlord not found for the user."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Serialize the landlord object
+    serializer = LandlordSerializer(landlord)
+    return Response(serializer.data)
