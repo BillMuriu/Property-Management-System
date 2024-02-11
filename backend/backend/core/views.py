@@ -63,7 +63,7 @@ def user_propertymanager(request):
 class LandlordListCreateAPIView(generics.ListCreateAPIView):
     queryset = Landlord.objects.all()
     serializer_class = LandlordSerializer
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
 
 
 class LandlordRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

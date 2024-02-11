@@ -18,14 +18,20 @@ from .serializers import (
 
 )
 
+from core.permissions import IsAdminUser, IsEditorUser, IsViewerUser
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 '''
 Propery CRUD operations
 '''
 
 
-class PropertyListView(generics.ListAPIView):
+class PropertyListView(generics.ListCreateAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
+    permission_classes = [IsAuthenticated,
+                          (IsAdminUser | IsEditorUser | IsViewerUser)]
 
 
 class PropertyDetailView(generics.RetrieveAPIView):
