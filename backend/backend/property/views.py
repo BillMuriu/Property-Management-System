@@ -30,8 +30,8 @@ Propery CRUD operations
 class PropertyListView(generics.ListCreateAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    permission_classes = [IsAuthenticated,
-                          (IsAdminUser | IsEditorUser | IsViewerUser)]
+    # permission_classes = [IsAuthenticated,
+    #                       (IsAdminUser | IsEditorUser | IsViewerUser)]
 
 
 class PropertyDetailView(generics.RetrieveAPIView):

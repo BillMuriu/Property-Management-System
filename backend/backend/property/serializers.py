@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from .models import (Property,
                      Unit,
                      PropertyOtherRecurringBill,
@@ -9,9 +10,18 @@ from .models import (Property,
 
 
 class PropertySerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Property
         fields = '__all__'
+
+    def get_url(self, obj):
+        # return f"/api/v2/products/{obj.pk}/"
+        request = self.context.get('request')  # self.request
+        if request is None:
+            return None
+        return reverse("property-detail", kwargs={"pk": obj.pk}, request=request)
 
 
 class UnitSerializer(serializers.ModelSerializer):

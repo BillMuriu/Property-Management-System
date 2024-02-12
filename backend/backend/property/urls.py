@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+
     PropertyListView,
     PropertyCreateView,
     PropertyUpdateView,
@@ -25,6 +26,7 @@ from .views import (
 )
 
 urlpatterns = [
+
     # Property URLS
     path('', PropertyListView.as_view(), name='property-list'),
     path('<int:pk>/', PropertyDetailView.as_view(),
