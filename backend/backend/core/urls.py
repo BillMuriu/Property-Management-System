@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import (
 from .views import (
     LandlordListCreateAPIView, LandlordRetrieveUpdateDestroyAPIView,
     PropertyManagerListCreateAPIView, PropertyManagerRetrieveUpdateDestroyAPIView,
-    UserCreateAPIView,
+    CustomUserCreateAPIView,
     MyTokenObtainPairView,
     user_landlord,
     user_propertymanager
@@ -13,7 +13,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('create_user/', UserCreateAPIView.as_view(), name='create_user'),
+    path('create_user/', CustomUserCreateAPIView.as_view(), name='create_user'),
 
     path('property-managers/', PropertyManagerListCreateAPIView.as_view(),
          name='property-manager-list-create'),

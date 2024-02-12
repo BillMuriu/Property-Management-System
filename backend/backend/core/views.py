@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest_framework import generics, status, serializers
-from .models import PropertyManager, Landlord
-from .serializers import PropertyManagerSerializer, LandlordSerializer, UserSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import PropertyManager, Landlord, CustomUser
+from .serializers import PropertyManagerSerializer, LandlordSerializer, CustomUserSerializer
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -28,14 +29,17 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-class UserCreateAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class CustomUserCreateAPIView(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
 
 
 class PropertyManagerListCreateAPIView(generics.ListCreateAPIView):
     queryset = PropertyManager.objects.all()
     serializer_class = PropertyManagerSerializer
+    # Add DjangoFilterBackend to enable filtering
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['first_name', 'last_name']
 
 
 class PropertyManagerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

@@ -2,38 +2,38 @@ from django.contrib.auth.models import User
 from django.db import models
 from property.models import Property, Unit
 
-# admin user model
+
+class CustomUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('editor', 'Editor'),
+        ('viewer', 'Viewer'),
+        ('landlord', 'Landlord'),
+        # Add other roles as needed
+    )
+    role = models.CharField(
+        max_length=50, choices=ROLE_CHOICES, default='viewer')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
 
 
 class PropertyManager(models.Model):
-
-    ROLE_CHOICES = (
-        ('viewer', 'Viewer'),
-        ('editor', 'Editor'),
-        ('admin', 'admin'),
-        # Add other roles as needed
-    )
-
-    DEFAULT_ROLE = 'viewer'
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default='user')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-    roles = models.CharField(
-        max_length=50, choices=ROLE_CHOICES, default=DEFAULT_ROLE)
     property = models.ManyToManyField(
         Property, related_name='property_managers', blank=True)
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
-        return self.username
+        return str(self.user)
 
-
-# Landlord model
 
 class Landlord(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=15)
