@@ -34,14 +34,14 @@ urlpatterns = [
     path('create/', PropertyCreateView.as_view(), name='property-create'),
     path('update/<int:pk>/',
          PropertyUpdateView.as_view(), name='property-update'),
-    path('<int:pk>/delete/',
+    path('delete/<int:pk>/',
          PropertyDeleteView.as_view(), name='property-delete'),
 
     # Unit URLS
     path('units/', UnitListCreateAPIView.as_view(), name='unit-list-create'),
     path('units/<int:pk>/', UnitRetrieveAPIView.as_view(), name='unit-retrieve'),
-    path('units/<int:pk>/update/', UnitUpdateAPIView.as_view(), name='unit-update'),
-    path('units/<int:pk>/delete/', UnitDestroyAPIView.as_view(), name='unit-delete'),
+    path('units/update/<int:pk>/', UnitUpdateAPIView.as_view(), name='unit-update'),
+    path('units/delete/<int:pk>/', UnitDestroyAPIView.as_view(), name='unit-delete'),
 
 
     # maintenance urls

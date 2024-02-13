@@ -9,8 +9,15 @@ from .models import (Property,
                      )
 
 
+class UnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = '__all__'
+
+
 class PropertySerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField(read_only=True)
+    units = UnitSerializer(many=True, read_only=True)
 
     class Meta:
         model = Property
@@ -22,12 +29,6 @@ class PropertySerializer(serializers.ModelSerializer):
         if request is None:
             return None
         return reverse("property-detail", kwargs={"pk": obj.pk}, request=request)
-
-
-class UnitSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Unit
-        fields = '__all__'
 
 
 class MaintenanceSerializer(serializers.ModelSerializer):
