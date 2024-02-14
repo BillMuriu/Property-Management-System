@@ -1,8 +1,13 @@
 import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
-import { UnitData } from "../../mock-data/unitdata/unitdata";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+
+import { Link } from 'react-router-dom';
+
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -11,9 +16,11 @@ import TuneIcon from '@mui/icons-material/Tune';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
+import { BASE_URL } from "../../config";
 
 import { Formik } from "formik";
 import * as yup from "yup";
+import { useState, useEffect } from "react"
 
 import React from 'react'
 
@@ -22,23 +29,90 @@ const Units = () => {
   const colors = tokens(theme.palette.mode);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [unitData, setunitData] = useState('');
+
+  const handleClose = () => {
+      setOpenBackdrop(false);
+  };
+
+  useEffect(() => {
+    const fetchUnitData = async () => {
+        try {
+            // Make a GET request to fetch user landlord data
+            const res = await fetch(`${BASE_URL}/property/units`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': 'Bearer ' + String(data.access)
+                },
+            });
+
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const fetchedUnitData = await res.json();
+
+            // Check for specific error cases in the response data
+            if (!Array.isArray(fetchedUnitData)) {
+                throw new Error('Received invalid data from server');
+            }
+
+            console.log(fetchedUnitData);
+            setunitData(fetchedUnitData); // Set property data in state
+
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error('Error fetching user property data:', error);
+            alert('Failed to fetch user property status');
+        } finally {
+            setOpenBackdrop(false); // Close the backdrop regardless of success or failure
+        }
+    };
+
+    fetchUnitData(); // Call the fetch function when the component mounts
+
+}, []);
+
   const handleFormSubmit = (values) => {
       console.log(values);
   };
 
+  let processedunitData;
   // Preprocess UnitData to update 'occupied' field
-  const processedUnitData = UnitData.map(unit => ({
-    ...unit,
-    occupied: unit.occupied ? 'Yes' : 'No',
-  }));
+  if (Array.isArray(unitData)) {
+    processedunitData = unitData.map(unit => ({
+        ...unit,
+        occupied: unit.occupied ? 'Yes' : 'No',
+    }));
+} else if (typeof unitData === 'object') {
+    processedunitData = [{
+        ...unitData,
+        occupied: unitData.occupied ? 'Yes' : 'No',
+    }];
+} else {
+    processedunitData = [];
+}
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
+const columns = [
+    { 
+        field: 'id', 
+        headerName: 'ID', 
+        width: 100,
+        renderCell: (params) => (
+            <Link to={`/view-unit/${params.row.id}`}>
+                {params.value}
+            </Link>
+        ),
+    },
     { field: 'property', headerName: 'Property', width: 200 },
     { field: 'unit_id_or_name', headerName: 'Unit ID/Name', width: 200 },
-    { field: 'rent_amount', headerName: 'Rent Amount', width: 150 },
-    { field: 'occupied', headerName: 'Occupied', width: 150 },
-    { field: 'tax_rate', headerName: 'Tax Rate (%)', width: 150 },
+    { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'category', headerName: 'Category', width: 150 },
+    { field: 'short_description', headerName: 'Short Description', width: 300 },
+    { field: 'expense_amount', headerName: 'Expense Amount', width: 150 },
 ];
 
   const properties = [
@@ -83,7 +157,7 @@ const Units = () => {
                 >
                 <CardContent>
                     <Typography variant="h5" component="div" gutterBottom>
-                        Total Units: {UnitData.length}
+                        Total Units: {unitData.length}
                     </Typography>
                     <Typography variant="body1" component="div">
                         Total Vacancies: 1
@@ -91,6 +165,13 @@ const Units = () => {
                 </CardContent>
             </Card>
 
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleClose}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
 
             <Accordion 
               defaultExpanded
@@ -185,7 +266,7 @@ const Units = () => {
                         },
                     }}
                     checkboxSelection 
-                    rows={processedUnitData} 
+                    rows={processedunitData} 
                     columns={columns} 
                 />
             </Box>

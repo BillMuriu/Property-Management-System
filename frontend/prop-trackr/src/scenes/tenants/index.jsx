@@ -1,9 +1,11 @@
 import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
-
-import { TenantData } from "../../mock-data/tenantdata/tenantdata";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react"
+import Backdrop from '@mui/material/Backdrop';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -12,6 +14,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
+import { BASE_URL } from "../../config";
 
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -22,6 +25,53 @@ const Tenants = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
+
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [tenantData, setTenantData] = useState('');
+
+  const handleClose = () => {
+      setOpenBackdrop(false);
+  };
+
+  useEffect(() => {
+    const fetchTenantData = async () => {
+        try {
+            // Make a GET request to fetch user landlord data
+            const res = await fetch(`${BASE_URL}/tenants/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': 'Bearer ' + String(data.access)
+                },
+            });
+
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const fetchedTenantData = await res.json();
+
+            // Check for specific error cases in the response data
+            if (!Array.isArray(fetchedTenantData)) {
+                throw new Error('Received invalid data from server');
+            }
+
+            console.log(fetchedTenantData);
+            setTenantData(fetchedTenantData); // Set property data in state
+
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error('Error fetching user property data:', error);
+            alert('Failed to fetch user property status');
+        } finally {
+            setOpenBackdrop(false); // Close the backdrop regardless of success or failure
+        }
+    };
+
+    fetchTenantData(); // Call the fetch function when the component mounts
+
+}, []);
 
   const handleFormSubmit = (values) => {
       console.log(values);
@@ -78,7 +128,7 @@ const Tenants = () => {
                 >
                 <CardContent>
                     <Typography variant="h5" component="div" gutterBottom>
-                        Total Tenants: {TenantData.length}
+                        Total Tenants: {tenantData.length}
                     </Typography>
                     <Typography variant="body1" component="div">
                         Total Balance: 1
@@ -167,6 +217,11 @@ const Tenants = () => {
               </AccordionDetails>
             </Accordion>
 
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleClose}
+            ></Backdrop>
 
             <Box
                 m="40px 0 0 0"
@@ -191,7 +246,7 @@ const Tenants = () => {
                         },
                     }}
                     checkboxSelection 
-                    rows={TenantData} 
+                    rows={tenantData} 
                     columns={columns} 
                 />
             </Box>

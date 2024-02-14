@@ -1,5 +1,7 @@
 import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem} from "@mui/material";
 import { Formik } from "formik";
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
@@ -9,13 +11,92 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import React from 'react'
 
 const ViewProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const { id } = useParams();
+
+    console.log('Property ID:', id);
+
+    const [propertyData, setPropertyData] = useState('');
+    const [initialValues, setInitialValues] = useState(null);
+
+    // Define the validation schema using Yup
+    const checkoutSchema = yup.object().shape({
+        propertyName: yup.string().nullable(),
+        numberOfUnits: yup.number().required("Number of units is required"),
+        city: yup.string().required("City is required"),
+        waterRate: yup.number().nullable(),
+        electricityRate: yup.number().nullable(),
+        rentPenaltyType: yup.string().nullable(),
+        rentPenaltyAmount: yup.number().nullable(),
+        rentPenaltyPercentage: yup.number().nullable(),
+        taxRate: yup.number().nullable(),
+        managementFee: yup.number().nullable(),
+        streetName: yup.string().nullable(),
+        companyName: yup.string().nullable(),
+        notes: yup.string().nullable(),
+    });
+
+
+    useEffect(() => {
+        const fetchPropertyData = async () => {
+            try {
+                // Make a GET request to fetch a particular property instance by ID
+                const res = await fetch(`http://127.0.0.1:8000/property/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': 'Bearer ' + String(data.access)
+                    },
+                });
+    
+                const fetchedPropertyData = await res.json();
+    
+                if (res.status === 200) {
+                    console.log(fetchedPropertyData);
+                    setPropertyData(fetchedPropertyData); // Set property data in state
+                } else {
+                    throw new Error('Failed to fetch the property data status');
+                }
+    
+            } catch (error) {
+                // Handle any errors that occur during the request
+                console.error('Error fetching user property data:', error);
+                alert('Failed to fetch user property status');
+            } 
+
+            // finally {
+            //     setOpenBackdrop(false);
+            // }
+        };
+    
+        fetchPropertyData(); // Call the fetch function when the component mounts
+    
+    }, [id]);
+
+    useEffect(() => {
+        if (propertyData) {
+            setInitialValues({
+                propertyName: propertyData.name,
+                numberOfUnits: propertyData.number_of_units,
+                city: propertyData.city,
+                waterRate: propertyData.water_rate,
+                electricityRate: propertyData.electricity_rate,
+                rentPenaltyType: propertyData.rent_penalty_type,
+                rentPenaltyAmount: propertyData.rent_penalty_amount,
+                rentPenaltyPercentage: propertyData.rent_penalty_percentage,
+                taxRate: propertyData.tax_rate,
+                managementFee: propertyData.management_fee,
+                streetName: propertyData.street_name,
+                companyName: propertyData.company_name,
+                notes: propertyData.notes,
+            });
+        }
+    }, [propertyData]);
 
     const rentPenaltyOptions = [
         {
@@ -35,7 +116,7 @@ const ViewProperty = () => {
     <div>
         <Box style={{marginLeft: "20px"}}>
             <Header title="View Property"/>
-            <Formik
+            {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
                 validationSchema={checkoutSchema}
@@ -290,47 +371,14 @@ const ViewProperty = () => {
                     </Box>
                 </form>
                 )}
-            </Formik>
+            </Formik>) : (
+            <p>Loading...</p> // Render a loading message or spinner while waiting for initialValues
+        )}
         </Box>
     </div>
   )
 }
 
-
-// Define the validation schema using Yup
-const checkoutSchema = yup.object().shape({
-    propertyName: yup.string().required("Name is required"),
-    numberOfUnits: yup.number().required("Number of units is required"),
-    city: yup.string().required("City is required"),
-    waterRate: yup.number().nullable(),
-    electricityRate: yup.number().nullable(),
-    rentPenaltyType: yup.string().nullable(),
-    rentPenaltyAmount: yup.number().nullable(),
-    rentPenaltyPercentage: yup.number().nullable(),
-    taxRate: yup.number().nullable(),
-    managementFee: yup.number().nullable(),
-    streetName: yup.string().nullable(),
-    companyName: yup.string().nullable(),
-    notes: yup.string().nullable(),
-});
-    
-
-// Define the initial values for the form fields
-const initialValues = {
-  propertyName: "Sample Property",
-  numberOfUnits: 10,
-  city: "Sample City",
-  waterRate: 20.5,
-  electricityRate: 0.15,
-  rentPenaltyType: "fixed",
-  rentPenaltyAmount: 100.0,
-  rentPenaltyPercentage: null,
-  taxRate: 5.0,
-  managementFee: 150.0,
-  streetName: "Sample Street",
-  companyName: "Sample Company",
-  notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-};
 
 
 

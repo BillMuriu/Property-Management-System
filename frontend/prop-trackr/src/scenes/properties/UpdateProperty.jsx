@@ -1,21 +1,173 @@
 import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
+
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useSnackbar } from 'notistack';
 // import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+
+import { BASE_URL } from "../../config";
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import React from 'react'
 
 const UpdateProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const { id } = useParams();
+    console.log('Property ID:', id);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const showSuccessMessage = () => {
+        enqueueSnackbar('Property was updated successfully', { 
+          variant: 'success', 
+          autoHideDuration: 2000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+    };
+
+    const showFailureMessage = () => {
+        enqueueSnackbar('Oops! something went wrong', { 
+          variant: 'error', 
+          autoHideDuration: 2000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+    };
+
+    const [propertyData, setPropertyData] = useState('');
+    const [initialValues, setInitialValues] = useState(null);
+
+
+
+    
+    // Define the validation schema using Yup
+    const checkoutSchema = yup.object().shape({
+        propertyName: yup.string().required("Name is required"),
+        numberOfUnits: yup.number().required("Number of units is required"),
+        city: yup.string().required("City is required"),
+        waterRate: yup.number().nullable(),
+        electricityRate: yup.number().nullable(),
+        rentPenaltyType: yup.string().nullable(),
+        rentPenaltyAmount: yup.number().nullable(),
+        rentPenaltyPercentage: yup.number().nullable(),
+        taxRate: yup.number().nullable(),
+        managementFee: yup.number().nullable(),
+        streetName: yup.string().nullable(),
+        companyName: yup.string().nullable(),
+        notes: yup.string().nullable(),
+    });
+        
+
+    useEffect(() => {
+        const fetchPropertyData = async () => {
+            try {
+                // Make a GET request to fetch a particular property instance by ID
+                const res = await fetch(`${BASE_URL}/property/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': 'Bearer ' + String(data.access)
+                    },
+                });
+    
+                // Check for network errors
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const fetchedPropertyData = await res.json();
+    
+                // Check for specific error cases in the response data
+                if (!fetchedPropertyData) {
+                    throw new Error('Received invalid data from server');
+                }
+    
+                console.log(fetchedPropertyData);
+                setPropertyData(fetchedPropertyData);
+    
+            } catch (error) {
+                // Handle any errors that occur during the request
+                console.error('Error fetching user property data:', error);
+            } 
+        };
+    
+        fetchPropertyData();
+    
+    }, [id]);
+    
+    useEffect(() => {
+        if (propertyData) {
+            setInitialValues({
+                propertyName: propertyData.name,
+                numberOfUnits: propertyData.number_of_units,
+                city: propertyData.city,
+                waterRate: propertyData.water_rate,
+                electricityRate: propertyData.electricity_rate,
+                rentPenaltyType: propertyData.rent_penalty_type,
+                rentPenaltyAmount: propertyData.rent_penalty_amount,
+                rentPenaltyPercentage: propertyData.rent_penalty_percentage,
+                taxRate: propertyData.tax_rate,
+                managementFee: propertyData.management_fee,
+                streetName: propertyData.street_name,
+                companyName: propertyData.company_name,
+                notes: propertyData.notes,
+            });
+        }
+    }, [propertyData]);
+    
+    const handleFormSubmit = async (values) => {
+        try {
+            const res = await fetch(`${BASE_URL}/property/update/${id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'name': values.propertyName,
+                    'city': values.city,
+                    'company_name': values.companyName,
+                    'electricity_rate': values.electricityRate,
+                    'management_fee': values.managementFee,
+                    'notes': values.notes,
+                    'number_of_units': values.numberOfUnits,
+                    'rent_penalty_amount': values.rentPenaltyAmount,
+                    'rent_penalty_percentage': values.rentPenaltyPercentage,
+                    'rent_penalty_type': values.rentPenaltyType,
+                    'street_name': values.streetName,
+                    'tax_rate': values.taxRate,
+                    'water_rate': values.waterRate,
+                }),
+            });
+    
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            showSuccessMessage();
+            // Optionally, you can perform additional actions here after successful update
+    
+        } catch (error) {
+            console.error('Error updating property:', error);
+            showFailureMessage();
+        }
+    };
+    
 
     const rentPenaltyOptions = [
         {
@@ -28,14 +180,13 @@ const UpdateProperty = () => {
         },
       ];
 
-    const handleFormSubmit = (values) => {
-        console.log(values);
-    };
+
+
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
             <Header title="Update the {} Property"/>
-            <Formik
+            {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
                 validationSchema={checkoutSchema}
@@ -265,48 +416,13 @@ const UpdateProperty = () => {
                     </Box>
                 </form>
                 )}
-            </Formik>
+            </Formik>) : (
+            <p>Loading...</p>
+        )}
         </Box>
     </div>
   )
 }
-
-
-// Define the validation schema using Yup
-const checkoutSchema = yup.object().shape({
-    propertyName: yup.string().required("Name is required"),
-    numberOfUnits: yup.number().required("Number of units is required"),
-    city: yup.string().required("City is required"),
-    waterRate: yup.number().nullable(),
-    electricityRate: yup.number().nullable(),
-    rentPenaltyType: yup.string().nullable(),
-    rentPenaltyAmount: yup.number().nullable(),
-    rentPenaltyPercentage: yup.number().nullable(),
-    taxRate: yup.number().nullable(),
-    managementFee: yup.number().nullable(),
-    streetName: yup.string().nullable(),
-    companyName: yup.string().nullable(),
-    notes: yup.string().nullable(),
-});
-    
-
-// Define the initial values for the form fields
-const initialValues = {
-    propertyName: "Sample Property",
-    numberOfUnits: 10,
-    city: "Sample City",
-    waterRate: 20.5,
-    electricityRate: 0.15,
-    rentPenaltyType: "fixed",
-    rentPenaltyAmount: 100.0,
-    rentPenaltyPercentage: null,
-    taxRate: 5.0,
-    managementFee: 150.0,
-    streetName: "Sample Street",
-    companyName: "Sample Company",
-    notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  };
-  
 
 
 

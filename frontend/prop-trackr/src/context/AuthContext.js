@@ -12,14 +12,17 @@ export const AuthProvider = ({children}) => {
     let [authTokens, setAuthtokens] = useState(null)
     let [user, setUser] = useState(null)
     let [isLandlord, setIsLandlord] = useState(false)
-    let [isSuperadmin, setIsSuperadmin] = useState(false)
+    let [isAdmin, setIsAdmin] = useState(false)
     let [isViewer, setIsViewer] = useState(false)
     let [isEditor, setIsEditor] = useState(false)
 
     useEffect(() => {
         console.log(user);
         console.log(isLandlord);
-    }, [user, isLandlord]); 
+        console.log(isEditor);
+        console.log(isViewer);
+        console.log(isAdmin);
+    }, [user, isLandlord, isEditor, isViewer, isAdmin]); 
 
 
     let loginUser = async (e) => {
@@ -40,10 +43,10 @@ export const AuthProvider = ({children}) => {
                 setUser(jwtDecode(data.access));
                 
                 // Define an async function to fetch user landlord data
-                const fetchUserLandlordData = async () => {
+                const fetchUserRole = async () => {
                     try {
                         // Make a GET request to fetch user landlord data
-                        const res = await fetch('http://127.0.0.1:8000/user_landlord', {
+                        const res = await fetch('http://127.0.0.1:8000/custom-user/', {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -52,26 +55,32 @@ export const AuthProvider = ({children}) => {
                         });
                         
                         if (res.status === 200) {
-                            const userLandlordData = await res.json();
-                            console.log(userLandlordData.id);
-    
-                            // Check if the request was successful
-                            if (userLandlordData && (userLandlordData.id === 0 || userLandlordData.id > 0)) {
-                                setIsLandlord(true); // Set as boolean true
-                                console.log(isLandlord); // Log the updated value of isLandlord
+                            const userRoleData = await res.json();
+                            const role = userRoleData.role;
+                        
+                            if (role === 'viewer') {
+                                setIsViewer('user is a viewer');
+                            } else if (role === 'admin') {
+                                setIsAdmin(true);
+                            } else if (role === 'landlord') {
+                                setIsLandlord(true);
+                            } else if (role === 'editor') {
+                                setIsEditor(true);
+                            } else {
+                                // Handle unknown role
                             }
                         } else {
                             throw new Error('Failed to fetch user landlord status');
                         }
+                        
                     } catch (error) {
                         // Handle any errors that occur during the request
                         console.error('Error fetching user landlord data:', error);
                         alert('Failed to fetch user landlord status');
                     }
                 };
-    
                 // Call the async function to fetch user landlord data
-                fetchUserLandlordData();
+                fetchUserRole();
             } else {
                 alert('No data received from server');
             }
@@ -82,10 +91,6 @@ export const AuthProvider = ({children}) => {
     };
     
     
-    
-
-
-
 
     let contextData = {
         loginUser:loginUser

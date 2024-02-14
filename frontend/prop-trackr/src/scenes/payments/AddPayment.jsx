@@ -5,15 +5,155 @@ import * as yup from "yup";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 
+import { BASE_URL } from "../../config";
+import { useSnackbar } from 'notistack';
+
+import { useState, useEffect } from "react";
+
+
 import React from 'react'
 
 const AddPayment = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const handleFormSubmit = (values) => {
-        console.log(values);
+    const [tenantData, setTenantData] = useState('');
+    const [propertyData, setPropertyData] = useState('');
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const showSuccessMessage = () => {
+        enqueueSnackbar('Maintainance issue was created successfully', { 
+          variant: 'success', 
+          autoHideDuration: 2000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
     };
+
+    const showFailureMessage = () => {
+        enqueueSnackbar('Oops! something went wrong', { 
+          variant: 'error', 
+          autoHideDuration: 3000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+    };
+
+    useEffect(() => {
+        const fetchPropertyData = async () => {
+            try {
+                // Make a GET request to fetch user landlord data
+                const res = await fetch(`${BASE_URL}/property/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': 'Bearer ' + String(data.access)
+                    },
+                });
+    
+                // Check for network errors
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const fetchedPropertyData = await res.json();
+    
+                // Check for specific error cases in the response data
+                if (!Array.isArray(fetchedPropertyData)) {
+                    throw new Error('Received invalid data from server');
+                }
+    
+                console.log(fetchedPropertyData);
+                setPropertyData(fetchedPropertyData); // Set property data in state
+    
+            } catch (error) {
+                // Handle any errors that occur during the request
+                console.error('Error fetching user property data:', error);
+                alert('Failed to fetch user property status');
+            }
+        };
+    
+        fetchPropertyData(); // Call the fetch function when the component mounts
+    
+    }, []);
+
+
+    const fetchTenantData = async (propertyId) => {
+        try {
+            // Make a GET request to fetch unit data for a specific property
+            const res = await fetch(`${BASE_URL}/tenants/?property=${propertyId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': 'Bearer ' + String(data.access)
+                },
+            });
+
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const fetchedTenantData = await res.json();
+
+            console.log(fetchedTenantData);
+            setTenantData(fetchedTenantData); // Set unit data in state
+
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error('Error fetching unit data:', error);
+            alert('Failed to fetch unit data');
+        }
+    };
+
+    const handleMenuItemClick = (propertyId) => {
+        fetchTenantData(propertyId);
+    };
+    
+
+    const handleFormSubmit = async (values) => {
+        try {
+            const res = await fetch(`${BASE_URL}/financials/payments/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "paid_amount": values.paid_amount,
+                    "payment_date": values.payment_date,
+                    "status": values.status,
+                    "payment_type": values.payment_type,
+                    "description": values.description,
+                    "bank_transaction_id": values.bank_transaction_id,
+                    "file_upload": null,
+                    "property": values.property,
+                    "tenant": values.tenant
+                }),
+            });
+    
+            if (!res.ok) {
+                // Handle HTTP errors
+                throw new Error('Failed to create property: ' + res.status);
+            }
+    
+    
+            if (res.ok) {
+                showSuccessMessage();
+            } else {
+                // Handle other success responses
+                console.log('Unexpected response:', res.json());
+            }
+        } catch (error) {
+            console.error('Error creating property:', error.message);
+            showFailureMessage()
+        }
+    };
+
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
@@ -39,31 +179,75 @@ const AddPayment = () => {
                         flexDirection="column"
                         gap="20px"
                     >
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Property *"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.property}
-                            name="property"
-                            error={!!touched.property && !!errors.property}
-                            helperText={touched.property && errors.property}
-                        />
+                        {propertyData.length > 0 && (
+                            <TextField
+                                fullWidth
+                                variant="filled"
+                                select
+                                label="Property *"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.property}
+                                name="property"
+                                error={!!touched.property && !!errors.property}
+                                helperText={touched.property && errors.property}
+                            >
+                                {propertyData.map(property => (
+                                    <MenuItem 
+                                        key={property.id} 
+                                        value={property.id} 
+                                        sx={{ 
+                                            color: 'inherit', 
+                                            backgroundColor: 'inherit', 
+                                            fontWeight: 'normal',
+                                            '&:hover': { // Apply hover styles when the mouse is over the MenuItem
+                                                color: 'blue',
+                                                backgroundColor: 'lightgray',
+                                                fontWeight: 'bold',
+                                            }
+                                        }}
+                                        onClick={() => handleMenuItemClick(property.id)}
+                                    >
+                                        {property.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        )}
 
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Tenant *"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.tenant}
-                            name="tenant"
-                            error={!!touched.tenant && !!errors.tenant}
-                            helperText={touched.tenant && errors.tenant}
-                        />
+                        {tenantData.length > 0 && (
+                            <TextField
+                                fullWidth
+                                variant="filled"
+                                type="text"
+                                select
+                                label="tenant name *"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.tenant}
+                                name="tenant"
+                                error={!!touched.tenant && !!errors.tenant}
+                                helperText={touched.tenant && errors.tenant}
+                            >
+                                {tenantData.map(tenant => (
+                                    <MenuItem 
+                                        key={tenant.id} 
+                                        value={tenant.id} 
+                                        sx={{ 
+                                            color: 'white', 
+                                            backgroundColor: 'inherit', 
+                                            fontWeight: 'normal',
+                                            '&:hover': { // Apply hover styles when the mouse is over the MenuItem
+                                                color: 'blue',
+                                                backgroundColor: 'lightgray',
+                                                fontWeight: 'bold',
+                                            }
+                                        }}
+                                    >
+                                        {tenant.first_name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        )}
 
                         <TextField
                             fullWidth
@@ -94,8 +278,8 @@ const AddPayment = () => {
 
                         <TextField
                             fullWidth
+                            select
                             variant="filled"
-                            type="text"
                             label="Status *"
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -103,7 +287,11 @@ const AddPayment = () => {
                             name="status"
                             error={!!touched.status && !!errors.status}
                             helperText={touched.status && errors.status}
-                        />
+                        >
+                            <MenuItem value="draft">Draft</MenuItem>
+                            <MenuItem value="confirmed">Confirmed</MenuItem>
+                        </TextField>
+
 
                         <TextField
                             fullWidth

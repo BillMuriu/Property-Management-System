@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
+import PrivateRoutes from "./utils/PrivateRoutes";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Router } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidenavbar from "./scenes/global/Sidenavbar";
 import Dashboard from "./scenes/dashboard";
 
 
 import Login from "./scenes/login";
+import Unauthorized from "./scenes/unauthorized";
 
 import Expenses from "./scenes/expenses";
 import RecordExpense from "./scenes/expenses/RecordExpense";
@@ -44,6 +46,8 @@ import AddPayment from "./scenes/payments/AddPayment";
 import UpdatePayment from "./scenes/payments/UpdatePayment";
 import ViewPayment from "./scenes/payments/ViewPayment";
 
+import Bar from "./scenes/bar";
+
 
 import Reports from "./scenes/reports";
 import Messaging from "./scenes/messaging";
@@ -72,48 +76,53 @@ function App() {
                 <Routes>
                 
                   <Route path="/login" element={<Login />} />
-                  
-                  <Route path="/" element={<Dashboard />} />
+                  <Route element={<PrivateRoutes allowedRoles={['admin']} />}>
+                    <Route path="/" element={<Dashboard />} exact />
+                  </Route>
+
+                  <Route exact path='/unauthorized' element={<Unauthorized/>}/>
+
+
                   <Route path="/properties" element={<Properties />} />
                   <Route path="/add-property" element={<AddProperty />} />
-                  <Route path="/view-property" element={<ViewProperty />} />
-                  <Route path="/update-property" element={<UpdateProperty />} />
+                  <Route path="/view-property/:id" element={<ViewProperty />} />
+                  <Route path="/update-property/:id" element={<UpdateProperty />} />
 
                   <Route path="/units" element={<Units />} />
-                  <Route path="/add-unit" element={<AddUnit />} />
-                  <Route path="/view-unit" element={<ViewUnit />} />
-                  <Route path="/update-unit" element={<UpdateUnit />} />
+                  <Route path="/add-unit/" element={<AddUnit />} />
+                  <Route path="/view-unit/:id" element={<ViewUnit />} />
+                  <Route path="/update-unit/:id" element={<UpdateUnit />} />
 
 
                   <Route path="/maintenance" element={<Maintenance />} />
                   <Route path="/add-maintenance" element={<AddMaintenance />} />
-                  <Route path="/view-maintenance-issue" element={<ViewMaintenanceIssue />} />
-                  <Route path="/update-issue" element={<UpdateIssue />} />
+                  <Route path="/view-maintenance-issue/:id" element={<ViewMaintenanceIssue />} />
+                  <Route path="/update-issue/:id" element={<UpdateIssue />} />
 
 
                   <Route path="/tenants" element={<Tenants />} />
                   <Route path="/add-tenant" element={<AddTenant />} />
-                  <Route path="/update-tenant" element={<UpdateTenant />} />
-                  <Route path="/view-tenant" element={<ViewTenant />} />
+                  <Route path="/update-tenant/:id" element={<UpdateTenant />} />
+                  <Route path="/view-tenant/:id" element={<ViewTenant />} />
 
 
                   <Route path="/expenses" element={<Expenses />} />
                   <Route path="/record-expense" element={<RecordExpense />} />
-                  <Route path="/update-expense" element={<UpdateExpense />} />
-                  <Route path="/view-expense" element={<ViewExpense />} />
+                  <Route path="/update-expense/:id" element={<UpdateExpense />} />
+                  <Route path="/view-expense/:id" element={<ViewExpense />} />
 
 
 
                   <Route path="/invoices" element={<Invoices />} />
                   <Route path="/add-invoice" element={<AddInvoice />} />
-                  <Route path="/update-invoice" element={<UpdateInvoice />} />
-                  <Route path="/view-invoice" element={<ViewInvoice />} />
+                  <Route path="/update-invoice/:id" element={<UpdateInvoice />} />
+                  <Route path="/view-invoice/:id" element={<ViewInvoice />} />
 
 
                   <Route path="/payments" element={<Payments />} />
                   <Route path="/add-payment" element={<AddPayment />} />
-                  <Route path="/update-payment" element={<UpdatePayment />} />
-                  <Route path="/view-payment" element={<ViewPayment />} />
+                  <Route path="/update-payment/:id" element={<UpdatePayment />} />
+                  <Route path="/view-payment/:id" element={<ViewPayment />} />
 
 
                   <Route path="/reports" element={<Reports />} />
@@ -121,6 +130,11 @@ function App() {
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/myaccount" element={<Myaccount />} />
                   <Route path="/documentation" element={<Documentation />} />
+
+
+
+                  <Route path="/bar" element={<Bar />} />
+
                 </Routes>
                 </AuthProvider>
               </main>

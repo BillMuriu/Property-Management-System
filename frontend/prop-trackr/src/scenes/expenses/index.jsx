@@ -1,8 +1,13 @@
 import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
-import { ExpenseData } from "../../mock-data/expensedata/expensedata";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+
+import { Link } from 'react-router-dom';
+
+import { BASE_URL } from "../../config";
+import { useState, useEffect } from "react"
+import Backdrop from '@mui/material/Backdrop';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -21,6 +26,54 @@ const Expenses = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
+
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [expenseData, setExpenseData] = useState('');
+
+  const handleClose = () => {
+      setOpenBackdrop(false);
+  };
+
+  useEffect(() => {
+    const fetchExpenseData = async () => {
+        try {
+            // Make a GET request to fetch user landlord data
+            const res = await fetch(`${BASE_URL}/financials/expenses/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': 'Bearer ' + String(data.access)
+                },
+            });
+
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const fetchedExpenseData = await res.json();
+
+            // Check for specific error cases in the response data
+            if (!Array.isArray(fetchedExpenseData)) {
+                throw new Error('Received invalid data from server');
+            }
+
+            console.log(fetchedExpenseData);
+            setExpenseData(fetchedExpenseData); // Set property data in state
+
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error('Error fetching user property data:', error);
+            alert('Failed to fetch user property status');
+        } finally {
+            setOpenBackdrop(false); // Close the backdrop regardless of success or failure
+        }
+    };
+
+    fetchExpenseData(); // Call the fetch function when the component mounts
+
+}, []);
+
 
   const handleFormSubmit = (values) => {
       console.log(values);
@@ -78,7 +131,7 @@ const Expenses = () => {
                 >
                 <CardContent>
                     <Typography variant="h5" component="div" gutterBottom>
-                        Total Expenses: {ExpenseData.length}
+                        Total Expenses: {expenseData.length}
                     </Typography>
                     <Typography variant="body1" component="div">
                         Total Vacancies: 1
@@ -157,6 +210,12 @@ const Expenses = () => {
             </Accordion>
 
 
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleClose}
+            ></Backdrop>
+
             <Box
                 m="40px 0 0 0"
                 height="75vh"
@@ -180,7 +239,7 @@ const Expenses = () => {
                         },
                     }}
                     checkboxSelection 
-                    rows={ExpenseData} 
+                    rows={expenseData} 
                     columns={columns} 
                 />
             </Box>

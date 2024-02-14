@@ -4,18 +4,43 @@ import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+import { BASE_URL } from "../../config";
+import { useSnackbar } from 'notistack';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
 import React from 'react'
 
 const AddProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const showSuccessMessage = () => {
+        enqueueSnackbar('Property was created successfully', { 
+          variant: 'success', 
+          autoHideDuration: 2000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+    };
+
+    const showFailureMessage = () => {
+        enqueueSnackbar('Oops! something went wrong', { 
+          variant: 'error', 
+          autoHideDuration: 3000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+    };
+
 
     const rentPenaltyOptions = [
         {
@@ -28,9 +53,53 @@ const AddProperty = () => {
         },
       ];
 
-    const handleFormSubmit = (values) => {
-        console.log(values);
+    // const handleFormSubmit = (values) => {
+    //     console.log(values);
+    // };
+
+    const handleFormSubmit = async (values) => {
+        try {
+            const res = await fetch(`${BASE_URL}/property/create/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'name': values.propertyName,
+                    'city': values.city,
+                    'company_name': values.companyName,
+                    'electricity_rate': values.electricityRate,
+                    'management_fee': values.managementFee,
+                    'notes': values.notes,
+                    'number_of_units': values.numberOfUnits,
+                    'rent_penalty_amount': values.rentPenaltyAmount,
+                    'rent_penalty_percentage': values.rentPenaltyPercentage,
+                    'rent_penalty_type': values.rentPenaltyType,
+                    'street_name': values.streetName,
+                    'tax_rate': values.taxRate,
+                    'water_rate': values.waterRate,
+                }),
+            });
+    
+            if (!res.ok) {
+                // Handle HTTP errors
+                throw new Error('Failed to create property: ' + res.status);
+            }
+    
+    
+            if (res.ok) {
+                showSuccessMessage();
+            } else {
+                // Handle other success responses
+                console.log('Unexpected response:', res.json());
+            }
+        } catch (error) {
+            console.error('Error creating property:', error.message);
+            showFailureMessage()
+        }
     };
+    
+
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
@@ -293,11 +362,11 @@ const checkoutSchema = yup.object().shape({
 // Define the initial values for the form fields
 const initialValues = {
     propertyName: "",
-    numberOfUnits: "",
+    numberOfUnits: null,
     city: "",
     waterRate: null,
     electricityRate: null,
-    rentPenaltyType: null,
+    rentPenaltyType: "",
     rentPenaltyAmount: null,
     rentPenaltyPercentage: null,
     taxRate: null,

@@ -9,7 +9,12 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useSnackbar } from 'notistack';
+
+import { BASE_URL } from "../../config";
 
 import React from 'react'
 
@@ -17,15 +22,256 @@ const UpdateTenant = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
+    const [tenantData, setTenantData] = useState('');
+    const [initialValues, setInitialValues] = useState(null);
 
-    const handleFormSubmit = (values) => {
-        console.log(values);
+    const [unitData, setunitData] = useState('');
+    const [propertyData, setPropertyData] = useState('');
+
+    const { id } = useParams();
+    console.log('Property ID:', id);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+    const showSuccessMessage = () => {
+        enqueueSnackbar('Unit was updated successfully', { 
+          variant: 'success', 
+          autoHideDuration: 2000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
     };
+
+    const showFailureMessage = () => {
+        enqueueSnackbar('Oops! something went wrong', { 
+          variant: 'error', 
+          autoHideDuration: 2000, 
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+    };
+
+    // Define the validation schema using Yup
+    const checkoutSchema = yup.object().shape({
+        property: yup.string().required("Property is required"),
+        unitIdOrName: yup.string().required("Unit ID or Name is required"),
+        firstName: yup.string().required("First Name is required"),
+        lastName: yup.string().required("Last Name is required"),
+        phoneNumber: yup.string().required("Phone Number is required"),
+        accountNumber: yup.string().nullable(),
+        nationalId: yup.string().nullable(),
+        email: yup.string().email("Invalid email format").nullable(),
+        kraTaxPin: yup.string().nullable(),
+        rentPenaltyType: yup.string().nullable(),
+        rentPenaltyAmount: yup.number().nullable(),
+        rentPenaltyPercentage: yup.number().nullable(),
+        notes: yup.string().nullable(),
+        moveInDate: yup.date().nullable(),
+        moveOutDate: yup.date().nullable(),
+        otherPhoneNumbers: yup.string().nullable(),
+        leaseStartDate: yup.date().nullable(),
+        leaseExpiryDate: yup.date().nullable(),
+        leaseNotes: yup.string().nullable(),
+        fileUpload: yup.string().nullable(), // Assuming file upload is a string field
+    });
+
+
+    useEffect(() => {
+        const fetchTenantData = async () => {
+            try {
+                // Make a GET request to fetch user landlord data
+                const res = await fetch(`${BASE_URL}/tenants/${id}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': 'Bearer ' + String(data.access)
+                    },
+                });
+    
+                // Check for network errors
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const fetchedtenantData = await res.json();
+                console.log(fetchedtenantData);
+                setTenantData(fetchedtenantData); // Set property data in state
+    
+            } catch (error) {
+                // Handle any errors that occur during the request
+                console.error('Error fetching user property data:', error);
+                alert('Failed to fetch maintenance data status');
+            }
+        };
+    
+        fetchTenantData(); // Call the fetch function when the component mounts
+    
+    }, [id]);
+
+    useEffect(() => {
+        const fetchPropertyData = async () => {
+            try {
+                // Make a GET request to fetch user landlord data
+                const res = await fetch(`${BASE_URL}/property/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': 'Bearer ' + String(data.access)
+                    },
+                });
+    
+                // Check for network errors
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const fetchedPropertyData = await res.json();
+    
+                // Check for specific error cases in the response data
+                if (!Array.isArray(fetchedPropertyData)) {
+                    throw new Error('Received invalid data from server');
+                }
+    
+                console.log(fetchedPropertyData);
+                setPropertyData(fetchedPropertyData); // Set property data in state
+    
+            } catch (error) {
+                // Handle any errors that occur during the request
+                console.error('Error fetching user property data:', error);
+                alert('Failed to fetch user property status');
+            }
+        };
+    
+        fetchPropertyData(); // Call the fetch function when the component mounts
+    
+    }, []);
+
+    const fetchUnitData = async (propertyId) => {
+        try {
+            // Make a GET request to fetch unit data for a specific property
+            const res = await fetch(`${BASE_URL}/property/units/?property=${propertyId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': 'Bearer ' + String(data.access)
+                },
+            });
+
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const fetchedUnitData = await res.json();
+
+            // Check for specific error cases in the response data
+            if (!Array.isArray(fetchedUnitData)) {
+                throw new Error('Received invalid data from server');
+            }
+
+            console.log(fetchedUnitData);
+            setunitData(fetchedUnitData); // Set unit data in state
+
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error('Error fetching unit data:', error);
+            alert('Failed to fetch unit data');
+        }
+    };
+
+    const handleMenuItemClick = (propertyId) => {
+        fetchUnitData(propertyId);
+    };
+
+    useEffect(() => {
+        if (tenantData) {
+            setInitialValues({
+                property: tenantData.property,
+                unitIdOrName: tenantData.unit,
+                firstName: tenantData.first_name,
+                lastName: tenantData.last_name,
+                phoneNumber: tenantData.phone_number,
+                accountNumber: tenantData.account_number,
+                nationalId: tenantData.national_id,
+                email: tenantData.email,
+                kraTaxPin: tenantData.kra_tax_pin,
+                rentPenaltyType: tenantData.rent_penalty_type,
+                rentPenaltyAmount: tenantData.rent_penalty_amount,
+                rentPenaltyPercentage: tenantData.rent_penalty_percentage,
+                notes: tenantData.notes,
+                moveInDate: tenantData.move_in_date,
+                moveOutDate: tenantData.move_out_date,
+                otherPhoneNumbers: tenantData.other_phone_numbers,
+                leaseStartDate: tenantData.lease_start_date,
+                leaseExpiryDate: tenantData.lease_expiry_date,
+                leaseNotes: tenantData.lease_notes,
+                fileUpload: tenantData.file_upload,
+            });
+    
+            // Call fetchUnitData with the property ID
+            fetchUnitData(tenantData.property);
+        }
+    }, [tenantData]);
+
+    const handleFormSubmit = async (values) => {
+        try {
+            const res = await fetch(`${BASE_URL}/tenants/${id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "first_name": values.firstName,
+                    "last_name": values.lastName,
+                    "phone_number": values.phoneNumber,
+                    "account_number": values.accountNumber,
+                    "national_id": values.nationalId,
+                    "email": values.email,
+                    "kra_tax_pin": values.kraTaxPin,
+                    "rent_penalty_type": values.rentPenaltyType,
+                    "rent_penalty_amount": values.rentPenaltyAmount,
+                    "rent_penalty_percentage": values.rentPenaltyPercentage,
+                    "notes": values.notes,
+                    "move_in_date": values.moveInDate,
+                    "move_out_date": values.moveOutDate,
+                    "other_phone_numbers": values.phoneNumber,
+                    "lease_start_date": values.leaseStartDate,
+                    "lease_expiry_date": values.leaseExpiryDate,
+                    "lease_notes": values.leaseNotes,
+                    "file_upload": values.fileUpload,
+                    "property": values.property,
+                    "unit": values.unitIdOrName
+                }),
+            });
+    
+            if (!res.ok) {
+                // Handle HTTP errors
+                throw new Error('Failed to create property: ' + res.status);
+            }
+    
+    
+            if (res.ok) {
+                showSuccessMessage();
+            } else {
+                // Handle other success responses
+                console.log('Unexpected response:', res.json());
+            }
+        } catch (error) {
+            console.error('Error creating property:', error.message);
+            showFailureMessage()
+        }
+    };
+
+
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
             <Header title="Add a property"/>
-            <Formik
+            {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
                 validationSchema={checkoutSchema}
@@ -46,31 +292,75 @@ const UpdateTenant = () => {
                         flexDirection="column"
                         gap="20px"
                     >
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Property *"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.property}
-                            name="property"
-                            error={!!touched.property && !!errors.property}
-                            helperText={touched.property && errors.property}
-                        />
+                        {propertyData.length > 0 && (
+                            <TextField
+                                fullWidth
+                                variant="filled"
+                                select
+                                label="Property *"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.property}
+                                name="property"
+                                error={!!touched.property && !!errors.property}
+                                helperText={touched.property && errors.property}
+                            >
+                                {propertyData.map(property => (
+                                    <MenuItem 
+                                        key={property.id} 
+                                        value={property.id} 
+                                        sx={{ 
+                                            color: 'inherit', 
+                                            backgroundColor: 'inherit', 
+                                            fontWeight: 'normal',
+                                            '&:hover': { // Apply hover styles when the mouse is over the MenuItem
+                                                color: 'blue',
+                                                backgroundColor: 'lightgray',
+                                                fontWeight: 'bold',
+                                            }
+                                        }}
+                                        onClick={() => handleMenuItemClick(property.id)}
+                                    >
+                                        {property.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        )}
 
-                        <TextField
-                            fullWidth
-                            variant="filled"
-                            type="text"
-                            label="Unit ID or Name *"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.unitIdOrName}
-                            name="unitIdOrName"
-                            error={!!touched.unitIdOrName && !!errors.unitIdOrName}
-                            helperText={touched.unitIdOrName && errors.unitIdOrName}
-                        />
+                        {unitData.length > 0 && (
+                            <TextField
+                                fullWidth
+                                variant="filled"
+                                type="text"
+                                select
+                                label="Unit ID or Name *"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.unitIdOrName}
+                                name="unitIdOrName"
+                                error={!!touched.unitIdOrName && !!errors.unitIdOrName}
+                                helperText={touched.unitIdOrName && errors.unitIdOrName}
+                            >
+                                {unitData.map(unit => (
+                                    <MenuItem 
+                                        key={unit.id} 
+                                        value={unit.id} 
+                                        sx={{ 
+                                            color: 'inherit', 
+                                            backgroundColor: 'inherit', 
+                                            fontWeight: 'normal',
+                                            '&:hover': { // Apply hover styles when the mouse is over the MenuItem
+                                                color: 'blue',
+                                                backgroundColor: 'lightgray',
+                                                fontWeight: 'bold',
+                                            }
+                                        }}
+                                    >
+                                        {unit.unit_id_or_name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        )}
 
                         <TextField
                             fullWidth
@@ -340,65 +630,12 @@ const UpdateTenant = () => {
                     </Box>
                 </form>
                 )}
-            </Formik>
+            </Formik>) : (
+            <p>Loading...</p>
+        )}
         </Box>
     </div>
   )
 }
-
-
-// Define the validation schema using Yup
-const checkoutSchema = yup.object().shape({
-    property: yup.string().required("Property is required"),
-    unitIdOrName: yup.string().required("Unit ID or Name is required"),
-    firstName: yup.string().required("First Name is required"),
-    lastName: yup.string().required("Last Name is required"),
-    phoneNumber: yup.string().required("Phone Number is required"),
-    accountNumber: yup.string().nullable(),
-    nationalId: yup.string().nullable(),
-    email: yup.string().email("Invalid email format").nullable(),
-    kraTaxPin: yup.string().nullable(),
-    rentPenaltyType: yup.string().nullable(),
-    rentPenaltyAmount: yup.number().nullable(),
-    rentPenaltyPercentage: yup.number().nullable(),
-    notes: yup.string().nullable(),
-    moveInDate: yup.date().nullable(),
-    moveOutDate: yup.date().nullable(),
-    otherPhoneNumbers: yup.string().nullable(),
-    leaseStartDate: yup.date().nullable(),
-    leaseExpiryDate: yup.date().nullable(),
-    leaseNotes: yup.string().nullable(),
-    fileUpload: yup.string().nullable(), // Assuming file upload is a string field
-});
-
-
-const initialValues = {
-    property: "Property " + Math.floor(Math.random() * 1000), // Random property name
-    unitIdOrName: "Unit " + Math.floor(Math.random() * 1000), // Random unit ID or name
-    firstName: "John", // Sample first name
-    lastName: "Doe", // Sample last name
-    phoneNumber: "+1234567890", // Sample phone number
-    accountNumber: Math.floor(Math.random() * 1000000000), // Random account number
-    nationalId: Math.floor(Math.random() * 1000000000), // Random national ID
-    email: "john.doe@example.com", // Sample email
-    kraTaxPin: "KRA" + Math.floor(Math.random() * 100000), // Random KRA tax pin
-    rentPenaltyType: "fixed", // Sample rent penalty type
-    rentPenaltyAmount: Math.random() * 100, // Random rent penalty amount
-    rentPenaltyPercentage: null, // No random value for rent penalty percentage
-    notes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", // Sample notes
-    moveInDate: "2023-01-01", // Sample move-in date
-    moveOutDate: "2024-01-01", // Sample move-out date
-    otherPhoneNumbers: "+1987654321", // Sample other phone number
-    leaseStartDate: "2023-01-01", // Sample lease start date
-    leaseExpiryDate: "2024-01-01", // Sample lease expiry date
-    leaseNotes: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", // Sample lease notes
-    fileUpload: "tenant_documents/john_doe_contract.pdf" // Sample file upload path
-};
-
-console.log(initialValues);
-
-
-
-
 
 export default UpdateTenant

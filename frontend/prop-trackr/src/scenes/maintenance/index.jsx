@@ -1,8 +1,9 @@
 import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
-import { MaintenanceData } from "../../mock-data/maintenancedata/maintenancedata";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
+import Backdrop from '@mui/material/Backdrop';
+
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -11,6 +12,10 @@ import TuneIcon from '@mui/icons-material/Tune';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
+import { Link } from 'react-router-dom';
+
+import { BASE_URL } from "../../config";
+import { useState, useEffect } from "react"
 
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -22,20 +27,75 @@ const Maintenance = () => {
   const colors = tokens(theme.palette.mode);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [maintenanceData, setMaintenanceData] = useState('');
+
+  const handleClose = () => {
+      setOpenBackdrop(false);
+  };
+
+  useEffect(() => {
+    const fetchMaintenanceData = async () => {
+        try {
+            // Make a GET request to fetch user landlord data
+            const res = await fetch(`${BASE_URL}/property/maintenance/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': 'Bearer ' + String(data.access)
+                },
+            });
+
+            // Check for network errors
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const fetchedMaintenanceData = await res.json();
+
+            // Check for specific error cases in the response data
+            if (!Array.isArray(fetchedMaintenanceData)) {
+                throw new Error('Received invalid data from server');
+            }
+
+            console.log(fetchedMaintenanceData);
+            setMaintenanceData(fetchedMaintenanceData); // Set property data in state
+
+        } catch (error) {
+            // Handle any errors that occur during the request
+            console.error('Error fetching user property data:', error);
+            alert('Failed to fetch user property status');
+        } finally {
+            setOpenBackdrop(false); // Close the backdrop regardless of success or failure
+        }
+    };
+
+    fetchMaintenanceData(); // Call the fetch function when the component mounts
+
+}, []);
+
   const handleFormSubmit = (values) => {
       console.log(values);
   };
 
   const columns = [
-      { field: 'id', headerName: 'ID', width: 100 },
-      { field: 'property', headerName: 'Property', width: 200 },
-      { field: 'unit_id_or_name', headerName: 'Unit ID/Name', width: 200 },
-      { field: 'status', headerName: 'Status', width: 150 },
-      { field: 'category', headerName: 'Category', width: 150 },
-      { field: 'short_description', headerName: 'Short Description', width: 300 },
-      { field: 'expense_amount', headerName: 'Expense Amount', width: 150 },
-  ];
-
+    { 
+        field: 'id', 
+        headerName: 'ID', 
+        width: 100,
+        renderCell: (params) => (
+            <Link to={`/view-maintenance-issue/${params.row.id}`}>
+                {params.value}
+            </Link>
+        ),
+    },
+    { field: 'property_name', headerName: 'Property', width: 200 },
+    { field: 'unit_id_or_name', headerName: 'Unit ID/Name', width: 200 },
+    { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'category', headerName: 'Category', width: 150 },
+    { field: 'short_description', headerName: 'Short Description', width: 300 },
+    { field: 'expense_amount', headerName: 'Expense Amount', width: 150 },
+];
   const properties = [
     {
       value: 'property1',
@@ -76,7 +136,7 @@ const Maintenance = () => {
                 >
                 <CardContent>
                     <Typography variant="h5" component="div" gutterBottom>
-                        Open Issues: {MaintenanceData.length}
+                        Open Issues: {maintenanceData.length}
                     </Typography>
                     <Typography variant="body1" component="div">
                         Issues in progress: 1
@@ -84,6 +144,12 @@ const Maintenance = () => {
                 </CardContent>
             </Card>
 
+            
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleClose}
+            ></Backdrop>
 
             <Accordion 
               defaultExpanded
@@ -191,7 +257,7 @@ const Maintenance = () => {
                         },
                     }}
                     checkboxSelection 
-                    rows={MaintenanceData} 
+                    rows={maintenanceData} 
                     columns={columns} 
                 />
             </Box>

@@ -1,4 +1,4 @@
-export const PropertyData = [
+export const MockPropertyData = [
     {
       "id": 1,
       "name": "Property 1",
