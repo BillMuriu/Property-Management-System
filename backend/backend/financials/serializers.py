@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from .models import Invoice, InvoiceItem, Payment, Expense, TenantStatement
+from .models import Invoice, Payment, Expense, TenantStatement, RunningBalance
 # from tenant.serializers import TenantStatementSerializer
 
 
-class InvoiceItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InvoiceItem
-        fields = '__all__'
-
-
 class InvoiceSerializer(serializers.ModelSerializer):
-    items = InvoiceItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Invoice
+        fields = '__all__'
+
+
+class RunningBalanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RunningBalance
         fields = '__all__'
 
 
