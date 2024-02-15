@@ -26,41 +26,24 @@ class Invoice(models.Model):
 
 
 class InvoiceItem(models.Model):
-    WATER = 'water'
-    ELECTRICITY = 'electricity'
-    GARBAGE = 'garbage'
-    SECURITY = 'security'
-    INTERNET = 'internet'
-    CLEANING = 'cleaning'
-    SERVICE = 'service'
-    OPENING_BALANCE = 'opening_balance'
-    PARKING_FEE = 'parking_fee'
-    VAT = 'vat'
-    OTHER = 'other'
-    RENT_DEPOSIT = 'rent_deposit'
-    WATER_DEPOSIT = 'water_deposit'
-    ELECTRICITY_DEPOSIT = 'electricity_deposit'
-    CONTRACT_CHARGES = 'contract_charges'
-    OTHER_DEPOSIT = 'other_deposit'
-
-    ITEM_NAME_CHOICES = [
-        (WATER, 'Water'),
-        (ELECTRICITY, 'Electricity'),
-        (GARBAGE, 'Garbage'),
-        (SECURITY, 'Security'),
-        (INTERNET, 'Internet'),
-        (CLEANING, 'Cleaning'),
-        (SERVICE, 'Service'),
-        (OPENING_BALANCE, 'Opening Balance'),
-        (PARKING_FEE, 'Parking Fee'),
-        (VAT, 'VAT'),
-        (OTHER, 'Other'),
-        (RENT_DEPOSIT, 'Rent Deposit'),
-        (WATER_DEPOSIT, 'Water Deposit'),
-        (ELECTRICITY_DEPOSIT, 'Electricity Deposit'),
-        (CONTRACT_CHARGES, 'Contract Charges'),
-        (OTHER_DEPOSIT, 'Other Deposit'),
-    ]
+    ITEM_NAME_CHOICES = (
+        ('water', 'Water'),
+        ('electricity', 'Electricity'),
+        ('garbage', 'Garbage'),
+        ('security', 'Security'),
+        ('internet', 'Internet'),
+        ('cleaning', 'Cleaning'),
+        ('service', 'Service'),
+        ('opening_balance', 'Opening Balance'),
+        ('parking_fee', 'Parking Fee'),
+        ('vat', 'VAT'),
+        ('other', 'Other'),
+        ('rent_deposit', 'Rent Deposit'),
+        ('water_deposit', 'Water Deposit'),
+        ('electricity_deposit', 'Electricity Deposit'),
+        ('contract_charges', 'Contract Charges'),
+        ('other_deposit', 'Other Deposit'),
+    )
 
     invoice = models.ForeignKey(
         Invoice, on_delete=models.CASCADE, related_name='items')
@@ -94,6 +77,25 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment #{self.id} - {self.property.name} - {self.tenant.first_name} {self.tenant.last_name}"
+
+
+class TenantStatement(models.Model):
+    transaction_date = models.DateField()
+    item = models.CharField(max_length=100, blank=True, null=True)
+    money_due = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
+    money_paid = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
+    running_balance = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    tenant = models.ForeignKey(
+        Tenant, on_delete=models.CASCADE, related_name='statements')
+    payment = models.OneToOneField(
+        'Payment', on_delete=models.CASCADE, blank=True, null=True, related_name='tenant_statement')
+
+    def __str__(self):
+        return f"Statement #{self.item}"
 
 
 class Expense(models.Model):

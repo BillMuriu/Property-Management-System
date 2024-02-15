@@ -21,6 +21,7 @@ from .serializers import (
 from core.permissions import IsAdminUser, IsEditorUser, IsViewerUser
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
 '''
 Propery CRUD operations
@@ -62,6 +63,10 @@ UNIT CRUD OPERATIONS
 class UnitListCreateAPIView(generics.ListCreateAPIView):
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
+    # Add DjangoFilterBackend to enable filtering
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['property', 'unit_id_or_name',
+                        'rent_amount', 'occupied', 'tax_rate']
 
 
 class UnitRetrieveAPIView(generics.RetrieveAPIView):

@@ -32,6 +32,11 @@ class PropertySerializer(serializers.ModelSerializer):
 
 
 class MaintenanceSerializer(serializers.ModelSerializer):
+    property_name = serializers.CharField(
+        source='property.name', read_only=True)
+    unit_id_or_name = serializers.CharField(
+        source='unit.unit_id_or_name', read_only=True)
+
     class Meta:
         model = Maintenance
         fields = '__all__'

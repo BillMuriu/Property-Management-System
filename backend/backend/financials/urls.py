@@ -2,7 +2,9 @@ from django.urls import path
 from .views import (
     InvoiceListCreateAPIView, InvoiceRetrieveUpdateDestroyAPIView,
     InvoiceItemListCreateAPIView, InvoiceItemRetrieveUpdateDestroyAPIView,
-    PaymentListCreateAPIView, PaymentRetrieveUpdateDestroyAPIView
+    PaymentListCreateAPIView, PaymentRetrieveUpdateDestroyAPIView,
+    ExpenseListCreateView, ExpenseRetrieveUpdateDestroyView,
+    TenantStatementListAPIView
 )
 
 urlpatterns = [
@@ -23,4 +25,15 @@ urlpatterns = [
          name='payment-list-create'),
     path('payments/<int:pk>/',
          PaymentRetrieveUpdateDestroyAPIView.as_view(), name='payment-detail'),
+
+    path('tenant-statements/', TenantStatementListAPIView.as_view(),
+         name='tenant-statements-list'),
+
+
+    # expenses urls
+    # List and create expenses
+    path('expenses/', ExpenseListCreateView.as_view(), name='expense-list-create'),
+    path('expenses/<int:pk>/', ExpenseRetrieveUpdateDestroyView.as_view(),
+         name='expense-detail'),
+
 ]
