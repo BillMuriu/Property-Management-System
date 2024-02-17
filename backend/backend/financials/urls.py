@@ -3,7 +3,7 @@ from .views import (
     InvoiceListCreateAPIView, InvoiceRetrieveUpdateDestroyAPIView,
     PaymentListCreateAPIView, PaymentRetrieveUpdateDestroyAPIView,
     ExpenseListCreateView, ExpenseRetrieveUpdateDestroyView,
-    TenantStatementListAPIView
+    TenantStatementListAPIView, RunningBalanceListAPIView
 )
 
 urlpatterns = [
@@ -20,6 +20,9 @@ urlpatterns = [
 
     path('tenant-statements/', TenantStatementListAPIView.as_view(),
          name='tenant-statements-list'),
+
+    path('running-balances/', RunningBalanceListAPIView.as_view(),
+         name='running_balances_list'),
 
 
     # expenses urls

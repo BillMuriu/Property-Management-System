@@ -23,6 +23,8 @@ from .views import (
 
     UtilitiesListCreateAPIView,
     UtilitiesRetrieveUpdateDestroyAPIView,
+
+    PropertyStatementListAPIView,
 )
 
 urlpatterns = [
@@ -68,4 +70,8 @@ urlpatterns = [
     path('utilities/', UtilitiesListCreateAPIView.as_view(), name='utilities-list'),
     path('utilities/<int:pk>/',
          UtilitiesRetrieveUpdateDestroyAPIView.as_view(), name='utilities-detail'),
+
+
+    path('property-statements/', PropertyStatementListAPIView.as_view(),
+         name='property-statements'),
 ]

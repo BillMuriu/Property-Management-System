@@ -15,6 +15,7 @@ class Invoice(models.Model):
     )
 
     ITEM_NAME_CHOICES = (
+        ('rent', 'Rent'),
         ('water', 'Water'),
         ('electricity', 'Electricity'),
         ('garbage', 'Garbage'),
