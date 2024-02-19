@@ -7,6 +7,7 @@ from .models import (Property,
                      UnitOtherRecurringBill,
                      Maintenance
                      )
+from financials.serializers import ExpenseSerializer
 
 
 class UnitSerializer(serializers.ModelSerializer):
@@ -18,6 +19,7 @@ class UnitSerializer(serializers.ModelSerializer):
 class PropertySerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField(read_only=True)
     units = UnitSerializer(many=True, read_only=True)
+    expenses = ExpenseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Property

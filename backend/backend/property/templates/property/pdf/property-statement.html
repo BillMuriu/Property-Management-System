@@ -9,26 +9,20 @@
     </style>
 </head>
 <body>
-    <h1>Property Statement</h1>
-    
-    {% for data in response_data %}
-    <h2>Tenant Details</h2>
-    <p>Tenant ID: {{ data.tenant_id }}</p>
-    <p>Unit: {{ data.unit }}</p>
-    <p>Property Name: {{ data.property_name }}</p>
-    <p>Phone Number: {{ data.phone_number }}</p>
-    
-    <h2>Category Sums</h2>
-    <ul>
-        <li>Rent: {{ data.category_sums.Rent }}</li>
-        <li>Water Bill: {{ data.category_sums.Water_Bill }}</li>
-        <!-- Add other categories -->
-    </ul>
-    
-    <h2>Total Amount Due: {{ data.total_amount_due }}</h2>
-    <h2>Balance Carried Forward: {{ data.balance_carried_forward }}</h2>
-    <h2>Amount Paid: {{ data.amount_paid }}</h2>
-    <h2>Balance: {{ data.balance }}</h2>
-    {% endfor %}
+    <div id="header">
+        <h1>Property Statement</h1>
+        
+        <div id="property-details">
+            <h2>Property Name: {{ property_name }}</h2>
+            <h2>Date Created: {{ date_created }}</h2>
+            <h2>Date Range: {{ start_date }} to {{ end_date }}</h2>
+        </div>
+    </div>
+
+    <div id="summary">
+        <h2>Total Amount Paid: {{ total_amount_paid }}</h2>
+        <h2>Total Expense Amount: {{ total_expense_amount }}</h2>
+        <h2>Tax Rate: {{ tax_rate }}</h2>
+    </div>
 </body>
 </html>
