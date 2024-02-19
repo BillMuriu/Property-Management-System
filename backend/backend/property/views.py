@@ -354,21 +354,37 @@ class PropertyStatementHTMLView(View):
         end_date_formatted = datetime.strptime(
             end_date_str, '%Y-%m-%d').strftime('%B %d, %Y')
 
-        # Extracting relevant data from the API response
+        # Preprocess tenant data
+        tenants_data = []
+        for tenant in api_data.get('tenants', []):
+            tenant_data = tenant.get('tenant_data', {})
+            tenant_data['category_sums'] = {
+                key.replace(" ", "_"): value for key, value in tenant_data.get('category_sums', {}).items()
+            }
+            tenants_data.append(tenant_data)
+
+        print(tenants_data)
+
         total_amount_paid = api_data.get('total_amount_paid', 0)
-        property_data = api_data.get('property_data', {})
-        total_expense_amount = property_data.get(
+        total_expense_amount = api_data.get('property_data', {}).get(
             'expenses', {}).get('total_expense_amount', 0)
-        tax_rate = property_data.get('tax_rate', 0)
+        tax_rate = api_data.get('property_data', {}).get('tax_rate', 0)
+        total_category_amounts = {
+            key.replace(" ", "_"): value for key, value in api_data.get('total_category_amounts', {}).items()
+        }
+        total_balance = api_data.get('total_balance', 0)
 
         html_content = render_to_string(self.template_name, {
             'property_name': property_name,
             'date_created': date_created,
             'start_date': start_date_formatted,
             'end_date': end_date_formatted,
+            'tenants': tenants_data,
             'total_amount_paid': total_amount_paid,
             'total_expense_amount': total_expense_amount,
-            'tax_rate': tax_rate
+            'tax_rate': tax_rate,
+            'total_category_amounts': total_category_amounts,
+            'total_balance': total_balance
         })
 
         return HttpResponse(html_content)
