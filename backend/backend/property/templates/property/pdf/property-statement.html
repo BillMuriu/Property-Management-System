@@ -36,10 +36,23 @@
         #property-details h2 {
             margin: 5px 0;
         }
+
+
+        #expenses {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        #expenses h2 {
+            align-self: center;
+        }
+
         #tenant-data {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            margin-bottom: 50px;
         }
         #detailed_property_statement {
             align-self: center;
@@ -61,7 +74,32 @@
     <div id="summary">
         <h2>Total Amount Paid: {{ total_amount_paid }}</h2>
         <h2>Total Expense Amount: {{ total_expense_amount }}</h2>
-        <h2>Tax Rate: {{ tax_rate }}</h2>
+        <h2>Earning Before Tax: {{ earning_before_tax }}</h2>
+        <h2>Tax {{ tax_rate }}%: {{ tax_amount }}</h2>
+        <h2>Net Income: {{ net_income }}</h2>
+    </div>
+    
+
+    <div id="expenses">
+        <h2>Expenses</h2>
+        <table>
+            <tr>
+                <th>Expense Item</th>
+                <th>Notes</th>
+                <th>Amount</th>
+            </tr>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.expense_item }}</td>
+                <td>{{ expense.notes }}</td>
+                <td>{{ expense.amount }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2">Total:</td>
+                <td>{{ total_expenses_amount }}</td>
+            </tr>
+        </table>
     </div>
 
     <div id="tenant-data">

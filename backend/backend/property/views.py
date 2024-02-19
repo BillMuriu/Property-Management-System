@@ -363,8 +363,6 @@ class PropertyStatementHTMLView(View):
             }
             tenants_data.append(tenant_data)
 
-        print(tenants_data)
-
         total_amount_paid = api_data.get('total_amount_paid', 0)
         total_expense_amount = api_data.get('property_data', {}).get(
             'expenses', {}).get('total_expense_amount', 0)
@@ -373,6 +371,22 @@ class PropertyStatementHTMLView(View):
             key.replace(" ", "_"): value for key, value in api_data.get('total_category_amounts', {}).items()
         }
         total_balance = api_data.get('total_balance', 0)
+
+        # Extract expenses and calculate total amount
+        expenses = []
+        total_expenses_amount = 0
+        for expense in api_data.get('property_data', {}).get('expenses', {}).get('expenses', []):
+            expense_item = expense.get('expense_category', 'N/A')
+            notes = expense.get('notes', 'N/A')
+            amount = expense.get('amount', 0)
+            total_expenses_amount += amount
+            expenses.append({'expense_item': expense_item,
+                            'notes': notes, 'amount': amount})
+
+        # Calculate earnings before tax, tax amount, and net income
+        earning_before_tax = total_amount_paid - total_expense_amount
+        tax_amount = (tax_rate / 100) * earning_before_tax
+        net_income = earning_before_tax - tax_amount
 
         html_content = render_to_string(self.template_name, {
             'property_name': property_name,
@@ -384,7 +398,12 @@ class PropertyStatementHTMLView(View):
             'total_expense_amount': total_expense_amount,
             'tax_rate': tax_rate,
             'total_category_amounts': total_category_amounts,
-            'total_balance': total_balance
+            'total_balance': total_balance,
+            'expenses': expenses,
+            'total_expenses_amount': total_expenses_amount,
+            'earning_before_tax': earning_before_tax,
+            'tax_amount': tax_amount,
+            'net_income': net_income,
         })
 
         return HttpResponse(html_content)
