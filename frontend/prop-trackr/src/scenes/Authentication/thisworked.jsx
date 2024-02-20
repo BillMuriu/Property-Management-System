@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import { useLocation } from 'react-router-dom';
 
 import { Routes, Route, Router } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
@@ -63,11 +64,16 @@ import { SidebarToggleProvider } from "./components/SidebarToggleContext";
 
 function App() {
   const [theme, colorMode] = useMode();
+  const location = useLocation();
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <Routes>
+          <Route path="/unauthorized" element={<Unauthorized />} />
+        </Routes>
+        {location.pathname !== '/unauthorized' && (
         <SidebarToggleProvider>
           <SidebarProvider>
             <div className="app" style={{ position: 'relative' }}>
@@ -80,67 +86,24 @@ function App() {
                       <Route path="/" element={<Dashboard />} exact />
                     </Route>
 
-
                     <Route path="/properties" element={<Properties />} />
                     <Route path="/add-property" element={<AddProperty />} />
                     <Route path="/view-property/:id" element={<ViewProperty />} />
                     <Route path="/update-property/:id" element={<UpdateProperty />} />
-
-                    <Route path="/units" element={<Units />} />
-                    <Route path="/add-unit/" element={<AddUnit />} />
-                    <Route path="/view-unit/:id" element={<ViewUnit />} />
-                    <Route path="/update-unit/:id" element={<UpdateUnit />} />
-
-
-                    <Route path="/maintenance" element={<Maintenance />} />
-                    <Route path="/add-maintenance" element={<AddMaintenance />} />
-                    <Route path="/view-maintenance-issue/:id" element={<ViewMaintenanceIssue />} />
-                    <Route path="/update-issue/:id" element={<UpdateIssue />} />
-
-
-                    <Route path="/tenants" element={<Tenants />} />
-                    <Route path="/add-tenant" element={<AddTenant />} />
-                    <Route path="/update-tenant/:id" element={<UpdateTenant />} />
-                    <Route path="/view-tenant/:id" element={<ViewTenant />} />
-
-
-                    <Route path="/expenses" element={<Expenses />} />
-                    <Route path="/record-expense" element={<RecordExpense />} />
-                    <Route path="/update-expense/:id" element={<UpdateExpense />} />
-                    <Route path="/view-expense/:id" element={<ViewExpense />} />
-
-
-
-                    <Route path="/invoices" element={<Invoices />} />
-                    <Route path="/add-invoice" element={<AddInvoice />} />
-                    <Route path="/update-invoice/:id" element={<UpdateInvoice />} />
-                    <Route path="/view-invoice/:id" element={<ViewInvoice />} />
-
-
-                    <Route path="/payments" element={<Payments />} />
-                    <Route path="/add-payment" element={<AddPayment />} />
-                    <Route path="/update-payment/:id" element={<UpdatePayment />} />
-                    <Route path="/view-payment/:id" element={<ViewPayment />} />
-
-
-                    <Route path="/reports" element={<Reports />} />
-
                     
-                    <Route path="/messaging" element={<Messaging />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/myaccount" element={<Myaccount />} />
-                    <Route path="/documentation" element={<Documentation />} />
-
-
-
-                    <Route path="/bar" element={<Bar />} />
-
+                    {/* Add more routes... */}
                   </Routes>
                 </AuthProvider>
               </main>
             </div>
           </SidebarProvider>
         </SidebarToggleProvider>
+      )}
+
+      {/* Render Unauthorized page */}
+      <Routes>
+        <Route path="/unauthorized" element={<Unauthorized />} />
+      </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

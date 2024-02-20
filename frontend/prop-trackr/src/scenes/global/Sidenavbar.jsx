@@ -217,13 +217,13 @@ const Sidenavbar = () => {
                     />
                 </SubMenu>
 
-                <Item
+                {/* <Item
                     title="Financials"
                     to="/financials"
                     icon={<ReceiptOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
-                />
+                /> */}
                 <Item
                     title="Reports"
                     to="/reports"
