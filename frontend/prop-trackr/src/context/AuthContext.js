@@ -59,7 +59,7 @@ export const AuthProvider = ({children}) => {
                             const role = userRoleData.role;
                         
                             if (role === 'viewer') {
-                                setIsViewer('user is a viewer');
+                                setIsViewer('viewer');
                             } else if (role === 'admin') {
                                 setIsAdmin(true);
                             } else if (role === 'landlord') {
@@ -93,7 +93,8 @@ export const AuthProvider = ({children}) => {
     
 
     let contextData = {
-        loginUser:loginUser
+        loginUser:loginUser,
+        user:user
     }
 
     return (

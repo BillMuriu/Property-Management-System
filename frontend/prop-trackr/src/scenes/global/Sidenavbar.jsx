@@ -46,7 +46,7 @@ const Sidenavbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { toggled, setToggled } = useSidebarToggle();
-    const [broken, setBroken] = useState(window.matchMedia('(max-width: 800px)').matches);
+    const [broken, setBroken] = useState(window.matchMedia('(max-width: 600px)').matches);
     const [collapsed, setCollapsed] = useState(false);
 
     const [selected, setSelected] = useState("Dashboard");
@@ -217,20 +217,32 @@ const Sidenavbar = () => {
                     />
                 </SubMenu>
 
-                {/* <Item
-                    title="Financials"
-                    to="/financials"
-                    icon={<ReceiptOutlinedIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                /> */}
-                <Item
-                    title="Reports"
-                    to="/reports"
-                    icon={<PersonOutlinedIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
+                <SubMenu
+                    label="Reports"
+                    icon={<ContactsOutlinedIcon />}
+                    rootStyles={{
+                        ['.' + menuClasses.subMenuContent]: {
+                          backgroundColor: colors.primary[700],
+                        },
+                        ['.' + menuClasses.subMenuContent]: {
+                            backgroundColor: colors.primary[700],
+                            paddingLeft: '30px'
+                          },
+                      }}
+                >
+                    <Item
+                        title="Property Reports"
+                        to="/property-reports"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
+                        title="Tenant Reports"
+                        to="/tenant-reports"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                </SubMenu>
 
                 <Item
                     title="Messaging"

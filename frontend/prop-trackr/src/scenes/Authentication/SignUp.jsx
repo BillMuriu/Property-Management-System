@@ -1,29 +1,16 @@
 import { Box, Card, CardContent, TextField, Button, useTheme, Typography } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import React, { useContext, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AuthContext from "../../context/AuthContext";
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
-const Login = () => {
+const Signup = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { loginUser, user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const [loginError, setLoginError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await loginUser(e);
+  const handleSubmit = (e) => {
+    console.log('Great!')
   };
-
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    } else {
-      setLoginError('Login failed. Please check your credentials.');
-    }
-  }, [user, navigate]);
 
   return (
     <Box
@@ -56,10 +43,10 @@ const Login = () => {
               fontWeight="bold"
               sx={{ m: "0 0 5px 0" }}
             >
-              Welcome
+              Signup
             </Typography>
             <Typography variant="h5" color={colors.greenAccent[400]}>
-              Enter your credentials to login
+              Create your account
             </Typography>
           </Box>
           <form onSubmit={handleSubmit}>
@@ -70,6 +57,15 @@ const Login = () => {
               name="username"
               label="Username"
               placeholder="Enter a username..."
+              variant="filled"
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              type="email"
+              name="email"
+              label="Email"
+              placeholder="Enter your email..."
               variant="filled"
             />
             <TextField
@@ -91,14 +87,8 @@ const Login = () => {
                 backgroundColor: colors.blueAccent[600]
               }} 
             >
-              Submit
+              Signup
             </Button>
-
-            {loginError && (
-              <Typography color="error" mt={2}>
-                {loginError}
-              </Typography>
-            )}
           </form>
           <Box 
             mt={2}
@@ -108,23 +98,7 @@ const Login = () => {
               justifyContent: 'center',
             }}
           >
-            <Link  to="/forgot-password">Forgot Password?</Link>
-          </Box>
-          <Box 
-            mt={1}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px'
-            }}
-          >
-            <Typography variant="body2" color="textSecondary">Do you have an account?</Typography>
-            <Link  
-              to="/signup"
-            >
-              Signup
-            </Link>
+            <Link  to="/login">Already have an account? Login</Link>
           </Box>
         </CardContent>
       </Card>
@@ -132,5 +106,4 @@ const Login = () => {
   );
 }
 
-export default Login;
-
+export default Signup;

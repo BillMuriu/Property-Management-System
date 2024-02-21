@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoutes from "./utils/PrivateRoutes";
 
@@ -7,8 +8,8 @@ import Topbar from "./scenes/global/Topbar";
 import Sidenavbar from "./scenes/global/Sidenavbar";
 import Dashboard from "./scenes/dashboard";
 
-
 import Login from "./scenes/Authentication";
+import Signup from "./scenes/Authentication/SignUp";
 import Unauthorized from "./scenes/unauthorized";
 
 import Expenses from "./scenes/expenses";
@@ -49,7 +50,7 @@ import ViewPayment from "./scenes/payments/ViewPayment";
 import Bar from "./scenes/bar";
 
 
-import Reports from "./scenes/reports";
+import PropertyReports from "./scenes/propertyreports";
 
 
 import Messaging from "./scenes/messaging";
@@ -63,18 +64,21 @@ import { SidebarToggleProvider } from "./components/SidebarToggleContext";
 
 function App() {
   const [theme, colorMode] = useMode();
+  const location = useLocation();
 
   return (
     <ColorModeContext.Provider value={colorMode}>
+      <AuthProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+
+        {location.pathname !== '/login' && location.pathname !== '/unauthorized' && location.pathname !== '/signup' && (
         <SidebarToggleProvider>
           <SidebarProvider>
             <div className="app" style={{ position: 'relative' }}>
               <Sidenavbar />
               <main className="content">
                 <Topbar />
-                <AuthProvider>
                   <Routes>
                     <Route element={<PrivateRoutes allowedRoles={['admin']} />}>
                       <Route path="/" element={<Dashboard />} exact />
@@ -123,7 +127,7 @@ function App() {
                     <Route path="/view-payment/:id" element={<ViewPayment />} />
 
 
-                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/property-reports" element={<PropertyReports />} />
 
                     
                     <Route path="/messaging" element={<Messaging />} />
@@ -136,12 +140,19 @@ function App() {
                     <Route path="/bar" element={<Bar />} />
 
                   </Routes>
-                </AuthProvider>
+                
               </main>
             </div>
           </SidebarProvider>
         </SidebarToggleProvider>
-      </ThemeProvider>
+      )}
+        <Routes>
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+        </ThemeProvider>
+      </AuthProvider>
     </ColorModeContext.Provider>
   );
 }
