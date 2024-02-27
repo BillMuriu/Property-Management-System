@@ -151,12 +151,22 @@ class Utilities(models.Model):
         max_length=100, choices=UTILITY_ITEM_CHOICES)
     current_reading = models.DecimalField(max_digits=10, decimal_places=2)
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
-    #add invoice number.
     previous_reading = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.property.name} - {self.unit.unit_id_or_name} - {self.utility_item} - {self.month}"
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Check if it's a new instance
+            # Get the latest utility instance for the same property, unit, and utility item
+            latest_utility = Utilities.objects.filter(
+                property=self.property,
+                unit=self.unit,
+                utility_item=self.utility_item
+            ).order_by('-id').first()
+
+            if latest_utility:
+                self.previous_reading = latest_utility.current_reading
+
+        super().save(*args, **kwargs)
 
 
 class Maintenance(models.Model):

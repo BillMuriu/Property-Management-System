@@ -4,6 +4,10 @@ from .models import Invoice, Payment, Expense, TenantStatement, RunningBalance
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
+    property_name = serializers.CharField(
+        source='property.name', read_only=True)
+    tenant_name = serializers.CharField(
+        source='tenant.first_name', read_only=True)
 
     class Meta:
         model = Invoice
@@ -23,7 +27,10 @@ class TenantStatementSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
-    # tenant_statement = TenantStatementSerializer(read_only=True)
+    property_name = serializers.CharField(
+        source='property.name', read_only=True)
+    tenant_name = serializers.CharField(
+        source='tenant.first_name', read_only=True)
 
     class Meta:
         model = Payment
