@@ -25,7 +25,8 @@ from .views import (
     UtilitiesRetrieveUpdateDestroyAPIView,
 
     PropertyStatementListAPIView,
-    PropertyStatementHTMLView
+    PropertyStatementHTMLView,
+    PropertyStatementPDFView
 )
 
 urlpatterns = [
@@ -75,6 +76,8 @@ urlpatterns = [
 
     path('property-statements/', PropertyStatementListAPIView.as_view(),
          name='property-statements'),
-    path('property-statements/pdf/', PropertyStatementHTMLView.as_view(),
-         name='property_statement_pdf_download')
+    path('property-statements/temp/', PropertyStatementHTMLView.as_view(),
+         name='property_statement_pdf_download'),
+    path('property-statement-pdf/', PropertyStatementPDFView.as_view(),
+         name='property_statement_pdf'),
 ]

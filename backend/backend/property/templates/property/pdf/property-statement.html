@@ -5,7 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Property Statement</title>
     <style>
-        /* CSS styles */
+        @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
+
+        /* Apply Source Sans Pro font to the body */
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: aliceblue;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 20px; /* Adjust as needed */
+            left: 0;
+            right: 0;
+            text-align: center;
+        }        
+
+        #header {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        #property-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail {
+            margin-bottom: 8px;
+        }
+        
+        .title {
+            font-weight: bold;
+        }
+        
+        .value {
+            margin-left: 10px; /* Adjust as needed */
+        }
+        
         table {
             border-collapse: collapse;
             width: 100%;
@@ -26,7 +66,6 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            background-color: #f9f9f9;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -37,11 +76,42 @@
             margin: 5px 0;
         }
 
+        #summary {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 70%;
+            font-size: 14px;
+        }
+
+       
+        
+        #summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #summary th, #summary td {
+            border-top: 1px solid #ddd; /* Only top border */
+            border-bottom: 1px solid #000000; /* Only bottom border */
+            padding: 8px;
+            text-align: left;
+        }
+        
+        #summary th {
+            background-color: #f2f2f2;
+        }
+        
+        
 
         #expenses {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            width: 70%;
+            font-size: 14px;
         }
 
         #expenses h2 {
@@ -53,6 +123,7 @@
             flex-direction: column;
             align-items: flex-start;
             margin-bottom: 50px;
+            font-size: 14px;
         }
         #detailed_property_statement {
             align-self: center;
@@ -65,18 +136,45 @@
         <h1>Property Statement</h1>
         
         <div id="property-details">
-            <h2>Property Name: {{ property_name }}</h2>
-            <h2>Date Created: {{ date_created }}</h2>
-            <h2>Date Range: {{ start_date }} to {{ end_date }}</h2>
+            <div class="detail">
+                <span class="title">Property Name:</span>
+                <span class="value">{{ property_name }}</span>
+            </div>
+            <div class="detail">
+                <span class="title">Date Created:</span>
+                <span class="value">{{ date_created }}</span>
+            </div>
+            <div class="detail">
+                <span class="title">Date Range:</span>
+                <span class="value">{{ start_date }} - {{ end_date }}</span>
+            </div>
         </div>
     </div>
 
     <div id="summary">
-        <h2>Total Amount Paid: {{ total_amount_paid }}</h2>
-        <h2>Total Expense Amount: {{ total_expense_amount }}</h2>
-        <h2>Earning Before Tax: {{ earning_before_tax }}</h2>
-        <h2>Tax {{ tax_rate }}%: {{ tax_amount }}</h2>
-        <h2>Net Income: {{ net_income }}</h2>
+        <h2>Summary</h2>
+        <table>
+            <tr>
+                <th>Total Amount Collected</th>
+                <td>{{ total_amount_paid }}</td>
+            </tr>
+            <tr>
+                <th>Total Expense Amount</th>
+                <td>{{ total_expense_amount }}</td>
+            </tr>
+            <tr>
+                <th>Earning Before Tax</th>
+                <td>{{ earning_before_tax }}</td>
+            </tr>
+            <tr>
+                <th>Tax {{ tax_rate }}%</th>
+                <td>{{ tax_amount }}</td>
+            </tr>
+            <tr style="border-bottom: '1px solid #fff'">
+                <th>Net Income</th>
+                <td>{{ net_income }}</td>
+            </tr>
+        </table>
     </div>
     
 
@@ -150,5 +248,21 @@
             </tr>
         </table>
     </div>
+    <footer>
+        Page <span class="page-number"></span> of <span class="total-pages"></span>
+    </footer>    
 </body>
+<script>
+    // Update page numbers
+window.onload = function() {
+    var pageNumbers = document.querySelectorAll('.page-number');
+    var totalPages = document.querySelectorAll('.total-pages');
+
+    for (var i = 0; i < pageNumbers.length; i++) {
+        pageNumbers[i].textContent = i + 1;
+        totalPages[i].textContent = pageNumbers.length;
+    }
+};
+
+</script>
 </html>

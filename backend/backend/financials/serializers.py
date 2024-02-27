@@ -31,6 +31,11 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
+    property_name = serializers.CharField(
+        source='property.name', read_only=True)
+    unit_id_or_name = serializers.CharField(
+        source='unit.unit_id_or_name', read_only=True)
+
     class Meta:
         model = Expense
         fields = '__all__'

@@ -11,6 +11,9 @@ from financials.serializers import ExpenseSerializer
 
 
 class UnitSerializer(serializers.ModelSerializer):
+    property_name = serializers.CharField(
+        source='property.name', read_only=True)
+
     class Meta:
         model = Unit
         fields = '__all__'

@@ -234,12 +234,29 @@ class PropertyStatementListAPIView(APIView):
                 'tenant_data': tenant_response,
             })
 
+        # Calculate total expenses amount
+        expenses_data = self.get_expenses(
+            property_instance, start_date, end_date)
+        total_expenses_amount = expenses_data['total_expense_amount']
+
+        # Calculate earnings before tax, tax amount, and net income
+        earning_before_tax = total_amount_paid - total_expenses_amount
+        tax_rate = property_data.get('tax_rate', 0)
+        tax_amount = (tax_rate / 100) * earning_before_tax
+        # Round tax amount to two decimal places
+        tax_amount = round(tax_amount, 2)
+        net_income = earning_before_tax - tax_amount
+
         return Response({
             'tenants': response_data,
             'property_data': property_data,  # Include property data for the entire range
             'total_amount_paid': total_amount_paid,
             'total_category_amounts': total_category_amounts,
-            'total_balance': total_balance
+            'total_balance': total_balance,
+            'total_expenses_amount': total_expenses_amount,
+            'earning_before_tax': earning_before_tax,
+            'tax_amount': tax_amount,
+            'net_income': net_income,
         })
 
     def get_property_data(self, property_instance, start_date, end_date):
@@ -386,6 +403,8 @@ class PropertyStatementHTMLView(View):
         # Calculate earnings before tax, tax amount, and net income
         earning_before_tax = total_amount_paid - total_expense_amount
         tax_amount = (tax_rate / 100) * earning_before_tax
+        # Round tax amount to two decimal places
+        tax_amount = round(tax_amount, 2)
         net_income = earning_before_tax - tax_amount
 
         html_content = render_to_string(self.template_name, {
@@ -407,3 +426,95 @@ class PropertyStatementHTMLView(View):
         })
 
         return HttpResponse(html_content)
+
+
+class PropertyStatementPDFView(View):
+    def get(self, request):
+        # Get parameters from the request
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        property_id = request.GET.get('property_id')
+
+        # Check if required parameters are provided
+        if not (start_date_str and end_date_str and property_id):
+            return HttpResponse('Missing required parameters', status=400)
+
+        # Fetch property data from the database
+        try:
+            property_instance = Property.objects.get(id=property_id)
+            property_name = property_instance.name
+        except Property.DoesNotExist:
+            property_name = 'N/A'
+
+        # Fetch data from the API
+        property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        try:
+            api_response = requests.get(property_statement_api_url)
+            api_data = api_response.json()
+        except Exception as e:
+            return HttpResponse('Error fetching data from API', status=500)
+
+        # Process API data
+        tenants_data = []
+        for tenant in api_data.get('tenants', []):
+            tenant_data = tenant.get('tenant_data', {})
+            tenant_data['category_sums'] = {
+                key.replace(" ", "_"): value for key, value in tenant_data.get('category_sums', {}).items()
+            }
+            tenants_data.append(tenant_data)
+
+        total_amount_paid = api_data.get('total_amount_paid', 0)
+        total_expense_amount = api_data.get('property_data', {}).get(
+            'expenses', {}).get('total_expense_amount', 0)
+        tax_rate = api_data.get('property_data', {}).get('tax_rate', 0)
+        total_category_amounts = {
+            key.replace(" ", "_"): value for key, value in api_data.get('total_category_amounts', {}).items()
+        }
+        total_balance = api_data.get('total_balance', 0)
+
+        # Extract expenses and calculate total amount
+        expenses = []
+        total_expenses_amount = 0
+        for expense in api_data.get('property_data', {}).get('expenses', {}).get('expenses', []):
+            expense_item = expense.get('expense_category', 'N/A')
+            notes = expense.get('notes', 'N/A')
+            amount = expense.get('amount', 0)
+            total_expenses_amount += amount
+            expenses.append({'expense_item': expense_item,
+                            'notes': notes, 'amount': amount})
+
+        # Calculate earnings before tax, tax amount, and net income
+        earning_before_tax = total_amount_paid - total_expense_amount
+        tax_amount = (tax_rate / 100) * earning_before_tax
+        # Round tax amount to two decimal places
+        tax_amount = round(tax_amount, 2)
+        net_income = earning_before_tax - tax_amount
+
+        # Render HTML template with data
+        html_content = render_to_string('property/pdf/property-statement.html', {
+            'property_name': property_name,
+            'date_created': datetime.now().strftime('%B %d, %Y %H:%M:%S'),
+            'start_date': datetime.strptime(start_date_str, '%Y-%m-%d').strftime('%B %d, %Y'),
+            'end_date': datetime.strptime(end_date_str, '%Y-%m-%d').strftime('%B %d, %Y'),
+            'tenants': tenants_data,
+            'total_amount_paid': total_amount_paid,
+            'total_expense_amount': total_expense_amount,
+            'tax_rate': tax_rate,
+            'total_category_amounts': total_category_amounts,
+            'total_balance': total_balance,
+            'expenses': expenses,
+            'total_expenses_amount': total_expenses_amount,
+            'earning_before_tax': earning_before_tax,
+            'tax_amount': tax_amount,
+            'net_income': net_income,
+        })
+
+        # Generate PDF from HTML content with configuration
+        config = pdfkit.configuration(
+            wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+        pdf = pdfkit.from_string(html_content, False, configuration=config)
+
+        # Prepare response with PDF file
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="property_statement.pdf"'
+        return response
