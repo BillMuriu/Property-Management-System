@@ -122,10 +122,22 @@ class UnitOtherRecurringBill(models.Model):
 class Utilities(models.Model):
     WATER = 'Water'
     ELECTRICITY = 'Electricity'
+    GARBAGE = 'Garbage'
+    SECURITY = 'Security'
+    INTERNET = 'Internet'
+    CLEANING = 'Cleaning'
+    SERVICE = 'Service'
+    PARKING = 'Parking'
 
     UTILITY_ITEM_CHOICES = [
         (WATER, 'Water'),
         (ELECTRICITY, 'Electricity'),
+        (GARBAGE, 'Garbage'),
+        (SECURITY, 'Security'),
+        (INTERNET, 'Internet'),
+        (CLEANING, 'Cleaning'),
+        (SERVICE, 'Service'),
+        (PARKING, 'Parking'),
     ]
 
     MONTH_CHOICES = [
@@ -149,23 +161,26 @@ class Utilities(models.Model):
         'Unit', on_delete=models.CASCADE, related_name='utilities')
     utility_item = models.CharField(
         max_length=100, choices=UTILITY_ITEM_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     current_reading = models.DecimalField(max_digits=10, decimal_places=2)
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
     previous_reading = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
+    is_variable = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # Check if it's a new instance
-            # Get the latest utility instance for the same property, unit, and utility item
-            latest_utility = Utilities.objects.filter(
-                property=self.property,
-                unit=self.unit,
-                utility_item=self.utility_item
-            ).order_by('-id').first()
+        if not self.pk:
+            if self.utility_item in [self.WATER, self.ELECTRICITY]:
+                # Get the latest utility instance for the same property, unit, and utility item
+                latest_utility = Utilities.objects.filter(
+                    property=self.property,
+                    unit=self.unit,
+                    utility_item=self.utility_item,
+                    is_variable=self.is_variable  # Filter by variable or fixed utilities
+                ).order_by('-id').first()
 
-            if latest_utility:
-                self.previous_reading = latest_utility.current_reading
-
+                if latest_utility:
+                    self.previous_reading = latest_utility.current_reading
         super().save(*args, **kwargs)
 
 
