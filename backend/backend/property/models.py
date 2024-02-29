@@ -167,6 +167,7 @@ class Utilities(models.Model):
     previous_reading = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     is_variable = models.BooleanField(default=True)
+    created_at = models.DateField(auto_now_add=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:

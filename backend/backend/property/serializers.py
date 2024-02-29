@@ -10,9 +10,16 @@ from .models import (Property,
 from financials.serializers import ExpenseSerializer
 
 
+class UtilitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Utilities
+        fields = '__all__'
+
+
 class UnitSerializer(serializers.ModelSerializer):
     property_name = serializers.CharField(
         source='property.name', read_only=True)
+    utilities = UtilitiesSerializer(many=True, read_only=True)
 
     class Meta:
         model = Unit
@@ -56,10 +63,4 @@ class PropertyOtherRecurringBillSerializer(serializers.ModelSerializer):
 class UnitOtherRecurringBillSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitOtherRecurringBill
-        fields = '__all__'
-
-
-class UtilitiesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Utilities
         fields = '__all__'

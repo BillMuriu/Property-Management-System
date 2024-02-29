@@ -1,6 +1,7 @@
 from rest_framework import status
 from django.shortcuts import render
 from rest_framework import generics, status
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.views import View
@@ -153,9 +154,35 @@ UTILITIES CRUD OPERATIONS
 '''
 
 
-class UtilitiesListCreateAPIView(generics.ListCreateAPIView):
+class UtilitiesListCreateAPIView(ListCreateAPIView):
     queryset = Utilities.objects.all()
     serializer_class = UtilitiesSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Check if data is provided for bulk creation
+        if isinstance(request.data, list):
+            serializer = self.get_serializer(data=request.data, many=True)
+        else:
+            serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Perform bulk creation or single creation based on the type of request data
+            if isinstance(request.data, list):
+                self.perform_bulk_create(serializer)
+            else:
+                self.perform_create(serializer)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_bulk_create(self, serializer):
+        # Perform bulk creation of utilities
+        serializer.save()
+
+    def perform_create(self, serializer):
+        # Perform single creation of utility
+        serializer.save()
 
 
 class UtilitiesRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
