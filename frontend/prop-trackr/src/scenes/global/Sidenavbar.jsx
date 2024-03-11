@@ -33,7 +33,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
           style={{
             color: colors.grey[400],
             '&:hover': {
-              backgroundColor: colors.grey[400],
+              backgroundColor: colors.grey[700],
               color: 'black',
             },
           }}
@@ -67,19 +67,35 @@ const Sidenavbar = () => {
         border: none;
 
         /* Scrollbar styles for the component inside Box */
-        .ps-sidebar-container.css-unpfbf::-webkit-scrollbar-track {
-            background-color: ${colors.primary[700]};
-        }
 
-        & .ps-sidebar-container.css-unpfbf::-webkit-scrollbar-thumb {
-            background-color: ${colors.blueAccent[900]};
+        // dark mode
+        .ps-sidebar-container.css-2oxlsg::-webkit-scrollbar-track {
+            background-color: ${colors.primary[400]};
+        }
+        & .ps-sidebar-container.css-2oxlsg::-webkit-scrollbar-thumb {
+            background-color: ${colors.primary[700]};
             border-radius: 10px;
             height: 10px;
         }
 
-        & .ps-sidebar-container.css-unpfbf::-webkit-scrollbar-thumb:hover {
-            background-color: ${colors.primary[700]};
+        & .ps-sidebar-container.css-2oxlsg::-webkit-scrollbar-thumb:hover {
+            background-color: ${colors.primary[600]};
         }
+
+
+        // light mode
+        .ps-sidebar-container.css-ekzuz2::-webkit-scrollbar-track {
+            background-color: ${colors.primary[400]};
+        }
+        & .ps-sidebar-container.css-ekzuz2::-webkit-scrollbar-thumb {
+            background-color: ${colors.grey[900]};
+            border-radius: 10px;
+            height: 10px;
+        }
+        & .ps-sidebar-container.css-ekzuz2::-webkit-scrollbar-thumb:hover {
+            background-color: ${colors.grey[800]};
+        }
+        
     `;
 
 
@@ -101,7 +117,7 @@ const Sidenavbar = () => {
             toggled={toggled} 
             customBreakPoint="800px" 
             onBreakPoint={setBroken}
-            backgroundColor={colors.primary[700]}
+            backgroundColor={colors.primary[400]}
         >
         <Menu 
             closeOnClick
@@ -116,7 +132,7 @@ const Sidenavbar = () => {
                       marginRight: "5px",
                       borderRadius: "5px",
                       '&:hover': {
-                        backgroundColor: colors.primary[400],
+                        backgroundColor: colors.primary[300],
                       },
                     };
                 },
@@ -181,13 +197,16 @@ const Sidenavbar = () => {
                     label="Property"
                     icon={<ContactsOutlinedIcon />}
                     rootStyles={{
-                        ['.' + menuClasses.subMenuContent]: {
-                          backgroundColor: colors.primary[700],
+                        ['& > .' + menuClasses.button]: {
+                          backgroundColor: colors.primary[300],
+                          color: '#9f0099',
+                          '&:hover': {
+                            backgroundColor: '#000',
+                          },
                         },
                         ['.' + menuClasses.subMenuContent]: {
-                            backgroundColor: colors.primary[700],
-                            paddingLeft: '30px'
-                          },
+                          backgroundColor: colors.primary[400],
+                        },
                       }}
                 >
                     <Item
