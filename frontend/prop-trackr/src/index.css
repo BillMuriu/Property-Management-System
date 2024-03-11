@@ -22,6 +22,14 @@ body {
   overflow: auto;
 }
 
+/* .ps-menuitem-root.ps-active.css-1qgrugj {
+  background-color: aqua;
+} */
+
+.ps-menu-button.ps-active {
+  background-color: aqua;
+}
+
 .ps-sidebar-root.css-1wvake5 {
   border: none;
 }

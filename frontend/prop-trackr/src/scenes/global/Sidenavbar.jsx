@@ -27,26 +27,25 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     const scrollbarStyles = useScrollbarStyles();
 
     return (
-    <Link to={to} style={{ textDecoration: 'none' }}>
-        <MenuItem
-          active={selected === title}
-          style={{
-            color: colors.grey[400],
-            '&:hover': {
-              backgroundColor: colors.grey[700],
-              color: 'black',
-            },
-          }}
-          onClick={() => setSelected(title)}
-          icon={icon}
-        >
-          <Typography>{title}</Typography>
-        </MenuItem>
-    </Link>
+        <Link to={to} style={{ textDecoration: 'none' }}>
+            <MenuItem
+            active={selected === title}
+            style={{
+                color: colors.grey[400],
+                '&:hover': {
+                backgroundColor: colors.grey[700],
+                color: 'black',
+                },
+            }}
+            onClick={() => setSelected(title)}
+            icon={icon}
+            >
+            <Typography>{title}</Typography>
+            </MenuItem>
+        </Link>
     );
   };
   
-
 
 const Sidenavbar = () => {
     const theme = useTheme();
@@ -56,6 +55,11 @@ const Sidenavbar = () => {
     const [collapsed, setCollapsed] = useState(false);
 
     const [selected, setSelected] = useState("Dashboard");
+
+    const propertySubMenuActive = () => {
+        return selected === "Properties" || selected === "Units" || selected === "Utilities" || selected === "Maintenance" || selected === "Expenses";
+    };
+
 
     const StyledBox = styled(Box)`
         position: sticky;
@@ -126,13 +130,13 @@ const Sidenavbar = () => {
                   // only apply styles on first level elements of the tree
                   if (level === 0 || 1)
                     return {
-                      color: active ? colors.grey[900] : colors.grey[400],
-                      backgroundColor: active ? colors.primary[400] : undefined,
+                      color: active ? colors.grey[100] : colors.grey[100],
+                      backgroundColor: active ? colors.grey[800] : undefined,
                       marginLeft: "5px",
                       marginRight: "5px",
                       borderRadius: "5px",
                       '&:hover': {
-                        backgroundColor: colors.primary[300],
+                        backgroundColor: colors.grey[700],
                       },
                     };
                 },
@@ -194,14 +198,15 @@ const Sidenavbar = () => {
                 />
 
                 <SubMenu
+                    active={propertySubMenuActive()}
+                    defaultOpen={propertySubMenuActive()}
                     label="Property"
                     icon={<ContactsOutlinedIcon />}
                     rootStyles={{
-                        ['& > .' + menuClasses.button]: {
-                          backgroundColor: colors.primary[300],
-                          color: '#9f0099',
+                        ['& > .ps-active' + menuClasses.button]: {
+                          backgroundColor: colors.primary[400],
                           '&:hover': {
-                            backgroundColor: '#000',
+                            backgroundColor: '#fff',
                           },
                         },
                         ['.' + menuClasses.subMenuContent]: {
@@ -214,6 +219,9 @@ const Sidenavbar = () => {
                         to="/properties"
                         selected={selected}
                         setSelected={setSelected}
+                        sx={{
+                            backgroundColor: '#fff'
+                        }}
                     />
                     <Item
                         title="Units"
