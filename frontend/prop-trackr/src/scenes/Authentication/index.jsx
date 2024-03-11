@@ -19,7 +19,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/');
     } else {
       setLoginError('Login failed. Please check your credentials.');
     }

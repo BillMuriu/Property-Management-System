@@ -27,6 +27,10 @@ import AddUnit from "./scenes/units/CreateUnit";
 import ViewUnit from "./scenes/units/ViewUnit";
 import UpdateUnit from "./scenes/units/UpdateUnit";
 
+import Utilities from "./scenes/utilities";
+import AddUtility from "./scenes/utilities/AddUtility";
+import AddVariableUtility from "./scenes/utilities/AddVariableUtility";
+
 import Maintenance from "./scenes/maintenance";
 import AddMaintenance from "./scenes/maintenance/AddMaintenance";
 import ViewMaintenanceIssue from "./scenes/maintenance/ViewMaintenanceIssue";
@@ -51,6 +55,7 @@ import Bar from "./scenes/bar";
 
 
 import PropertyReports from "./scenes/propertyreports";
+import TenantReports from "./scenes/propertyreports/TenantReport";
 
 
 import Messaging from "./scenes/messaging";
@@ -95,6 +100,9 @@ function App() {
                     <Route path="/view-unit/:id" element={<ViewUnit />} />
                     <Route path="/update-unit/:id" element={<UpdateUnit />} />
 
+                    <Route path="/utilities" element={<Utilities />} />
+                    <Route path="/add-utility" element={<AddUtility />} />
+                    <Route path="/add-variable-utility" element={<AddVariableUtility />} />
 
                     <Route path="/maintenance" element={<Maintenance />} />
                     <Route path="/add-maintenance" element={<AddMaintenance />} />
@@ -128,6 +136,7 @@ function App() {
 
 
                     <Route path="/property-reports" element={<PropertyReports />} />
+                    <Route path="/tenant-reports" element={<TenantReports />} />
 
                     
                     <Route path="/messaging" element={<Messaging />} />

@@ -13,9 +13,12 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React from 'react'
 
+import { Link, useNavigate } from 'react-router-dom';
+
 const AddProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const navigate = useNavigate();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -89,6 +92,12 @@ const AddProperty = () => {
     
             if (res.ok) {
                 showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-property/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
             } else {
                 // Handle other success responses
                 console.log('Unexpected response:', res.json());

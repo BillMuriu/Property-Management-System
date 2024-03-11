@@ -117,7 +117,7 @@ const ViewUnit = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Add a property"/>
+            <Header title={unitData.unit_id_or_name}/>
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -141,7 +141,6 @@ const ViewUnit = () => {
                     >
                         {propertyData.length > 0 && (
                             <TextField
-                                disabled
                                 fullWidth
                                 variant="standard"
                                 select
@@ -152,7 +151,10 @@ const ViewUnit = () => {
                                 name="property"
                                 error={!!touched.property && !!errors.property}
                                 helperText={touched.property && errors.property}
-                            >
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                        >
                                 {propertyData.map(property => (
                                     <MenuItem 
                                         key={property.id} 
@@ -175,7 +177,6 @@ const ViewUnit = () => {
                         )}
 
                         <TextField
-                            disabled
                             fullWidth
                             variant="standard"
                             type="text"
@@ -186,10 +187,12 @@ const ViewUnit = () => {
                             name="unitIdOrName"
                             error={!!touched.unitIdOrName && !!errors.unitIdOrName}
                             helperText={touched.unitIdOrName && errors.unitIdOrName}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
-                            disabled
                             fullWidth
                             variant="standard"
                             type="number"
@@ -200,10 +203,12 @@ const ViewUnit = () => {
                             name="rentAmount"
                             error={!!touched.rentAmount && !!errors.rentAmount}
                             helperText={touched.rentAmount && errors.rentAmount}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <FormControlLabel
-                            disabled
                             control={
                                 <Checkbox
                                     checked={values.occupied}
@@ -216,10 +221,10 @@ const ViewUnit = () => {
                             onBlur={handleBlur}
                             error={!!touched.occupied && !!errors.occupied}
                             helperText={touched.occupied && errors.occupied}
+                            disabled
                         />
 
                         <TextField
-                            disabled
                             fullWidth
                             variant="standard"
                             type="number"
@@ -230,10 +235,12 @@ const ViewUnit = () => {
                             name="taxRate"
                             error={!!touched.taxRate && !!errors.taxRate}
                             helperText={touched.taxRate && errors.taxRate}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
-                            disabled
                             fullWidth
                             multiline
                             rows={4}
@@ -246,6 +253,9 @@ const ViewUnit = () => {
                             name="notes"
                             error={!!touched.notes && !!errors.notes}
                             helperText={touched.notes && errors.notes}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
 

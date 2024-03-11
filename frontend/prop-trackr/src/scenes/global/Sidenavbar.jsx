@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { useSidebarToggle } from "../../components/SidebarToggleContext";
 import { Sidebar, Menu, MenuItem, SubMenu, menuClasses } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { styled } from '@mui/material/styles';
 import { Link } from "react-router-dom";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -17,9 +18,14 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
+import useScrollbarStyles from "../../styles/scrollbarStyles";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const scrollbarStyles = useScrollbarStyles();
+
     return (
     <Link to={to} style={{ textDecoration: 'none' }}>
         <MenuItem
@@ -51,9 +57,35 @@ const Sidenavbar = () => {
 
     const [selected, setSelected] = useState("Dashboard");
 
+    const StyledBox = styled(Box)`
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        height: 100%;
+        min-height: 400px;
+        border: none;
+
+        /* Scrollbar styles for the component inside Box */
+        .ps-sidebar-container.css-unpfbf::-webkit-scrollbar-track {
+            background-color: ${colors.primary[700]};
+        }
+
+        & .ps-sidebar-container.css-unpfbf::-webkit-scrollbar-thumb {
+            background-color: ${colors.blueAccent[900]};
+            border-radius: 10px;
+            height: 10px;
+        }
+
+        & .ps-sidebar-container.css-unpfbf::-webkit-scrollbar-thumb:hover {
+            background-color: ${colors.primary[700]};
+        }
+    `;
+
+
     
     return (
-        <Box
+        <StyledBox
             position="sticky"
             top={0}           
             zIndex={1000} 
@@ -167,6 +199,12 @@ const Sidenavbar = () => {
                     <Item
                         title="Units"
                         to="/units"
+                        selected={selected}
+                        setSelected={setSelected}
+                    />
+                    <Item
+                        title="Utilities"
+                        to="/utilities"
                         selected={selected}
                         setSelected={setSelected}
                     />
@@ -285,7 +323,7 @@ const Sidenavbar = () => {
           </Box>
         </Menu>
         </Sidebar>
-    </Box>
+    </StyledBox>
     )
 }
 

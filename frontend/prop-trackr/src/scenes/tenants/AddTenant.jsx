@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem} from "@mui/material";
+import { Box, Button, Typography, useTheme, TextField, MenuItem} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -170,7 +170,7 @@ const AddTenant = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Add a property"/>
+            <Header title="Add a Tenant"/>
             <Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}

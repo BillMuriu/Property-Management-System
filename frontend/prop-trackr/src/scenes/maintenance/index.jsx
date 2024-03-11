@@ -3,23 +3,41 @@ import Header from "../../components/Header";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Backdrop from '@mui/material/Backdrop';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import MuiAccordion from '@mui/material/Accordion';
+import { styled } from '@mui/material/styles';
 
-
-import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import TuneIcon from '@mui/icons-material/Tune';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import Divider from '@mui/material/Divider';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { Link } from 'react-router-dom';
 
 import { BASE_URL } from "../../config";
 import { useState, useEffect } from "react"
+import { useNavigate } from 'react-router-dom';
 
 import { Formik } from "formik";
 import * as yup from "yup";
 import React from 'react'
+
+const Accordion = styled((props) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  '&::before': {
+    display: 'none',
+  },
+}));
 
 const Maintenance = () => {
 
@@ -32,6 +50,12 @@ const Maintenance = () => {
 
   const handleClose = () => {
       setOpenBackdrop(false);
+  };
+
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+      navigate(-1);
   };
 
   useEffect(() => {
@@ -93,7 +117,6 @@ const Maintenance = () => {
     { field: 'unit_id_or_name', headerName: 'Unit ID/Name', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
     { field: 'category', headerName: 'Category', width: 150 },
-    { field: 'short_description', headerName: 'Short Description', width: 300 },
     { field: 'expense_amount', headerName: 'Expense Amount', width: 150 },
 ];
   const properties = [
@@ -121,28 +144,134 @@ const Maintenance = () => {
 
   return (
     <Box
-            sx={{
-              marginLeft: "20px",
-              maxWidth: "80%",
-            }}
-        >
+        sx={{
+          marginLeft: "20px",
+        }}
+    >
             <Header title="Maintenance" subtitle="Welcome to the maintenance page" />
-            <Card
+
+            <Box
                 sx={{
-                    backgroundColor: colors.blueAccent[900],
-                    maxWidth: "95%",
-                    padding: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                    width: "95%",
+                    marginBottom: "20px",
+                    flexDirection: {
+                        xs: "column",
+                        sm: "row",
+                    },
+                    alignItems: "center", 
                 }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        width: "100%",
+                    }}
                 >
-                <CardContent>
-                    <Typography variant="h5" component="div" gutterBottom>
-                        Open Issues: {maintenanceData.length}
-                    </Typography>
-                    <Typography variant="body1" component="div">
-                        Issues in progress: 1
-                    </Typography>
-                </CardContent>
-            </Card>
+                    <Link to="" style={{ textDecoration: 'none' }}>
+                        <Button 
+                            variant="outlined" 
+                            startIcon={<ArrowBackIcon />}
+                            onClick={handleGoBack} 
+                        >
+                            Back
+                        </Button>
+                    </Link>
+                </Box>
+                <Box
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: { sx: 'flex-start', sm: 'flex-end'}
+                  }}
+                >
+                    <Link to="/add-maintenance" style={{ textDecoration: 'none' }}>
+                        <Button 
+                            variant="contained" 
+                            startIcon={<AddIcon />}
+                        >
+                            <Typography>
+                                Add a Maintenance Issue
+                            </Typography>
+                        </Button>
+                    </Link>
+                </Box>
+            </Box>
+
+            <Accordion variant="outlined" sx={{ width: '95%'}}>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                  Total Maintenance issues
+                </AccordionSummary>
+                <AccordionDetails
+                  sx={{
+
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row'},
+                    gap: '20px'
+
+                  }}
+                >
+                    <Card
+                        sx={{
+                            width: { xs: '95%', sm: '200px' },
+                            padding: 2,
+                        }}
+                        variant="outlined"
+                    >
+                        <CardContent
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Typography variant="h5" component="div" gutterBottom>
+                                Total Properties
+                            </Typography>
+                            <Divider sx={{ width: '10%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
+                            <Typography variant="h3" component="div" style={{ fontWeight: 'bold' }}>
+                                {maintenanceData.length}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+
+                    <Card
+                        sx={{
+                            width: { xs: '95%', sm: '200px' },
+                            padding: 2,
+                        }}
+                        variant="outlined"
+                    >
+                        <CardContent
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Typography variant="h5" component="div" gutterBottom>
+                                Total Properties
+                            </Typography>
+                            <Divider sx={{ width: '10%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
+                            <Typography variant="h3" component="div" style={{ fontWeight: 'bold' }}>
+                                {maintenanceData.length}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </AccordionDetails>
+            </Accordion>
+
 
             
             <Backdrop
@@ -151,19 +280,29 @@ const Maintenance = () => {
                 onClick={handleClose}
             ></Backdrop>
 
-            <Accordion 
-              defaultExpanded
+
+
+            <Accordion
               sx={{
                 maxWidth: "95%",
                 marginTop: "10px",
               }}
             >
               <AccordionSummary
-                expandIcon={<TuneIcon />}
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1-content"
                 id="panel1-header"
               >
-                <Typography>Filters</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px"
+                  }}
+                >
+                  <TuneIcon /> 
+                  <Typography>Filters</Typography>
+                </Box>
               </AccordionSummary>
               <AccordionDetails>
                 <Formik
@@ -199,7 +338,7 @@ const Maintenance = () => {
                               select
                               label="Select a Property"
                               defaultValue="EUR"
-                              // variant="filled"
+                              variant="filled"
                             >
                               {properties.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
@@ -213,17 +352,17 @@ const Maintenance = () => {
                             <FormControlLabel
                               fullWidth 
                               control={<Checkbox defaultChecked />} 
-                              label="Show vacant units" 
+                              label="Open" 
                             />
                             <FormControlLabel
                               fullWidth 
                               control={<Checkbox defaultChecked />} 
-                              label="Show vacant units" 
+                              label="In progress"  
                             />
                             <FormControlLabel
                               fullWidth 
                               control={<Checkbox defaultChecked />} 
-                              label="Show vacant units" 
+                              label="Closed" 
                             />
                           </Box>
                         </Box>
@@ -233,15 +372,39 @@ const Maintenance = () => {
               </AccordionDetails>
             </Accordion>
 
+            <Divider
+              sx={{
+                  marginTop: '20px',
+                  width: '95%',
+              }} 
+            />
+
+
 
             <Box
-                m="40px 0 0 0"
+                m="20px 0 0 0"
                 height="75vh"
                 overflow-x='hidden'
+                sx={{
+                  maxWidth: '100%',
+                }}
             >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        width:'95%',
+                    }}
+                  >
+                    <IconButton aria-label="delete" size="large">
+                        <DeleteIcon sx={{ fontSize: '28px' }} />
+                    </IconButton>
+                </Box>
+
+
                 <DataGrid
                     sx={{
-                        maxWidth: '95%',
+                        width: '95%',
                         '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
                             width: '10px',
                         },

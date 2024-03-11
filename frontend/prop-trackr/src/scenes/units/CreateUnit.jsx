@@ -9,6 +9,8 @@ import { BASE_URL } from "../../config";
 import { useSnackbar } from 'notistack';
 
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+
 
 import React from 'react'
 
@@ -16,6 +18,8 @@ const AddUnit = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [propertyData, setPropertyData] = useState('');
+
+    const navigate = useNavigate();
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -104,6 +108,12 @@ const AddUnit = () => {
     
             if (res.ok) {
                 showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-unit/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
             } else {
                 // Handle other success responses
                 console.log('Unexpected response:', res.json());

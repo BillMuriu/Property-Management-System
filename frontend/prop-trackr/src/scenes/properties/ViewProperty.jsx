@@ -6,20 +6,33 @@ import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+import AddIcon from '@mui/icons-material/Add';
+import Divider from '@mui/material/Divider';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+
+import { Link } from 'react-router-dom';
+
 
 const ViewProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { id } = useParams();
 
+    const navigate = useNavigate();
+
     console.log('Property ID:', id);
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     const [propertyData, setPropertyData] = useState('');
     const [initialValues, setInitialValues] = useState(null);
@@ -132,6 +145,54 @@ const ViewProperty = () => {
                 }) => (
                 <form onSubmit={handleSubmit}>
                     <Box
+                        sx={{
+                            width: '95%',
+                            display: "flex",
+                            justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                            gap: "10px",
+                            marginBottom: "20px",
+                            flexDirection: {
+                                xs: "column",
+                                sm: "row",
+                            },
+                            alignItems: "center", 
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                                alignItems: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <Link to="" style={{ textDecoration: 'none' }}>
+                                <Button 
+                                    variant="outlined" 
+                                    startIcon={<ArrowBackIcon />}
+                                    onClick={handleGoBack} 
+                                >
+                                    Back
+                                </Button>
+                            </Link>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                                gap: "10px",
+                                width: { xs: '100%', sm: '50%' },
+                            }}
+                        >
+                            <Link to="/add-unit" style={{ textDecoration: 'none' }}>
+                                <Button variant="contained" startIcon={<AddIcon />}>Add a Unit</Button>
+                            </Link>
+                        </Box>
+                    </Box>
+
+                    <Divider sx={{ width: '95%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
+
+                    <Box
                         maxWidth="92%"
                         display="flex"
                         flexDirection="column"
@@ -148,19 +209,9 @@ const ViewProperty = () => {
                             name="propertyName"
                             error={!!touched.propertyName && !!errors.propertyName}
                             helperText={touched.propertyName && errors.propertyName}
-                            disabled
-                            sx={{
-                                '& .MuiInputLabel-root': {
-                                    color: colors.grey[100], // Change the color of the label
-                                    fontWeight: 'bold', // Make the label bold
-                                    // Add any other label-specific styles here
-                                },
-                                '& .MuiInputBase-input': {
-                                    color: colors.grey[100], // Change the color of the input text
-                                    fontStyle: 'bold', // Make the input text italic
-                                    // Add any other input text-specific styles here
-                                },
-                              }}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
                         <TextField
                             fullWidth
@@ -173,7 +224,9 @@ const ViewProperty = () => {
                             name="numberOfUnits"
                             error={!!touched.numberOfUnits && !!errors.numberOfUnits}
                             helperText={touched.numberOfUnits && errors.numberOfUnits}
-                            disabled
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
                         <TextField
                             fullWidth
@@ -187,7 +240,9 @@ const ViewProperty = () => {
                             error={!!touched.city && !!errors.city}
                             helperText={touched.city && errors.city}
                             sx={{ gridColumn: "span 4" }}
-                            disabled
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
 
@@ -222,7 +277,9 @@ const ViewProperty = () => {
                                     name="waterRate"
                                     error={!!touched.waterRate && !!errors.waterRate}
                                     helperText={touched.waterRate && errors.waterRate}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 />
                                 <TextField
                                     fullWidth
@@ -235,7 +292,9 @@ const ViewProperty = () => {
                                     name="electricityRate"
                                     error={!!touched.electricityRate && !!errors.electricityRate}
                                     helperText={touched.electricityRate && errors.electricityRate}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 />
                                 <TextField
                                     fullWidth
@@ -253,7 +312,9 @@ const ViewProperty = () => {
                                     name="rentPenaltyType"
                                     error={!!touched.rentPenaltyType && !!errors.rentPenaltyType}
                                     helperText={touched.rentPenaltyType && errors.rentPenaltyType}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 >
                                     {rentPenaltyOptions.map((option) => (
                                         <MenuItem key={option.value} value={option.value}>
@@ -274,7 +335,9 @@ const ViewProperty = () => {
                                         name="rentPenaltyAmount"
                                         error={!!touched.rentPenaltyAmount && !!errors.rentPenaltyAmount}
                                         helperText={touched.rentPenaltyAmount && errors.rentPenaltyAmount}
-                                        disabled
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
                                     />
                                 )}
 
@@ -290,7 +353,9 @@ const ViewProperty = () => {
                                         name="rentPenaltyPercentage"
                                         error={!!touched.rentPenaltyPercentage && !!errors.rentPenaltyPercentage}
                                         helperText={touched.rentPenaltyPercentage && errors.rentPenaltyPercentage}
-                                        disabled
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
                                     />
                                 )}
                                 <TextField
@@ -304,7 +369,9 @@ const ViewProperty = () => {
                                     name="taxRate"
                                     error={!!touched.taxRate && !!errors.taxRate}
                                     helperText={touched.taxRate && errors.taxRate}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 />
                                 <TextField
                                     fullWidth
@@ -317,7 +384,9 @@ const ViewProperty = () => {
                                     name="managementFee"
                                     error={!!touched.managementFee && !!errors.managementFee}
                                     helperText={touched.managementFee && errors.managementFee}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 />
                                 <TextField
                                     fullWidth
@@ -330,7 +399,9 @@ const ViewProperty = () => {
                                     name="streetName"
                                     error={!!touched.streetName && !!errors.streetName}
                                     helperText={touched.streetName && errors.streetName}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 />
                                 <TextField
                                     fullWidth
@@ -343,7 +414,9 @@ const ViewProperty = () => {
                                     name="companyName"
                                     error={!!touched.companyName && !!errors.companyName}
                                     helperText={touched.companyName && errors.companyName}
-                                    disabled
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
                                 />
                                 <TextField
                                     disabled
