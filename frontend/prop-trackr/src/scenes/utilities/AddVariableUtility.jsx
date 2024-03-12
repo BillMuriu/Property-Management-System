@@ -1,13 +1,15 @@
 import { 
         Box, 
-        Button, 
-        IconButton, 
+        Button,
         Typography, 
         useTheme, 
         TextField, 
         MenuItem, 
-        Checkbox, 
-        FormControlLabel
+        Table, 
+        TableHead, 
+        TableBody, 
+        TableRow, 
+        TableCell
 } from "@mui/material";
 
 import { Formik } from "formik";
@@ -21,6 +23,24 @@ import { useSnackbar } from 'notistack';
 import { useState, useEffect } from "react";
 
 import React from 'react'
+
+const formatDate = (dateString) => {
+    // Create a new Date object from the dateString
+    const date = new Date(dateString);
+    const monthNames = [
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun", "Jul",
+        "Aug", "Sep", "Oct",
+        "Nov", "Dec"
+    ];
+    
+    // Extract day, month, and year from the date object
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    return `${day} ${monthNames[monthIndex]} ${year}`;
+};
+
 
 const AddVariableUtility = () => {
     const theme = useTheme();
@@ -36,17 +56,28 @@ const AddVariableUtility = () => {
 
     const [values, setValues] = useState({}); // State to manage Textfield values
 
+
+
+
+
+
     // Function to handle change in Textfield value
     const handleChange = (event, index) => {
         const { name, value } = event.target;
         setValues({ ...values, [name]: value });
     };
 
+
+
+
     // Function to clear Textfield value
     const clearTextFieldValue = (index) => {
         // Update the state to clear the value of the Textfield
         setValues({ ...values, [`currentReading${index}`]: '' });
     };
+
+
+
 
     // Function to create the array of objects
     const createArrayOfObjects = () => {
@@ -57,14 +88,19 @@ const AddVariableUtility = () => {
             const utilityItem = unitContainer.dataset.utilityItem;
             const currentReading = document.getElementById(`currentReading${index}`).value;
 
+            const currentReadingElement = document.getElementById(`latestReading${index}`);
+            const previousReading = currentReadingElement ? currentReadingElement.value : '0.00';
+
+            
+
             let newObj = {
                 unit: unitId,
                 property: property,
                 utility_item: utilityItem,
                 amount: "0.00",
-                current_reading: currentReading || 'No data',
+                current_reading: currentReading || previousReading,
                 month: "January",
-                previous_reading: "0.00",
+                previous_reading: previousReading,
                 is_variable: true,
             };
     
@@ -89,6 +125,10 @@ const AddVariableUtility = () => {
         });
     };
 
+
+
+
+
     const showFailureMessage = () => {
         enqueueSnackbar('Oops! something went wrong', { 
           variant: 'error', 
@@ -99,6 +139,9 @@ const AddVariableUtility = () => {
           },
         });
     };
+
+
+
 
     useEffect(() => {
         const fetchPropertyData = async () => {
@@ -139,6 +182,9 @@ const AddVariableUtility = () => {
     }, []);
 
 
+
+
+
     const fetchUnitData = async (propertyId) => {
         try {
             // Make a GET request to fetch unit data for a specific property
@@ -172,9 +218,14 @@ const AddVariableUtility = () => {
         }
     };
 
+
+
     const handleMenuItemClick = (propertyId) => {
         fetchUnitData(propertyId);
     };
+
+
+
 
     const showUnitUtilities = (utilityItem) => {
         setSelectedUtility(utilityItem);
@@ -225,6 +276,11 @@ const AddVariableUtility = () => {
             showFailureMessage();
         }
     };
+
+
+
+
+
     
 
   return (
@@ -286,6 +342,10 @@ const AddVariableUtility = () => {
                             </TextField>
                         )}
 
+
+
+
+
                         <TextField
                             fullWidth
                             variant="filled"
@@ -304,64 +364,79 @@ const AddVariableUtility = () => {
 
                     </Box>
 
+
                     <Box
                         sx={{
                             width: '95%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '20px'
+                            marginTop: '20px'
                         }}
                     >
-                        {unitData && unitData.length > 0 ? (
-                            unitData.map((unit, index) => (
-                                <Box 
-                                    key={unit.id}
-                                    sx={{
-                                        display: 'flex',
-                                        gap: "20px"
-                                    }}
-                                    className="unit-container"
-                                    data-unit-id={unit.id}
-                                    data-property={unit.property}
-                                    data-utility-item={selectedUtility}
-                                >
-                                    <Typography>
-                                        {unit.unit_id_or_name}
-                                    </Typography>
-                                    {latestUtilities.map(item => (
-                                        item.unitIdOrName === unit.unit_id_or_name && (
-                                            <Typography key={`${item.unitIdOrName}-latest`}>
-                                                Latest {selectedUtility}: {item.latestUtility ? item.latestUtility.current_reading : 'No data'}
-                                            </Typography>
-                                        )
+                        {selectedUtility && unitData && unitData.length > 0 ? (
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Unit</TableCell>
+                                        <TableCell>Previous Readings</TableCell>
+                                        <TableCell>Current Readings</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {unitData.map((unit, index) => (
+                                        <TableRow key={unit.id} 
+                                            className="unit-container"
+                                            data-unit-id={unit.id}
+                                            data-property={unit.property}
+                                            data-utility-item={selectedUtility}
+                                        >
+                                            <TableCell>{unit.unit_id_or_name}</TableCell>
+                                            <TableCell>
+                                                {latestUtilities.map(item => (
+                                                    item.unitIdOrName === unit.unit_id_or_name && (
+                                                        <div key={`${item.unitIdOrName}-latest`}>
+                                                            <Typography>
+                                                                {item.latestUtility ? item.latestUtility.current_reading : ''} ({item.latestUtility ? formatDate(item.latestUtility.created_at) : 'N/A'})
+                                                            </Typography>
+                                                            {/* Hidden input to store the current_reading value */}
+                                                            <input type="hidden" id={`latestReading${index}`} value={item.latestUtility ? item.latestUtility.current_reading : '0.00'} />
+                                                        </div>
+                                                    )
+                                                ))}
+                                            </TableCell>
+                                            <TableCell>
+                                                <TextField
+                                                    fullWidth
+                                                    variant="filled"
+                                                    type="number"
+                                                    label="Current Reading *"
+                                                    onBlur={handleBlur}
+                                                    className="current-reading-input"
+                                                    onChange={handleChange}
+                                                    value={values[`currentReading${index}`]}
+                                                    name={`currentReading${index}`}
+                                                    error={!!touched[`currentReading${index}`] && !!errors[`currentReading${index}`]}
+                                                    helperText={touched[`currentReading${index}`] && errors[`currentReading${index}`]}
+                                                    id={`currentReading${index}`}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
                                     ))}
-                                    
-                                    <TextField
-                                        fullWidth
-                                        variant="filled"
-                                        type="number"
-                                        label="Current Reading *"
-                                        onBlur={handleBlur}
-                                        className="current-reading-input"
-                                        onChange={handleChange}
-                                        value={values[`currentReading${index}`]}
-                                        name={`currentReading${index}`}
-                                        error={!!touched[`currentReading${index}`] && !!errors[`currentReading${index}`]}
-                                        helperText={touched[`currentReading${index}`] && errors[`currentReading${index}`]}
-                                        id={`currentReading${index}`}
-                                    />
-                                </Box>
-                            ))
+                                </TableBody>
+                            </Table>
                         ) : (
                             <Typography>No unit data available</Typography>
                         )}
                     </Box>
 
-                    <Button onClick={createArrayOfObjects}>Create Array of Objects</Button>
-                    
-
-
-                    <Button onClick={() => clearTextFieldValue(0)}>Clear Textfield</Button>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '10px'
+                        }}
+                    >
+                        <Button variant="outlined" onClick={createArrayOfObjects}>Create Array of Objects</Button>
+                        <Button variant="outlined" onClick={() => clearTextFieldValue(0)}>Clear Textfield</Button>
+                    </Box>
 
                 </form>
                 )}

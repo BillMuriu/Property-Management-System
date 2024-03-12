@@ -142,6 +142,9 @@ const Sidenavbar = () => {
                 },
               }}
         >
+
+
+            
             {collapsed === false ? (
             <Box
                 display="flex"
@@ -157,6 +160,7 @@ const Sidenavbar = () => {
                     ml="15px"
                 >
                     <img
+                        src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZEbi3dPqadfl34tFiMmboFKS7Big47OfWkw&usqp=CAU`}
                         alt="company-logo"
                         width="50px"
                         height="50px"
@@ -166,6 +170,9 @@ const Sidenavbar = () => {
                         ADMINIS
                     </Typography>
                 </Box>
+
+
+
                 <IconButton onClick={broken ? () => setToggled((prev) => !prev) : () => setCollapsed(!collapsed)} >
                     <MenuOutlinedIcon />
                 </IconButton>

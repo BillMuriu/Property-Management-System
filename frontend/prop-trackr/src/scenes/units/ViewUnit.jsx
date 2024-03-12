@@ -9,7 +9,15 @@ import { BASE_URL } from "../../config";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 
+import AddIcon from '@mui/icons-material/Add';
+import Divider from '@mui/material/Divider';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+
 import React from 'react'
+
+import { Link, useNavigate } from 'react-router-dom';
 
 const ViewUnit = () => {
     const theme = useTheme();
@@ -21,6 +29,12 @@ const ViewUnit = () => {
 
     const { id } = useParams();
     console.log('Property ID:', id);
+
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     useEffect(() => {
         const fetchunitData = async () => {
@@ -133,6 +147,53 @@ const ViewUnit = () => {
                 setFieldValue,
                 }) => (
                 <form onSubmit={handleSubmit}>
+                    <Box
+                        sx={{
+                            width: '95%',
+                            display: "flex",
+                            justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                            gap: "10px",
+                            marginBottom: "20px",
+                            flexDirection: {
+                                xs: "column",
+                                sm: "row",
+                            },
+                            alignItems: "center", 
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                                alignItems: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <Link to="" style={{ textDecoration: 'none' }}>
+                                <Button 
+                                    variant="outlined" 
+                                    startIcon={<ArrowBackIcon />}
+                                    onClick={handleGoBack} 
+                                >
+                                    Back
+                                </Button>
+                            </Link>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                                gap: "10px",
+                                width: { xs: '100%', sm: '50%' },
+                            }}
+                        >
+                            <Link to="/add-unit" style={{ textDecoration: 'none' }}>
+                                <Button variant="contained" startIcon={<AddIcon />}>Add another Unit</Button>
+                            </Link>
+                        </Box>
+                    </Box>
+
+                    <Divider sx={{ width: '95%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
                     <Box
                         maxWidth="92%"
                         display="flex"
@@ -259,11 +320,6 @@ const ViewUnit = () => {
                         />
 
 
-                    </Box>
-                    <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
-                        </Button>
                     </Box>
                 </form> 
                 )}
