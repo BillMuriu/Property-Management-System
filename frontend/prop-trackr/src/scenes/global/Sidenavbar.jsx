@@ -20,31 +20,43 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
 import useScrollbarStyles from "../../styles/scrollbarStyles";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, setCollapsed, broken, setToggled }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-
     const scrollbarStyles = useScrollbarStyles();
+
+    // Function to handle item click
+    const handleClick = () => {
+        if (broken) {
+            // Toggle setToggled if broken
+            setToggled(prev => !prev);
+        } else {
+            // Toggle setCollapsed if not broken
+            setCollapsed(prev => !prev);
+        }
+        setSelected(title);
+    };
 
     return (
         <Link to={to} style={{ textDecoration: 'none' }}>
             <MenuItem
-            active={selected === title}
-            style={{
-                color: colors.grey[400],
-                '&:hover': {
-                backgroundColor: colors.grey[700],
-                color: 'black',
-                },
-            }}
-            onClick={() => setSelected(title)}
-            icon={icon}
+                active={selected === title}
+                style={{
+                    color: colors.grey[400],
+                    '&:hover': {
+                        backgroundColor: colors.grey[700],
+                        color: 'black',
+                    },
+                }}
+                onClick={handleClick}
+                icon={icon}
             >
-            <Typography>{title}</Typography>
+                <Typography>{title}</Typography>
             </MenuItem>
         </Link>
     );
-  };
+};
+
   
 
 const Sidenavbar = () => {
@@ -202,6 +214,9 @@ const Sidenavbar = () => {
                     icon={<HomeOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
+                    broken={broken}
+                    setToggled={setToggled}
+                    setCollapsed={setCollapsed}
                 />
 
                 <SubMenu
@@ -226,6 +241,9 @@ const Sidenavbar = () => {
                         to="/properties"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                         sx={{
                             backgroundColor: '#fff'
                         }}
@@ -235,24 +253,36 @@ const Sidenavbar = () => {
                         to="/units"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                     <Item
                         title="Utilities"
                         to="/utilities"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                     <Item
                         title="Maintenance"
                         to="/maintenance"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                     <Item
                         title="Expenses"
                         to="/expenses"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                 </SubMenu>
                 
@@ -274,18 +304,27 @@ const Sidenavbar = () => {
                         to="/tenants"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                     <Item
                         title="Invoices"
                         to="/invoices"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                     <Item
                         title="Payments"
                         to="/payments"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                 </SubMenu>
 
@@ -307,12 +346,18 @@ const Sidenavbar = () => {
                         to="/property-reports"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                     <Item
                         title="Tenant Reports"
                         to="/tenant-reports"
                         selected={selected}
                         setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
                     />
                 </SubMenu>
 
@@ -322,6 +367,9 @@ const Sidenavbar = () => {
                     icon={<CalendarTodayOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
+                    broken={broken}
+                    setToggled={setToggled}
+                    setCollapsed={setCollapsed}
                 />
                 <Item
                     title="Admin Settings"
@@ -329,6 +377,9 @@ const Sidenavbar = () => {
                     icon={<HelpOutlineOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
+                    broken={broken}
+                    setToggled={setToggled}
+                    setCollapsed={setCollapsed}
                 />
 
                 <Typography
@@ -345,6 +396,9 @@ const Sidenavbar = () => {
                     icon={<BarChartOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
+                    broken={broken}
+                    setToggled={setToggled}
+                    setCollapsed={setCollapsed}
                 />
 
                 <Item
@@ -353,6 +407,9 @@ const Sidenavbar = () => {
                     icon={<PieChartOutlineOutlinedIcon />}
                     selected={selected}
                     setSelected={setSelected}
+                    broken={broken}
+                    setToggled={setToggled}
+                    setCollapsed={setCollapsed}
                 />
           </Box>
         </Menu>

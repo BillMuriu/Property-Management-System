@@ -41,7 +41,6 @@ const formatDate = (dateString) => {
     return `${day} ${monthNames[monthIndex]} ${year}`;
 };
 
-
 const AddVariableUtility = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -53,30 +52,14 @@ const AddVariableUtility = () => {
     const [latestUtilities, setLatestUtilities] = useState([]);
 
     const [arrayOfObjects, setArrayOfObjects] = useState([]);
+    const [utilityData, setUtilityData] = useState([]);
+    const [bulkInvoices, setBulkInvoices] = useState([]);
 
-    const [values, setValues] = useState({}); // State to manage Textfield values
-
-
-
-
-
-
-    // Function to handle change in Textfield value
-    const handleChange = (event, index) => {
-        const { name, value } = event.target;
-        setValues({ ...values, [name]: value });
-    };
-
-
-
-
-    // Function to clear Textfield value
-    const clearTextFieldValue = (index) => {
-        // Update the state to clear the value of the Textfield
-        setValues({ ...values, [`currentReading${index}`]: '' });
-    };
-
-
+    useEffect(() => {
+        if (selectedUtility) {
+            clearTextFields();
+        }
+    }, [selectedUtility]);
 
 
     // Function to create the array of objects
@@ -225,6 +208,26 @@ const AddVariableUtility = () => {
     };
 
 
+    const updateTextField = (index) => {
+        const currentReadingElement = document.getElementById(`latestReading${index}`);
+        const initialInputValue = currentReadingElement ? currentReadingElement.value : null;
+    
+        const textField = document.getElementById(`currentReading${index}`);
+        if (textField.value <= initialInputValue) {
+            textField.value = initialInputValue;
+        }
+
+    };
+
+
+    const clearTextFields = () => {
+        document.querySelectorAll('.unit-container').forEach((unitContainer, index) => {
+            const textField = document.getElementById(`currentReading${index}`);
+            textField.value = null;
+        });
+    };
+
+
 
 
     const showUnitUtilities = (utilityItem) => {
@@ -238,11 +241,6 @@ const AddVariableUtility = () => {
             };
         });
         setLatestUtilities(latestUtilitiesForSelectedUtility);
-
-        const textFields = document.querySelectorAll('.current-reading-input');
-        textFields.forEach(textField => {
-            textField.value = 0;
-        });
     };
     
 
@@ -267,9 +265,21 @@ const AddVariableUtility = () => {
                 // Handle HTTP errors
                 throw new Error('Failed to create utilities: ' + res.status);
             }
+
+            if (res.ok) {
+                showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data);
+                    setUtilityData(data);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
+            } else {
+                // Handle other success responses
+                console.log('Unexpected response:', res.json());
+            }
     
-            // If successful, show success message
-            showSuccessMessage();
+            
         } catch (error) {
             console.error('Error creating utilities:', error.message);
             // If error occurs, show failure message
@@ -277,6 +287,38 @@ const AddVariableUtility = () => {
         }
     };
 
+
+
+    const transformUtilityDataToBulkInvoices = () => {
+        if (!utilityData || utilityData.length === 0) {
+            // If utilityData does not exist or is empty, do nothing
+            return;
+        }
+    
+        const transformedData = utilityData.map(item => {
+            // Check if item.tenant is not null before accessing its 'id' property
+            const tenantId = item.tenant ? item.tenant.id : null;
+    
+            return {
+                property: item.property,
+                tenant: tenantId,
+                invoice_date: item.created_at,
+                invoice_status: 'open',
+                item_name: item.utility_item,
+                amount: parseFloat(item.amount),
+                description: `Monthly ${item.utility_item} invoice`
+            };
+        });
+    
+        // Log the transformed data
+        console.log('Transformed Data:', transformedData);
+    
+        // Set the transformed data into bulkInvoices state
+        setBulkInvoices(transformedData);
+    };
+    
+    
+    
 
 
 
@@ -342,10 +384,6 @@ const AddVariableUtility = () => {
                             </TextField>
                         )}
 
-
-
-
-
                         <TextField
                             fullWidth
                             variant="filled"
@@ -404,6 +442,9 @@ const AddVariableUtility = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <TextField
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                      }}
                                                     fullWidth
                                                     variant="filled"
                                                     type="number"
@@ -416,6 +457,7 @@ const AddVariableUtility = () => {
                                                     error={!!touched[`currentReading${index}`] && !!errors[`currentReading${index}`]}
                                                     helperText={touched[`currentReading${index}`] && errors[`currentReading${index}`]}
                                                     id={`currentReading${index}`}
+                                                    onClick={() => updateTextField(index)} 
                                                 />
                                             </TableCell>
                                         </TableRow>
@@ -435,7 +477,7 @@ const AddVariableUtility = () => {
                         }}
                     >
                         <Button variant="outlined" onClick={createArrayOfObjects}>Create Array of Objects</Button>
-                        <Button variant="outlined" onClick={() => clearTextFieldValue(0)}>Clear Textfield</Button>
+                        <Button variant="outlined" onClick={clearTextFields}>Clear Textfield</Button>
                     </Box>
 
                 </form>
@@ -444,6 +486,16 @@ const AddVariableUtility = () => {
 
             <Button variant="contained" color="primary" onClick={bulkCreateUtilities}>
                 Create Utilities
+            </Button>
+            <Button 
+                onClick={transformUtilityDataToBulkInvoices} 
+                variant="contained" 
+                color="primary"
+                sx={{
+                    marginLeft: '20px'
+                }}
+            >
+                Transform Data to Bulk Invoices
             </Button>
 
             {arrayOfObjects.length > 0 && (
@@ -482,7 +534,7 @@ const initialValues = {
     isVariable: true,
 };
 
-
-
-
 export default AddVariableUtility
+
+
+

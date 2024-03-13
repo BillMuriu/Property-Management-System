@@ -18,6 +18,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
+import { BASE_URL } from "../../config";
+
 import { Link } from 'react-router-dom';
 
 
@@ -59,7 +61,7 @@ const ViewProperty = () => {
         const fetchPropertyData = async () => {
             try {
                 // Make a GET request to fetch a particular property instance by ID
-                const res = await fetch(`http://127.0.0.1:8000/property/${id}`, {
+                const res = await fetch(`${BASE_URL}/property/${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

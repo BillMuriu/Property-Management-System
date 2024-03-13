@@ -30,7 +30,6 @@ import UpdateUnit from "./scenes/units/UpdateUnit";
 import Utilities from "./scenes/utilities";
 import AddUtility from "./scenes/utilities/AddUtility";
 import AddVariableUtility from "./scenes/utilities/AddVariableUtility";
-
 import Maintenance from "./scenes/maintenance";
 import AddMaintenance from "./scenes/maintenance/AddMaintenance";
 import ViewMaintenanceIssue from "./scenes/maintenance/ViewMaintenanceIssue";
