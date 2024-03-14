@@ -71,10 +71,7 @@ const downloadPdf = (selectedRowData) => {
   doc.text("Details", 20, 10)
 
   doc.autoTable({
-    columns: columns.map(col => ({ 
-      header: col.headerName, // Use headerName as the header value
-      dataKey: col.field // Use field as the dataKey value
-    })),
+    columns: columns.map(col => ({ ...col, dataKey: col.field })),
     body: selectedRowData // Use selectedRowData as the body value
   })
 
@@ -91,8 +88,6 @@ const getSelectedRowsToExport = ({ apiRef }) => {
     downloadPdf(selectedRowData);
   }
 };
-
-
 const TestMenuItem = ({ onClick }) => {
   const apiRef = useGridApiContext();
 
