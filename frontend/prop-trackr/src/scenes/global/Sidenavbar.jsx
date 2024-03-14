@@ -27,12 +27,14 @@ const Item = ({ title, to, icon, selected, setSelected, setCollapsed, broken, se
 
     // Function to handle item click
     const handleClick = () => {
-        if (broken) {
-            // Toggle setToggled if broken
-            setToggled(prev => !prev);
-        } else {
-            // Toggle setCollapsed if not broken
-            setCollapsed(prev => !prev);
+        if (window.innerWidth < 600) {
+            if (broken) {
+                // Toggle setToggled if broken
+                setToggled(prev => !prev);
+            } else {
+                // Toggle setCollapsed if not broken
+                setCollapsed(prev => !prev);
+            }
         }
         setSelected(title);
     };
