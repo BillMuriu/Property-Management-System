@@ -541,9 +541,11 @@ class PropertyStatementPDFView(View):
             'net_income': net_income,
         })
 
-        # Generate PDF from HTML content with configuration
-        config = pdfkit.configuration(
-            wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+        # config = pdfkit.configuration(
+        #     wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+        # pdf = pdfkit.from_string(html_content, False, configuration=config)
+
+        config = pdfkit.configuration()
         pdf = pdfkit.from_string(html_content, False, configuration=config)
 
         # Prepare response with PDF file
