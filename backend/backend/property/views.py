@@ -384,7 +384,9 @@ class PropertyStatementHTMLView(View):
         except Property.DoesNotExist:
             property_name = 'N/A'
 
-        property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        property_statement_api_url = f'http://104.248.207.69:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+
+        # property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
 
         try:
             api_response = requests.get(property_statement_api_url)
@@ -474,7 +476,10 @@ class PropertyStatementPDFView(View):
             property_name = 'N/A'
 
         # Fetch data from the API
-        property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        # 104.248.207.69
+        # property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+
+        property_statement_api_url = f'http://104.248.207.69:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
         try:
             api_response = requests.get(property_statement_api_url)
             api_data = api_response.json()
