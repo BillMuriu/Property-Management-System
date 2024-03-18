@@ -200,3 +200,13 @@ class Maintenance(models.Model):
 
     def __str__(self):
         return f"{self.property.name} - {self.unit.unit_id_or_name} - {self.category}"
+
+
+class PropertyStatement(models.Model):
+    property = models.ForeignKey('Property', on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    pdf_s3_key = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Property Statement #{self.id} - {self.property.name}"

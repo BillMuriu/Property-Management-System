@@ -39,6 +39,12 @@ class Tenant(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.unit.occupied = True
+            self.unit.save()  # Save the unit
+        super().save(*args, **kwargs)
+
 
 class RentDeposit(models.Model):
     RENT_DEPOSIT_CHOICES = (
