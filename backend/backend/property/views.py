@@ -268,11 +268,18 @@ class PropertyStatementListAPIView(APIView):
 
         # Calculate earnings before tax, tax amount, and net income
         earning_before_tax = total_amount_paid - total_expenses_amount
+
+        # Get tax rate from property data or default to 0 if not found
         tax_rate = property_data.get('tax_rate', 0)
-        tax_amount = (tax_rate / 100) * earning_before_tax
-        # Round tax amount to two decimal places
-        tax_amount = round(tax_amount, 2)
-        net_income = earning_before_tax - tax_amount
+
+        if tax_rate is not None:
+            tax_amount = (tax_rate / 100) * earning_before_tax
+            # Round tax amount to two decimal places
+            tax_amount = round(tax_amount, 2)
+            net_income = earning_before_tax - tax_amount
+        else:
+            tax_amount = 0  # or any other appropriate default value
+            net_income = earning_before_tax
 
         return Response({
             'tenants': response_data,
