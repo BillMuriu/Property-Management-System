@@ -20,8 +20,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 class InvoiceListCreateAPIView(generics.ListCreateAPIView):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['tenant']
 
     def create(self, request, *args, **kwargs):
         # Check if data is provided for bulk creation
@@ -34,25 +32,22 @@ class InvoiceListCreateAPIView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        invoice = serializer.instance
+        self.process_invoice(invoice)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def bulk_create_invoices(self, request):
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_bulk_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def perform_bulk_create(self, serializer):
-        # Perform bulk creation of invoices
-        instances = serializer.save()
-
-        # Process each invoice individually
+        instances = serializer.instance
         for invoice in instances:
             self.process_invoice(invoice)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def process_invoice(self, invoice):
         # Retrieve invoice data
-        property = invoice.property
+        property_name = invoice.property
         tenant = invoice.tenant
         invoice_date = invoice.invoice_date
         invoice_status = invoice.invoice_status
@@ -78,7 +73,7 @@ class InvoiceListCreateAPIView(generics.ListCreateAPIView):
             money_due=amount,
             money_paid=0,
             running_balance=running_balance.balance,
-            description=f"Invoice for {property} paid by {tenant}",
+            description=f"Invoice for {property_name} paid by {tenant}",
             tenant=tenant,
             invoice=invoice
         )
