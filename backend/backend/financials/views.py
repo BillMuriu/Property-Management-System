@@ -39,8 +39,7 @@ class InvoiceListCreateAPIView(generics.ListCreateAPIView):
     def bulk_create_invoices(self, request):
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
-        self.perform_bulk_create(serializer)
-        instances = serializer.instance
+        instances = serializer.save()  # Save the instances
         for invoice in instances:
             self.process_invoice(invoice)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
