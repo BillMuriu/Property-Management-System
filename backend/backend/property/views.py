@@ -391,9 +391,9 @@ class PropertyStatementHTMLView(View):
         except Property.DoesNotExist:
             property_name = 'N/A'
 
-        # property_statement_api_url = f'http://104.248.207.69:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        property_statement_api_url = f'http://104.248.207.69:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
 
-        property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        # property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
 
         try:
             api_response = requests.get(property_statement_api_url)
@@ -488,9 +488,9 @@ class PropertyStatementPDFView(View):
 
         # Fetch data from the API
         # 104.248.207.69
-        property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        # property_statement_api_url = f'http://127.0.0.1:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
 
-        # property_statement_api_url = f'http://104.248.207.69:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
+        property_statement_api_url = f'http://104.248.207.69:8000/property/property-statements/?start_date={start_date_str}&end_date={end_date_str}&property_id={property_id}'
         try:
             api_response = requests.get(property_statement_api_url)
             api_data = api_response.json()
@@ -556,12 +556,12 @@ class PropertyStatementPDFView(View):
             'net_income': net_income,
         })
 
-        config = pdfkit.configuration(
-            wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
-        pdf = pdfkit.from_string(html_content, False, configuration=config)
-
-        # config = pdfkit.configuration()
+        # config = pdfkit.configuration(
+        #     wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
         # pdf = pdfkit.from_string(html_content, False, configuration=config)
+
+        config = pdfkit.configuration()
+        pdf = pdfkit.from_string(html_content, False, configuration=config)
 
         # Prepare response with PDF file
         response = HttpResponse(pdf, content_type='application/pdf')
