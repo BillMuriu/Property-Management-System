@@ -162,7 +162,7 @@ const AddProperty = () => {
                             fullWidth
                             variant="filled"
                             type="text"
-                            label="City"
+                            label="Town"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.city}
@@ -337,8 +337,8 @@ const AddProperty = () => {
                         </Accordion>
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Submit
                         </Button>
                     </Box>
                 </form>

@@ -109,10 +109,10 @@ const Expenses = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'property_name', headerName: 'Property', width: 150 },
-    { field: 'unit_id_or_name', headerName: 'Unit', width: 200 },
-    { field: 'amount', headerName: 'Amount', width: 150 },
+    { field: 'unit_id_or_name', headerName: 'Unit', width: 100 },
+    { field: 'amount', headerName: 'Amount', width: 100 },
     { field: 'payment_method', headerName: 'Payment Method', width: 150 },
-    { field: 'expense_category', headerName: 'Expense Category', width: 200 },
+    { field: 'expense_category', headerName: 'Expense Category', width: 100 },
 ];
 
   const properties = [
@@ -146,7 +146,7 @@ const Expenses = () => {
               marginLeft: "20px",
             }}
         >
-            <Header title="Expenses" subtitle="Welcome to the Expenses page" />
+            <Header title="Expenses"/>
 
 
             <Box
@@ -210,7 +210,7 @@ const Expenses = () => {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                  Maintenance Summary
+                  Expense Summary
                 </AccordionSummary>
                 <AccordionDetails
                   sx={{

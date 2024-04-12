@@ -16,7 +16,25 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+
+
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import DoorFrontIcon from '@mui/icons-material/DoorFront';
+import NetworkCheckIcon from '@mui/icons-material/NetworkCheck';
+import ConstructionIcon from '@mui/icons-material/Construction';
+
+import VideoFileIcon from '@mui/icons-material/VideoFile';
+
+import GroupsIcon from '@mui/icons-material/Groups';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import PaymentsIcon from '@mui/icons-material/Payments';
+
+import SummarizeIcon from '@mui/icons-material/Summarize';
+
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import MessageIcon from '@mui/icons-material/Message';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import useScrollbarStyles from "../../styles/scrollbarStyles";
 
@@ -71,7 +89,15 @@ const Sidenavbar = () => {
     const [selected, setSelected] = useState("Dashboard");
 
     const propertySubMenuActive = () => {
-        return selected === "Properties" || selected === "Units" || selected === "Utilities" || selected === "Maintenance" || selected === "Expenses";
+        return selected === "Properties" || selected === "Units" || selected === "Utilities" || selected === "Maintenance" || selected === "Property Expenses";
+    };
+
+    const tenantsSubMenuActive = () => {
+        return selected === "Tenants" || selected === "Invoices" || selected === "Payments" ;
+    };
+
+    const reportsSubMenuActive = () => {
+        return selected === "Property Reports" || selected === "Tenant Reports";
     };
 
 
@@ -172,22 +198,22 @@ const Sidenavbar = () => {
                     justifyContent="space-between"
                     alignItems="center"
                     ml="15px"
+                    mt="15px"
                 >
                     <img
-                        src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZEbi3dPqadfl34tFiMmboFKS7Big47OfWkw&usqp=CAU`}
+                        src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcwirhyfxAvNJeD9dB14otHpV7pytmSI-4xQ&usqp=CAU`}
                         alt="company-logo"
-                        width="50px"
-                        height="50px"
-                        style={{ borderRadius: "50%" }}
+                        
+                        style={{ borderRadius: "10%", height: "32px", width: "32px" }}
                     />
-                    <Typography variant="h3" color={colors.grey[100] } sx={{ marginLeft: '20px' }}>
-                        ADMINIS
+                    <Typography variant="h4" color={colors.grey[100] } sx={{ marginLeft: '20px', fontWeight: 900 }}>
+                        prop Track
                     </Typography>
                 </Box>
 
 
 
-                <IconButton onClick={broken ? () => setToggled((prev) => !prev) : () => setCollapsed(!collapsed)} >
+                <IconButton onClick={broken ? () => setToggled((prev) => !prev) : () => setCollapsed(!collapsed)} sx={{mt: "15px"}}>
                     <MenuOutlinedIcon />
                 </IconButton>
             </Box>
@@ -213,7 +239,7 @@ const Sidenavbar = () => {
                 <Item
                     title="Dashboard"
                     to="/"
-                    icon={<HomeOutlinedIcon />}
+                    icon={<DashboardIcon />}
                     selected={selected}
                     setSelected={setSelected}
                     broken={broken}
@@ -225,7 +251,7 @@ const Sidenavbar = () => {
                     active={propertySubMenuActive()}
                     defaultOpen={propertySubMenuActive()}
                     label="Property"
-                    icon={<ContactsOutlinedIcon />}
+                    icon={<ApartmentIcon />}
                     rootStyles={{
                         ['& > .ps-active' + menuClasses.button]: {
                           backgroundColor: colors.primary[400],
@@ -241,6 +267,7 @@ const Sidenavbar = () => {
                     <Item
                         title="Properties"
                         to="/properties"
+                        icon={<ApartmentIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -253,6 +280,7 @@ const Sidenavbar = () => {
                     <Item
                         title="Units"
                         to="/units"
+                        icon={<DoorFrontIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -262,6 +290,17 @@ const Sidenavbar = () => {
                     <Item
                         title="Utilities"
                         to="/utilities"
+                        icon={<NetworkCheckIcon />}
+                        selected={selected}
+                        setSelected={setSelected}
+                        broken={broken}
+                        setToggled={setToggled}
+                        setCollapsed={setCollapsed}
+                    />
+                    <Item
+                        title="Property Expenses"
+                        to="/expenses"
+                        icon={<BarChartOutlinedIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -271,15 +310,7 @@ const Sidenavbar = () => {
                     <Item
                         title="Maintenance"
                         to="/maintenance"
-                        selected={selected}
-                        setSelected={setSelected}
-                        broken={broken}
-                        setToggled={setToggled}
-                        setCollapsed={setCollapsed}
-                    />
-                    <Item
-                        title="Expenses"
-                        to="/expenses"
+                        icon={<ConstructionIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -289,21 +320,26 @@ const Sidenavbar = () => {
                 </SubMenu>
                 
                 <SubMenu
+                    active={tenantsSubMenuActive()}
+                    defaultOpen={tenantsSubMenuActive()}
                     label="Tenants"
-                    icon={<ContactsOutlinedIcon />}
+                    icon={<GroupsIcon />}
                     rootStyles={{
-                        ['.' + menuClasses.subMenuContent]: {
-                          backgroundColor: colors.primary[700],
+                        ['& > .ps-active' + menuClasses.button]: {
+                          backgroundColor: colors.primary[400],
+                          '&:hover': {
+                            backgroundColor: '#fff',
+                          },
                         },
                         ['.' + menuClasses.subMenuContent]: {
-                            backgroundColor: colors.primary[700],
-                            paddingLeft: '30px'
-                          },
+                          backgroundColor: colors.primary[400],
+                        },
                       }}
                 >
                     <Item
                         title="Tenants"
                         to="/tenants"
+                        icon={<GroupsIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -313,6 +349,7 @@ const Sidenavbar = () => {
                     <Item
                         title="Invoices"
                         to="/invoices"
+                        icon={<ReceiptIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -322,6 +359,7 @@ const Sidenavbar = () => {
                     <Item
                         title="Payments"
                         to="/payments"
+                        icon={<PaymentsIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -331,21 +369,26 @@ const Sidenavbar = () => {
                 </SubMenu>
 
                 <SubMenu
+                    active={reportsSubMenuActive()}
+                    defaultOpen={reportsSubMenuActive()}
                     label="Reports"
-                    icon={<ContactsOutlinedIcon />}
+                    icon={<ContentPasteIcon />}
                     rootStyles={{
-                        ['.' + menuClasses.subMenuContent]: {
-                          backgroundColor: colors.primary[700],
+                        ['& > .ps-active' + menuClasses.button]: {
+                          backgroundColor: colors.primary[400],
+                          '&:hover': {
+                            backgroundColor: '#fff',
+                          },
                         },
                         ['.' + menuClasses.subMenuContent]: {
-                            backgroundColor: colors.primary[700],
-                            paddingLeft: '30px'
-                          },
+                          backgroundColor: colors.primary[400],
+                        },
                       }}
                 >
                     <Item
                         title="Property Reports"
                         to="/property-reports"
+                        icon={<SummarizeIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -355,6 +398,7 @@ const Sidenavbar = () => {
                     <Item
                         title="Tenant Reports"
                         to="/tenant-reports"
+                        icon={<SummarizeIcon />}
                         selected={selected}
                         setSelected={setSelected}
                         broken={broken}
@@ -366,7 +410,7 @@ const Sidenavbar = () => {
                 <Item
                     title="Messaging"
                     to="/messaging"
-                    icon={<CalendarTodayOutlinedIcon />}
+                    icon={<MessageIcon />}
                     selected={selected}
                     setSelected={setSelected}
                     broken={broken}
@@ -376,7 +420,7 @@ const Sidenavbar = () => {
                 <Item
                     title="Admin Settings"
                     to="/settings"
-                    icon={<HelpOutlineOutlinedIcon />}
+                    icon={<SettingsIcon />}
                     selected={selected}
                     setSelected={setSelected}
                     broken={broken}
@@ -406,7 +450,7 @@ const Sidenavbar = () => {
                 <Item
                     title="Documentation"
                     to="/documentation"
-                    icon={<PieChartOutlineOutlinedIcon />}
+                    icon={<VideoFileIcon />}
                     selected={selected}
                     setSelected={setSelected}
                     broken={broken}

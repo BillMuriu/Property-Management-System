@@ -57,7 +57,7 @@ const year = date.getFullYear();
 return `${day} ${monthNames[monthIndex]} ${year}`;
 };
 
-const AddVariableUtility = () => {
+const AddFixedUtility = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -75,18 +75,8 @@ const AddVariableUtility = () => {
     const [unitData, setunitData] = useState([]);
     const [propertyData, setPropertyData] = useState('');
 
-    const [selectedUtility, setSelectedUtility] = useState('');
-    const [latestUtilities, setLatestUtilities] = useState([]);
-
     const [utilityData, setUtilityData] = useState([]);
     const [bulkInvoices, setBulkInvoices] = useState([]);
-
-    useEffect(() => {
-        if (selectedUtility) {
-            clearTextFields();
-        }
-    }, [selectedUtility]);
-
 
 
 
@@ -210,101 +200,33 @@ const AddVariableUtility = () => {
         fetchUnitData(propertyId);
     };
 
-
-    const updateTextField = (index) => {
-        const currentReadingElement = document.getElementById(`latestReading${index}`);
-        const initialInputValue = currentReadingElement ? currentReadingElement.value : null;
-
-        const textField = document.getElementById(`currentReading${index}`);
-        if (textField.value <= initialInputValue) {
-            textField.value = initialInputValue;
-        }
-
-    };
-
-
-    const clearTextFields = () => {
-        document.querySelectorAll('.unit-container').forEach((unitContainer, index) => {
-            const textField = document.getElementById(`currentReading${index}`);
-            textField.value = null;
-        });
-    };
-
-
-
-
-    const showUnitUtilities = (utilityItem) => {
-        setSelectedUtility(utilityItem);
-        // Filter the latest utility for each unit that matches the selected utility
-        const latestUtilitiesForSelectedUtility = unitData.map(unit => {
-            const utilitiesForSelectedUtility = unit.utilities.filter(utility => utility.utility_item === utilityItem);
-            return {
-                unitIdOrName: unit.unit_id_or_name,
-                latestUtility: utilitiesForSelectedUtility.length > 0 ? utilitiesForSelectedUtility[utilitiesForSelectedUtility.length - 1] : null
-            };
-        });
-        setLatestUtilities(latestUtilitiesForSelectedUtility);
-    };
-
-
-    // const createArrayOfObjects = () => {
-    //     let newArray = [];
-    //     document.querySelectorAll('.unit-container').forEach((unitContainer, index) => {
-    //         const unitId = unitContainer.dataset.unitId;
-    //         const property = unitContainer.dataset.property;
-    //         const utilityItem = unitContainer.dataset.utilityItem;
-    //         const currentReading = document.getElementById(`currentReading${index}`).value;
-
-    //         const currentReadingElement = document.getElementById(`latestReading${index}`);
-    //         const previousReading = currentReadingElement ? currentReadingElement.value : '0.00';
-
-    //         let newObj = {
-    //             unit: unitId,
-    //             property: property,
-    //             utility_item: utilityItem,
-    //             amount: "0.00",
-    //             current_reading: currentReading || previousReading,
-    //             month: "January",
-    //             previous_reading: previousReading,
-    //             is_variable: true,
-    //         };
-
-    //         newArray.push(newObj);
-    //     });
-    //     setArrayOfObjects(newArray);
-    // };
-
-
-
-
-    const bulkCreateUtilities = async () => {
+    const bulkCreateUtilities = async (values) => {
         try {
-            // if (!arrayOfObjects || arrayOfObjects.length === 0) {
-            //     throw new Error('Array of objects is empty or does not exist');
-            // }
             let newArray = [];
-            document.querySelectorAll('.unit-container').forEach((unitContainer, index) => {
-                const unitId = unitContainer.dataset.unitId;
-                const property = unitContainer.dataset.property;
-                const utilityItem = unitContainer.dataset.utilityItem;
-                const currentReading = document.getElementById(`currentReading${index}`).value;
 
-                const currentReadingElement = document.getElementById(`latestReading${index}`);
-                const previousReading = currentReadingElement ? currentReadingElement.value : '0.00';
+            if (Array.isArray(unitData) && unitData.length > 0) {
+                unitData.forEach((unit) => {
+                    const unitId = unit.id.toString();
+                    const property = unit.property.toString();
 
-                let newObj = {
-                    unit: unitId,
-                    property: property,
-                    utility_item: utilityItem,
-                    amount: "0.00",
-                    current_reading: currentReading || previousReading,
-                    month: "January",
-                    previous_reading: previousReading,
-                    is_variable: true,
-                };
-
-                newArray.push(newObj);
-            });
+                    // const utilityItem = values.utilityItem;
+            
+                    let newObj = {
+                        unit: unitId,
+                        property: property,
+                        utility_item: "Water",
+                        amount: "0.00",
+                        current_reading: "0.00",
+                        month: "January",
+                        previous_reading: "0.00",
+                        is_variable: false,
+                    };
+            
+                    newArray.push(newObj);
+                });
+            } else {
+                console.error("unitData is empty or not an array");
+            }
 
             console.log('Data to be sent to API:', newArray);
 
@@ -368,12 +290,6 @@ const AddVariableUtility = () => {
         setBulkInvoices(transformedData);
     };
 
-
-    useEffect(() => {
-        // Call transformUtilityDataToBulkInvoices whenever utilityData changes
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        transformUtilityDataToBulkInvoices();
-    }, [utilityData]);
 
     const bulkCreateInvoices = async (values) => {
         try {
@@ -550,8 +466,8 @@ const AddVariableUtility = () => {
                             error={!!touched.utilityItem && !!errors.utilityItem}
                             helperText={touched.utilityItem && errors.utilityItem}
                         >
-                            <MenuItem value="Water" onClick={() => showUnitUtilities("Water")}>Water</MenuItem>
-                            <MenuItem value="Electricity" onClick={() => showUnitUtilities("Electricity")}>Electricity</MenuItem>
+                            <MenuItem value="Water">Water</MenuItem>
+                            <MenuItem value="Electricity">Garbage</MenuItem>
                         </TextField>
 
                     </Box>
@@ -563,75 +479,7 @@ const AddVariableUtility = () => {
                             marginTop: '20px'
                         }}
                     >
-                        {selectedUtility && unitData && unitData.length > 0 ? (
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Unit</TableCell>
-                                        <TableCell>Previous Readings</TableCell>
-                                        <TableCell>Current Readings</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {unitData.map((unit, index) => (
-                                        <TableRow key={unit.id} 
-                                            className="unit-container"
-                                            data-unit-id={unit.id}
-                                            data-property={unit.property}
-                                            data-utility-item={selectedUtility}
-                                        >
-                                            <TableCell>{unit.unit_id_or_name}</TableCell>
-                                            <TableCell>
-                                                {latestUtilities.map(item => (
-                                                    item.unitIdOrName === unit.unit_id_or_name && (
-                                                        <div key={`${item.unitIdOrName}-latest`}>
-                                                            <Typography>
-                                                                {item.latestUtility ? item.latestUtility.current_reading : ''} ({item.latestUtility ? formatDate(item.latestUtility.created_at) : 'N/A'})
-                                                            </Typography>
-                                                            {/* Hidden input to store the current_reading value */}
-                                                            <input type="hidden" id={`latestReading${index}`} value={item.latestUtility ? item.latestUtility.current_reading : '0.00'} />
-                                                        </div>
-                                                    )
-                                                ))}
-                                            </TableCell>
-                                            <TableCell>
-                                                <TextField
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    fullWidth
-                                                    variant="filled"
-                                                    type="number"
-                                                    label="Current Reading *"
-                                                    onBlur={handleBlur}
-                                                    className="current-reading-input"
-                                                    onChange={handleChange}
-                                                    value={values[`currentReading${index}`]}
-                                                    name={`currentReading${index}`}
-                                                    error={!!touched[`currentReading${index}`] && !!errors[`currentReading${index}`]}
-                                                    helperText={touched[`currentReading${index}`] && errors[`currentReading${index}`]}
-                                                    id={`currentReading${index}`}
-                                                    onClick={() => updateTextField(index)} 
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        ) : (
-                            <Typography>No unit data available</Typography>
-                        )}
-                    </Box>
-
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '10px'
-                        }}
-                    >
-                        {/* <Button variant="outlined" onClick={createArrayOfObjects}>Create Array of Objects</Button> */}
-                        {/* <Button variant="outlined" onClick={clearTextFields}>Clear Textfield</Button> */}
+                                     
                     </Box>
 
                 </form>
@@ -680,4 +528,4 @@ const initialValues = {
     isVariable: true,
 };
 
-export default AddVariableUtility
+export default AddFixedUtility

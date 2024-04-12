@@ -18,9 +18,12 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 import React from 'react'
 
+import { Link, useNavigate } from 'react-router-dom';
+
 const UpdateProperty = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const navigate = useNavigate();
 
     const { id } = useParams();
     console.log('Property ID:', id);
@@ -158,9 +161,19 @@ const UpdateProperty = () => {
             if (!res.ok) {
                 throw new Error('Network response was not ok');
             }
-    
-            showSuccessMessage();
-            // Optionally, you can perform additional actions here after successful update
+
+            if (res.ok) {
+                showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-property/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
+            } else {
+                // Handle other success responses
+                console.log('Unexpected response:', res.json());
+            }
     
         } catch (error) {
             console.error('Error updating property:', error);
@@ -185,7 +198,7 @@ const UpdateProperty = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Update the {} Property"/>
+            <Header title="Edit Property"/>
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -410,8 +423,8 @@ const UpdateProperty = () => {
                         </Accordion>
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Update Property Data
                         </Button>
                     </Box>
                 </form>

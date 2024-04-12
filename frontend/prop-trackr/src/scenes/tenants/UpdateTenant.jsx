@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -17,6 +17,7 @@ import { useSnackbar } from 'notistack';
 import { BASE_URL } from "../../config";
 
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 
 const UpdateTenant = () => {
     const theme = useTheme();
@@ -24,6 +25,13 @@ const UpdateTenant = () => {
 
     const [tenantData, setTenantData] = useState('');
     const [initialValues, setInitialValues] = useState(null);
+
+    const navigate = useNavigate();
+
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
 
     const [unitData, setunitData] = useState('');
     const [propertyData, setPropertyData] = useState('');
@@ -34,7 +42,7 @@ const UpdateTenant = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     const showSuccessMessage = () => {
-        enqueueSnackbar('Unit was updated successfully', { 
+        enqueueSnackbar('Tenant was updated successfully', { 
           variant: 'success', 
           autoHideDuration: 2000, 
           anchorOrigin: {
@@ -256,10 +264,18 @@ const UpdateTenant = () => {
     
             if (res.ok) {
                 showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-tenant/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
             } else {
                 // Handle other success responses
                 console.log('Unexpected response:', res.json());
             }
+
+
         } catch (error) {
             console.error('Error creating property:', error.message);
             showFailureMessage()
@@ -270,7 +286,7 @@ const UpdateTenant = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Add a property"/>
+            <Header title="Edit Tenant Data"/>
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -624,8 +640,8 @@ const UpdateTenant = () => {
                         </Accordion>
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Edit tenant
                         </Button>
                     </Box>
                 </form>

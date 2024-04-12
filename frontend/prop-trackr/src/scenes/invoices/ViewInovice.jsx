@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -7,15 +7,32 @@ import Header from "../../components/Header";
 
 import React from 'react'
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
+import Divider from '@mui/material/Divider';
+
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { useSnackbar } from 'notistack';
 
 import { BASE_URL } from "../../config";
 
+import { Link, useNavigate } from 'react-router-dom';
+
 const ViewInvoice = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
+
+    
+    const navigate = useNavigate();
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     const [invoiceData, setInvoiceData] = useState('');
     const [initialValues, setInitialValues] = useState(null);
@@ -55,9 +72,11 @@ const ViewInvoice = () => {
     const checkoutSchema = yup.object().shape({
         property: yup.string().required("Property is required"),
         tenant: yup.string().required("Tenant is required"),
-        invoice_date: yup.date().required("Invoice date is required"),
-        invoice_status: yup.string().required("Invoice status is required"),
-        memo: yup.string().nullable(),
+        invoiceDate: yup.date().required("Invoice date is required"),
+        invoiceStatus: yup.string().required("Invoice status is required"),
+        itemName: yup.string().nullable(),
+        amount: yup.number().nullable(),
+        description: yup.string().nullable(),
     });
 
     useEffect(() => {
@@ -93,6 +112,7 @@ const ViewInvoice = () => {
     }, [id]);
 
     useEffect(() => {
+        setOpenBackdrop(true);
         const fetchPropertyData = async () => {
             try {
                 // Make a GET request to fetch user landlord data
@@ -123,6 +143,8 @@ const ViewInvoice = () => {
                 // Handle any errors that occur during the request
                 console.error('Error fetching user property data:', error);
                 alert('Failed to fetch user property status');
+            } finally {
+                setOpenBackdrop(false);
             }
         };
     
@@ -132,6 +154,7 @@ const ViewInvoice = () => {
 
 
     const fetchTenantData = async (propertyId) => {
+        setOpenBackdrop(true);
         try {
             // Make a GET request to fetch unit data for a specific property
             const res = await fetch(`${BASE_URL}/tenants/?property=${propertyId}`, {
@@ -156,6 +179,8 @@ const ViewInvoice = () => {
             // Handle any errors that occur during the request
             console.error('Error fetching unit data:', error);
             alert('Failed to fetch unit data');
+        } finally {
+            setOpenBackdrop(false);
         }
     };
 
@@ -169,8 +194,10 @@ const ViewInvoice = () => {
                 property: invoiceData.property, // Initial value for property
                 tenant: invoiceData.tenant,
                 invoice_date: invoiceData.invoice_date,
+                item_name: invoiceData.item_name,
                 invoice_status: invoiceData.invoice_status,
-                memo: invoiceData.memo,
+                description: invoiceData.description,
+                amount: invoiceData.amount,
             });
     
             // Call fetchUnitData with the property ID
@@ -188,7 +215,7 @@ const ViewInvoice = () => {
                 body: JSON.stringify({
                     "invoice_date": values.invoice_date,
                     "invoice_status": values.invoice_status,
-                    "memo": values.memo,
+                    "description": values.description,
                     "property": values.property,
                     "tenant": values.tenant
                 }),
@@ -214,7 +241,19 @@ const ViewInvoice = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Update invoice"/>
+            {tenantData && (
+                 <Header title={`Invoice  - ${invoiceData.id}`}/>
+            )}
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -231,7 +270,57 @@ const ViewInvoice = () => {
                 }) => (
                 <form onSubmit={handleSubmit}>
                     <Box
-                        maxWidth="92%"
+                        sx={{
+                            width: '95%',
+                            display: "flex",
+                            justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                            gap: "10px",
+                            marginBottom: "20px",
+                            flexDirection: {
+                                xs: "column",
+                                sm: "row",
+                            },
+                            alignItems: "center", 
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                                alignItems: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <Link to="" style={{ textDecoration: 'none' }}>
+                                <Button 
+                                    variant="outlined" 
+                                    startIcon={<ArrowBackIcon />}
+                                    onClick={handleGoBack} 
+                                >
+                                    Back
+                                </Button>
+                            </Link>
+                        </Box>
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                                gap: "10px",
+                                width: { xs: '100%', sm: '50%' },
+                            }}
+                        >
+                            <Link to="/add-invoice" style={{ textDecoration: 'none' }}>
+                                <Button variant="contained" startIcon={<AddIcon />}>Add an invoice</Button>
+                            </Link>
+                        </Box>
+
+                        
+                    </Box>
+
+
+                    <Box
+                        maxWidth="95%"
                         display="flex"
                         flexDirection="column"
                         gap="20px"
@@ -248,6 +337,9 @@ const ViewInvoice = () => {
                                 name="property"
                                 error={!!touched.property && !!errors.property}
                                 helperText={touched.property && errors.property}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
                             >
                                 {propertyData.map(property => (
                                     <MenuItem 
@@ -284,6 +376,9 @@ const ViewInvoice = () => {
                                 name="tenant"
                                 error={!!touched.tenant && !!errors.tenant}
                                 helperText={touched.tenant && errors.tenant}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
                             >
                                 {tenantData.map(tenant => (
                                     <MenuItem 
@@ -317,7 +412,43 @@ const ViewInvoice = () => {
                             name="invoice_date"
                             error={!!touched.invoice_date && !!errors.invoice_date}
                             helperText={touched.invoice_date && errors.invoice_date}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
+
+                        <TextField
+                            fullWidth
+                            variant="filled"
+                            label="Amount *"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.amount}
+                            name="amount"
+                            type="number" // Set the input type to 'number' to enforce numeric input
+                            error={!!touched.amount && !!errors.amount}
+                            helperText={touched.amount && errors.amount}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                        
+                        <TextField
+                            fullWidth
+                            variant="filled"
+                            type="text"
+                            label="Item Name *"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.item_name}
+                            name="invoice_status"
+                            error={!!touched.item_name && !!errors.item_name}
+                            helperText={touched.item_name && errors.item_name}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                    
 
                         <TextField
                             fullWidth
@@ -330,6 +461,9 @@ const ViewInvoice = () => {
                             name="invoice_status"
                             error={!!touched.invoice_status && !!errors.invoice_status}
                             helperText={touched.invoice_status && errors.invoice_status}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
@@ -338,23 +472,52 @@ const ViewInvoice = () => {
                             rows={4}
                             variant="filled"
                             type="text"
-                            label="Memo (optional)"
+                            label="description (optional)"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values.memo}
-                            name="memo"
-                            error={!!touched.memo && !!errors.memo}
-                            helperText={touched.memo && errors.memo}
+                            value={values.description}
+                            name="description"
+                            error={!!touched.description && !!errors.description}
+                            helperText={touched.description && errors.description}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
 
 
                     </Box>
-                    <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                    
+                    
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "95%",
+                            mt: 3,
+                            marginBottom: "30px"
+                        }}
+                    >
+                        <Link to="" style={{ textDecoration: 'none' }}>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<ArrowBackIcon />}
+                                onClick={handleGoBack} 
+                            >
+                                Back
+                            </Button>
+                        </Link>
+                        
+                        <Button
+                            component={Link}
+                            to={`/update-invoice/${id}`}
+                            variant="contained"
+                        >
+                            Edit
                         </Button>
                     </Box>
+
                 </form>
                 )}
             </Formik>) : (

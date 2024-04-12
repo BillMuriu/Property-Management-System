@@ -37,13 +37,14 @@ import React from 'react'
 
 
 const PropertyReports = () => {
-  const handleDownloadPDF = () => {
-    window.open('http://127.0.0.1:8000/property/property-statements/pdf/?start_date=2024-02-17&end_date=2024-2-19', '_blank');
-  };
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [propertyData, setPropertyData] = useState('');
   const [propertyStatementData, setPropertyStatementData] = useState(null);
+
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [propertyId, setPropertyId] = useState('');
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -124,6 +125,10 @@ const handleFormSubmit = async (values) => {
           property_id: values.property,
       }).toString();
 
+      setStartDate(values.startDate);
+      setEndDate(values.endDate);
+      setPropertyId(values.property);
+
       // Construct the complete URL with dynamic query parameters
       const url = `${BASE_URL}/property/property-statements/?${queryParams}`;
 
@@ -149,6 +154,19 @@ const handleFormSubmit = async (values) => {
       console.error('Error fetching property statements:', error.message);
   }
 };
+
+const handleDownloadPDF = () => {
+  const queryParams = new URLSearchParams({
+      start_date: startDate,
+      end_date: endDate,
+      property_id: propertyId,
+  }).toString();
+
+  const url = `${BASE_URL}/property/property-statement-pdf/?${queryParams}`;
+
+  window.open(url, '_blank');
+};
+
 
 
   let formattedTenants = [];
@@ -286,7 +304,7 @@ const handleFormSubmit = async (values) => {
                         marginTop: '20px',
                       }}
                     >
-                        <Button type="submit" color="secondary" variant="contained">
+                        <Button type="submit" variant="contained">
                             Submit
                         </Button>
                     </Box>
@@ -356,23 +374,23 @@ const handleFormSubmit = async (values) => {
                                 <TableBody>
                                   <StyledTableRow>
                                     <StyledTableCell>Total Amount Paid</StyledTableCell>
-                                    <StyledTableCell align="right">${propertyStatementData && propertyStatementData.total_amount_paid}</StyledTableCell>
+                                    <StyledTableCell align="right">KES. {propertyStatementData && propertyStatementData.total_amount_paid}</StyledTableCell>
                                   </StyledTableRow>
                                   <StyledTableRow>
                                     <StyledTableCell>Total Expenses Amount</StyledTableCell>
-                                    <StyledTableCell align="right">${propertyStatementData && propertyStatementData.total_expenses_amount}</StyledTableCell>
+                                    <StyledTableCell align="right">KES. {propertyStatementData && propertyStatementData.total_expenses_amount}</StyledTableCell>
                                   </StyledTableRow>
                                   <StyledTableRow>
                                     <StyledTableCell>Earning Before Tax</StyledTableCell>
-                                    <StyledTableCell align="right">${propertyStatementData && propertyStatementData.earning_before_tax}</StyledTableCell>
+                                    <StyledTableCell align="right">KES. {propertyStatementData && propertyStatementData.earning_before_tax}</StyledTableCell>
                                   </StyledTableRow>
                                   <StyledTableRow>
-                                    <StyledTableCell>Tax Amount</StyledTableCell>
-                                    <StyledTableCell align="right">${propertyStatementData && propertyStatementData.tax_amount}</StyledTableCell>
+                                    <StyledTableCell>Tax Amount (7%)</StyledTableCell>
+                                    <StyledTableCell align="right">KES. {propertyStatementData && propertyStatementData.tax_amount}</StyledTableCell>
                                   </StyledTableRow>
                                   <StyledTableRow>
                                     <StyledTableCell>Net Income</StyledTableCell>
-                                    <StyledTableCell align="right">${propertyStatementData && propertyStatementData.net_income}</StyledTableCell>
+                                    <StyledTableCell align="right">KES. {propertyStatementData && propertyStatementData.net_income}</StyledTableCell>
                                   </StyledTableRow>
                                 </TableBody>
                               </Table>

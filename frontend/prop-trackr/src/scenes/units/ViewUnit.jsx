@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { tokens } from "../../theme";
@@ -27,6 +27,12 @@ const ViewUnit = () => {
     const [initialValues, setInitialValues] = useState(null);
     const [propertyData, setPropertyData] = useState('');
 
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
+
     const { id } = useParams();
     console.log('Property ID:', id);
 
@@ -37,6 +43,7 @@ const ViewUnit = () => {
     };
 
     useEffect(() => {
+        setOpenBackdrop(true);
         const fetchunitData = async () => {
             try {
                 // Make a GET request to fetch a particular property instance by ID
@@ -62,6 +69,7 @@ const ViewUnit = () => {
     
                 console.log(fetchedunitData);
                 setunitData(fetchedunitData);
+                setOpenBackdrop(false);
     
             } catch (error) {
                 // Handle any errors that occur during the request
@@ -129,9 +137,34 @@ const ViewUnit = () => {
         console.log(values);
     };
   return (
-    <div>
-        <Box style={{marginLeft: "20px"}}>
-            <Header title={unitData.unit_id_or_name}/>
+    <div
+        style={{
+            height: '100%',
+        }}
+    >
+        <Box 
+            style={{
+                marginLeft: "20px",
+                marginBottom: "20px"
+            }}
+        >
+            {unitData && (
+                <Header title={`${unitData.unit_id_or_name} - ${unitData.property_name}`} />
+            )}
+
+
+
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
+
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -321,12 +354,42 @@ const ViewUnit = () => {
 
 
                     </Box>
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "95%",
+                            mt: 3,
+                            marginBottom: "30px"
+                        }}
+                    >
+                        <Link to="" style={{ textDecoration: 'none' }}>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<ArrowBackIcon />}
+                                onClick={handleGoBack} 
+                            >
+                                Back
+                            </Button>
+                        </Link>
+                        
+                        <Button
+                            component={Link}
+                            to={`/update-unit/${id}`}
+                            variant="contained"
+                        >
+                            Edit
+                        </Button>
+                    </Box>
                 </form> 
                 )}
             </Formik> ) : (
             <p>Loading...</p>
         )}
         </Box>
+
     </div>
   )
 }

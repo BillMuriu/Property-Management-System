@@ -130,7 +130,7 @@ const ViewProperty = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="View Property"/>
+            <Header title={propertyData.name}/>
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -439,9 +439,32 @@ const ViewProperty = () => {
                             </AccordionDetails>
                         </Accordion>
                     </Box>
-                    <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "95%",
+                            mt: 3,
+                            mb: 3
+                        }}
+                    >
+                        <Link to="" style={{ textDecoration: 'none' }}>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<ArrowBackIcon />}
+                                onClick={handleGoBack} 
+                            >
+                                Back
+                            </Button>
+                        </Link>
+                        
+                        <Button
+                            component={Link}
+                            to={`/update-property/${id}`}
+                            variant="contained"
+                        >
+                            Edit
                         </Button>
                     </Box>
                 </form>

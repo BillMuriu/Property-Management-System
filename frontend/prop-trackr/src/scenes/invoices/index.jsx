@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery } from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery, CircularProgress } from "@mui/material";
 import Header from "../../components/Header";
 import { InvoiceData } from "../../mock-data/invoicedata/invoicedata";
 import { DataGrid } from "@mui/x-data-grid";
@@ -110,12 +110,24 @@ const Invoices = () => {
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'tenant_name', headerName: 'Tenant', width: 200 },
-    { field: 'property_name', headerName: 'Property', width: 200 },
-    { field: 'invoice_date', headerName: 'Invoice Date', width: 200 },
-    { field: 'invoice_status', headerName: 'Invoice Status', width: 200 },
+    { 
+        field: 'id', 
+        headerName: 'ID', 
+        width: 100,
+        renderCell: (params) => (
+            <Link to={`/view-invoice/${params.value}`}>
+                {params.value}
+            </Link>
+        ),
+    },
+    { field: 'tenant_name', headerName: 'Tenant', width: 100 },
+    { field: 'property_name', headerName: 'Property', width: 100 },
+    { field: 'amount', headerName: 'Amount', width: 100 },
+    { field: 'invoice_date', headerName: 'Invoice Date', width: 100 },
+    { field: 'invoice_status', headerName: 'Invoice Status', width: 100 },
+    { field: 'item_name', headerName: 'Item Name', width: 100 },
 ];
+
   const properties = [
     {
       value: 'property1',
@@ -419,7 +431,9 @@ const Invoices = () => {
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={openBackdrop}
                 onClick={handleClose}
-            ></Backdrop>
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
 
 
             <Divider

@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -18,6 +18,13 @@ const AddUnit = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [propertyData, setPropertyData] = useState('');
+
+    
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
 
     const navigate = useNavigate();
 
@@ -46,6 +53,8 @@ const AddUnit = () => {
     };
 
     useEffect(() => {
+        setOpenBackdrop(true);
+
         const fetchPropertyData = async () => {
             try {
                 // Make a GET request to fetch user landlord data
@@ -76,6 +85,8 @@ const AddUnit = () => {
                 // Handle any errors that occur during the request
                 console.error('Error fetching user property data:', error);
                 alert('Failed to fetch user property status');
+            } finally {
+                setOpenBackdrop(false); // Close the backdrop regardless of success or failure
             }
         };
     
@@ -127,6 +138,17 @@ const AddUnit = () => {
     <div>
         <Box style={{marginLeft: "20px"}}>
             <Header title="Add a unit"/>
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
+
             <Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -209,6 +231,9 @@ const AddUnit = () => {
                         />
 
                         <FormControlLabel
+                            sx={{
+                                width: "150px"
+                            }}
                             control={
                                 <Checkbox
                                     checked={values.occupied}
@@ -254,8 +279,8 @@ const AddUnit = () => {
 
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Creat Unit
                         </Button>
                     </Box>
                 </form>

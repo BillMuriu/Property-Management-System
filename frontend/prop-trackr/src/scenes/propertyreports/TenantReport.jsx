@@ -38,7 +38,7 @@ import {
   
   const TenantReports = () => {
     const handleDownloadPDF = () => {
-      window.open('http://127.0.0.1:8000/property/property-statements/pdf/?start_date=2024-02-17&end_date=2024-2-19', '_blank');
+     console.log("Hello world!");
     };
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -349,7 +349,7 @@ const handleMenuItemClick = (propertyId) => {
                           marginTop: '20px',
                         }}
                       >
-                          <Button type="submit" color="secondary" variant="contained">
+                          <Button type="submit" variant="contained">
                               Submit
                           </Button>
                       </Box>
@@ -388,39 +388,6 @@ const handleMenuItemClick = (propertyId) => {
                         },
                     }}
                     >
-                    {/* <Box
-                        sx={{
-                        width: '100%',
-                        }}
-                    >
-                        <h3>Summary</h3>
-                        <TableContainer component={Paper}>
-                        <Table aria-label="summary table">
-                            <TableBody>
-                            <StyledTableRow>
-                                <StyledTableCell>Total Amount Paid</StyledTableCell>
-                                <StyledTableCell align="right">${propertyStatementData && propertyStatementData.total_amount_paid}</StyledTableCell>
-                            </StyledTableRow>
-                            <StyledTableRow>
-                                <StyledTableCell>Total Expenses Amount</StyledTableCell>
-                                <StyledTableCell align="right">${propertyStatementData && propertyStatementData.total_expenses_amount}</StyledTableCell>
-                            </StyledTableRow>
-                            <StyledTableRow>
-                                <StyledTableCell>Earning Before Tax</StyledTableCell>
-                                <StyledTableCell align="right">${propertyStatementData && propertyStatementData.earning_before_tax}</StyledTableCell>
-                            </StyledTableRow>
-                            <StyledTableRow>
-                                <StyledTableCell>Tax Amount</StyledTableCell>
-                                <StyledTableCell align="right">${propertyStatementData && propertyStatementData.tax_amount}</StyledTableCell>
-                            </StyledTableRow>
-                            <StyledTableRow>
-                                <StyledTableCell>Net Income</StyledTableCell>
-                                <StyledTableCell align="right">${propertyStatementData && propertyStatementData.net_income}</StyledTableCell>
-                            </StyledTableRow>
-                            </TableBody>
-                        </Table>
-                        </TableContainer>
-                    </Box> */}
                 </Box>
   
                 <Box
@@ -429,7 +396,12 @@ const handleMenuItemClick = (propertyId) => {
                   }}
                 >
                   <h3>Detailed Tenant Data</h3>
-                  <TableContainer component={Paper}>
+                  <TableContainer 
+                    component={Paper}
+                    // sx={{
+                    //   position: 'relative'
+                    // }}
+                  >
                     <Table
                         aria-label="customized table"
                         stickyHeader
@@ -438,8 +410,14 @@ const handleMenuItemClick = (propertyId) => {
                         }}
                     >
                         <TableHead>
-                        <TableRow>
-                            <StyledTableCell>Tenant ID</StyledTableCell>
+                        <TableRow
+                          // sx={{ 
+                          //   position: 'sticky', 
+                          //   top: 0, 
+                          //   zIndex: 'sticky',
+                          // }}
+                        >
+                            <StyledTableCell>Transaction ID</StyledTableCell>
                             <StyledTableCell align="right">Transaction Date</StyledTableCell>
                             <StyledTableCell align="right">Item</StyledTableCell>
                             <StyledTableCell align="right">Money Due</StyledTableCell>
@@ -450,20 +428,24 @@ const handleMenuItemClick = (propertyId) => {
                         </TableHead>
 
                         <TableBody>
-                        {tenantStatementData && tenantStatementData.map((tenant, index) => (
-                            <StyledTableRow key={index}>
-                            <StyledTableCell component="th" scope="row">
-                                {tenant.id}
-                            </StyledTableCell>
-                            <StyledTableCell align="right">{tenant.transaction_date}</StyledTableCell>
-                            <StyledTableCell align="right">{tenant.item}</StyledTableCell>
-                            <StyledTableCell align="right">{tenant.money_due}</StyledTableCell>
-                            <StyledTableCell align="right">{tenant.money_paid}</StyledTableCell>
-                            <StyledTableCell align="right">{tenant.running_balance}</StyledTableCell>
-                            <StyledTableCell align="right">{tenant.description}</StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                        </TableBody>
+                          {tenantStatementData &&
+                              tenantStatementData
+                                  .sort((a, b) => b.id - a.id) // Sort by ID in descending order
+                                  .map((tenant, index) => (
+                                      <StyledTableRow key={index}>
+                                          <StyledTableCell component="th" scope="row">
+                                              {tenant.id}
+                                          </StyledTableCell>
+                                          <StyledTableCell align="right">{tenant.transaction_date}</StyledTableCell>
+                                          <StyledTableCell align="right">{tenant.item}</StyledTableCell>
+                                          <StyledTableCell align="right">{tenant.money_due}</StyledTableCell>
+                                          <StyledTableCell align="right">{tenant.money_paid}</StyledTableCell>
+                                          <StyledTableCell align="right">{tenant.running_balance}</StyledTableCell>
+                                          <StyledTableCell align="right">{tenant.description}</StyledTableCell>
+                                      </StyledTableRow>
+                                  ))}
+                      </TableBody>
+
                     </Table>
                     </TableContainer>
 

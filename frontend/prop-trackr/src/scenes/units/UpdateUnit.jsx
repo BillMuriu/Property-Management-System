@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { tokens } from "../../theme";
@@ -12,6 +12,8 @@ import { BASE_URL } from "../../config";
 
 import React from 'react'
 
+import { Link, useNavigate } from 'react-router-dom';
+
 const UpdateUnit = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -19,6 +21,14 @@ const UpdateUnit = () => {
     const [unitData, setunitData] = useState('');
     const [initialValues, setInitialValues] = useState(null);
     const [propertyData, setPropertyData] = useState('');
+
+    const navigate = useNavigate();
+
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
 
     const { id } = useParams();
     console.log('Property ID:', id);
@@ -59,6 +69,7 @@ const UpdateUnit = () => {
     });
 
     useEffect(() => {
+        setOpenBackdrop(true);
         const fetchunitData = async () => {
             try {
                 // Make a GET request to fetch a particular property instance by ID
@@ -84,6 +95,7 @@ const UpdateUnit = () => {
     
                 console.log(fetchedunitData);
                 setunitData(fetchedunitData);
+                setOpenBackdrop(false);
     
             } catch (error) {
                 // Handle any errors that occur during the request
@@ -169,8 +181,18 @@ const UpdateUnit = () => {
                 throw new Error('Network response was not ok');
             }
     
-            showSuccessMessage();
-            // Optionally, you can perform additional actions here after successful update
+            if (res.ok) {
+                showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-unit/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
+            } else {
+                // Handle other success responses
+                console.log('Unexpected response:', res.json());
+            }
     
         } catch (error) {
             console.error('Error updating property:', error);
@@ -184,7 +206,18 @@ const UpdateUnit = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Update {}"/>
+            <Header title={unitData.unit_id_or_name}/>
+
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -267,6 +300,9 @@ const UpdateUnit = () => {
                         />
 
                         <FormControlLabel
+                            sx={{
+                                width: "150px"
+                            }}
                             control={
                                 <Checkbox
                                     checked={values.occupied}
@@ -310,8 +346,8 @@ const UpdateUnit = () => {
                         />
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Update
                         </Button>
                     </Box>
                 </form> 

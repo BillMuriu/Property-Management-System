@@ -126,21 +126,21 @@ const Units = () => {
 }
 
 const columns = [
+  { field: 'id', headerName: 'ID', width: 100 },
   { 
-      field: 'id', 
-      headerName: 'ID', 
-      width: 100,
+      field: 'unit_id_or_name', 
+      headerName: 'Unit ID/Name', 
+      width: 120,
       renderCell: (params) => (
           <Link to={`/view-unit/${params.row.id}`}>
               {params.value}
           </Link>
       ),
   },
-  { field: 'unit_id_or_name', headerName: 'Unit ID/Name', width: 200 },
-  { field: 'property_name', headerName: 'Property', width: 200 },
-  { field: 'occupied', headerName: 'Occupied', width: 150 },
-  { field: 'rent_amount', headerName: 'Rent Amount', width: 150 },
-  { field: 'tax_rate', headerName: 'Tax Rate', width: 150 },
+  { field: 'property_name', headerName: 'Property', width: 120 },
+  { field: 'occupied', headerName: 'Occupied', width: 120 },
+  { field: 'rent_amount', headerName: 'Rent Amount', width: 120 },
+  { field: 'tax_rate', headerName: 'Tax Rate', width: 120 },
 ];
 
 
@@ -263,32 +263,7 @@ const columns = [
                           }}
                       >
                           <Typography variant="h5" component="div" gutterBottom>
-                              Total Properties
-                          </Typography>
-                          <Divider sx={{ width: '10%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
-                          <Typography variant="h3" component="div" style={{ fontWeight: 'bold' }}>
-                              {unitData.length}
-                          </Typography>
-                      </CardContent>
-                  </Card>
-
-                  <Card
-                      sx={{
-                          width: { xs: '95%', sm: '200px' },
-                          padding: 2,
-                      }}
-                      variant="outlined"
-                  >
-                      <CardContent
-                          sx={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                          }}
-                      >
-                          <Typography variant="h5" component="div" gutterBottom>
-                              Total Properties
+                              Total Units
                           </Typography>
                           <Divider sx={{ width: '10%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
                           <Typography variant="h3" component="div" style={{ fontWeight: 'bold' }}>
@@ -415,21 +390,26 @@ const columns = [
 
             <DataGrid
                 sx={{
-                    maxWidth: '95%',
-                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
-                        width: '10px',
-                    },
-                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-track': {
-                        background: colors.grey[700],
-                    },
-                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                        backgroundColor: colors.primary[600],
-                        borderRadius: '5px',
-                    },
-                    '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover': {
-                        background: '#555',
-                    },
-                }}
+                  maxWidth: '95%',
+                  '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
+                      width: '10px',
+                  },
+                  
+                  '& .MuiDataGrid-columnHeaders': {
+                      backgroundColor: colors.grey[900],
+                  },    
+
+                  '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-track': {
+                      background: colors.grey[900],
+                  },
+                  '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
+                      backgroundColor: colors.grey[800],
+                      borderRadius: '5px',
+                  },
+                  '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover': {
+                  background: '#555',
+                  },
+              }}
                 checkboxSelection 
                 rows={processedunitData} 
                 columns={columns} 

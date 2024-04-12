@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -10,6 +10,12 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
+import AddIcon from '@mui/icons-material/Add';
+import Divider from '@mui/material/Divider';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 
@@ -17,10 +23,23 @@ import { BASE_URL } from "../../config";
 
 import React from 'react'
 
+import { Link, useNavigate } from 'react-router-dom';
+
 const ViewTenant = () => {
     
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+    const navigate = useNavigate();
+
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     const [tenantData, setTenantData] = useState('');
     const [initialValues, setInitialValues] = useState(null);
@@ -61,6 +80,7 @@ const ViewTenant = () => {
 
 
     useEffect(() => {
+        setOpenBackdrop(true);
         const fetchTenantData = async () => {
             try {
                 // Make a GET request to fetch user landlord data
@@ -85,6 +105,8 @@ const ViewTenant = () => {
                 // Handle any errors that occur during the request
                 console.error('Error fetching user property data:', error);
                 alert('Failed to fetch maintenance data status');
+            } finally {
+                setOpenBackdrop(false);
             }
         };
     
@@ -200,7 +222,23 @@ const ViewTenant = () => {
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
-            <Header title="Add a property"/>
+            
+            {tenantData && (
+                <Header title={`${tenantData.first_name} ${tenantData.last_name}`} />
+            )}
+
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
+
+
             {initialValues ? (<Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -216,6 +254,54 @@ const ViewTenant = () => {
                 setFieldValue,
                 }) => (
                 <form onSubmit={handleSubmit}>
+                    <Box
+                        sx={{
+                            width: '95%',
+                            display: "flex",
+                            justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                            gap: "10px",
+                            marginBottom: "20px",
+                            flexDirection: {
+                                xs: "column",
+                                sm: "row",
+                            },
+                            alignItems: "center", 
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                                alignItems: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <Link to="" style={{ textDecoration: 'none' }}>
+                                <Button 
+                                    variant="outlined" 
+                                    startIcon={<ArrowBackIcon />}
+                                    onClick={handleGoBack} 
+                                >
+                                    Back
+                                </Button>
+                            </Link>
+                        </Box>
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: {sx: 'flex-start', sm: 'flex-end'},
+                                gap: "10px",
+                                width: { xs: '100%', sm: '50%' },
+                            }}
+                        >
+                            <Link to="/add-tenant" style={{ textDecoration: 'none' }}>
+                                <Button variant="contained" startIcon={<AddIcon />}>Add another tenant</Button>
+                            </Link>
+                        </Box>
+
+                        
+                    </Box>
                     <Box
                         maxWidth="92%"
                         display="flex"
@@ -553,11 +639,37 @@ const ViewTenant = () => {
                             </AccordionDetails>
                         </Accordion>
                     </Box>
-                    <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "95%",
+                            mt: 3,
+                            marginBottom: "30px"
+                        }}
+                    >
+                        <Link to="" style={{ textDecoration: 'none' }}>
+                            <Button 
+                                variant="outlined" 
+                                startIcon={<ArrowBackIcon />}
+                                onClick={handleGoBack} 
+                            >
+                                Back
+                            </Button>
+                        </Link>
+                        
+                        <Button
+                            component={Link}
+                            to={`/update-tenant/${id}`}
+                            variant="contained"
+                        >
+                            Edit
                         </Button>
                     </Box>
+
                 </form>
                 )}
             </Formik>) : (

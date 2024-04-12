@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery } from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, Card, CardContent, TextField, MenuItem, useMediaQuery, CircularProgress } from "@mui/material";
 import Header from "../../components/Header";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -103,18 +103,29 @@ const Tenants = () => {
   };
 
   const columns = [
-    { field: 'first_name', headerName: 'First Name', width: 150 },
-    { field: 'unit_id_or_name', headerName: 'Unit', width: 150 },
-    { field: 'property_name', headerName: 'Property', width: 200 },
     { 
-      field: 'running_balance', 
-      headerName: 'Balance', 
-      width: 150,
-      valueGetter: (params) => params.row.running_balance ? params.row.running_balance.balance : '_',
+        field: 'name', 
+        headerName: 'Name', 
+        width: 200,
+        renderCell: (params) => (
+            <Link to={`/view-tenant/${params.row.id}`}>
+                {params.row.first_name} {params.row.last_name}
+            </Link>
+        ),
     },
-    { field: 'phone_number', headerName: 'Phone Number', width: 150 },
-    { field: 'move_in_date', headerName: 'Move In Date', width: 150 },
+    { field: 'unit_id_or_name', headerName: 'Unit', width: 120 },
+    { field: 'property_name', headerName: 'Property', width: 120 },
+    { 
+        field: 'running_balance', 
+        headerName: 'Balance', 
+        width: 150,
+        valueGetter: (params) => params.row.running_balance ? params.row.running_balance.balance : '_',
+    },
+    { field: 'phone_number', headerName: 'Phone Number', width: 120 },
+    { field: 'move_in_date', headerName: 'Move In Date', width: 120 },
 ];
+
+
 
 
   const properties = [
@@ -147,7 +158,7 @@ const Tenants = () => {
               marginLeft: "20px",
             }}
         >
-            <Header title="Tenants" subtitle="This is the tenant page" />
+            <Header title="Tenants"/>
 
             <Box
                 sx={{
@@ -212,7 +223,7 @@ const Tenants = () => {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                  Total Maintenance issues
+                  Total Tenants
                 </AccordionSummary>
                 <AccordionDetails
                   sx={{
@@ -248,30 +259,6 @@ const Tenants = () => {
                         </CardContent>
                     </Card>
 
-                    <Card
-                        sx={{
-                            width: { xs: '95%', sm: '200px' },
-                            padding: 2,
-                        }}
-                        variant="outlined"
-                    >
-                        <CardContent
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Typography variant="h5" component="div" gutterBottom>
-                                Total Balance (For this month)
-                            </Typography>
-                            <Divider sx={{ width: '10%', backgroundColor: colors.grey[800], marginBottom: '10px', marginTop: '10px' }} />
-                            <Typography variant="h3" component="div" style={{ fontWeight: 'bold' }}>
-                                {tenantData.length}
-                            </Typography>
-                        </CardContent>
-                    </Card>
                 </AccordionDetails>
             </Accordion>
 
@@ -364,10 +351,12 @@ const Tenants = () => {
             </Accordion>
 
             <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={openBackdrop}
-                onClick={handleClose}
-            ></Backdrop>
+              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={openBackdrop}
+              onClick={handleClose}
+          >
+              <CircularProgress color="inherit" />
+          </Backdrop>
 
 
 
@@ -401,21 +390,26 @@ const Tenants = () => {
 
                 <DataGrid
                     sx={{
-                        maxWidth: '95%',
-                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
-                            width: '10px',
-                        },
-                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-track': {
-                            background: colors.grey[700],
-                        },
-                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                            backgroundColor: colors.primary[600],
-                            borderRadius: '5px',
-                        },
-                        '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover': {
-                        background: '#555',
-                        },
-                    }}
+                      maxWidth: '95%',
+                      '& .MuiDataGrid-virtualScroller::-webkit-scrollbar': {
+                          width: '10px',
+                      },
+                      
+                      '& .MuiDataGrid-columnHeaders': {
+                          backgroundColor: colors.grey[900],
+                      },    
+
+                      '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-track': {
+                          background: colors.grey[900],
+                      },
+                      '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
+                          backgroundColor: colors.grey[800],
+                          borderRadius: '5px',
+                      },
+                      '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover': {
+                      background: '#555',
+                      },
+                  }}
                     checkboxSelection 
                     rows={tenantData} 
                     columns={columns} 

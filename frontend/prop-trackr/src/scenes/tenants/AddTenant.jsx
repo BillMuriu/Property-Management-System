@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme, TextField, MenuItem} from "@mui/material";
+import { Box, Button, Typography, useTheme, TextField, MenuItem, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -14,6 +14,7 @@ import { BASE_URL } from "../../config";
 import { useSnackbar } from 'notistack';
 
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 
 import React from 'react'
 
@@ -25,9 +26,16 @@ const AddTenant = () => {
     const [propertyData, setPropertyData] = useState('');
 
     const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
+
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
 
     const showSuccessMessage = () => {
-        enqueueSnackbar('Maintainance issue was created successfully', { 
+        enqueueSnackbar('Tenant was created successfully', { 
           variant: 'success', 
           autoHideDuration: 2000, 
           anchorOrigin: {
@@ -52,6 +60,7 @@ const AddTenant = () => {
         const fetchPropertyData = async () => {
             try {
                 // Make a GET request to fetch user landlord data
+                setOpenBackdrop(true);
                 const res = await fetch(`${BASE_URL}/property/`, {
                     method: 'GET',
                     headers: {
@@ -79,6 +88,8 @@ const AddTenant = () => {
                 // Handle any errors that occur during the request
                 console.error('Error fetching user property data:', error);
                 alert('Failed to fetch user property status');
+            } finally {
+                setOpenBackdrop(false); // Close the backdrop regardless of success or failure
             }
         };
     
@@ -90,7 +101,8 @@ const AddTenant = () => {
     const fetchUnitData = async (propertyId) => {
         try {
             // Make a GET request to fetch unit data for a specific property
-            const res = await fetch(`${BASE_URL}/property/units/?property=${propertyId}`, {
+            setOpenBackdrop(true)
+            const res = await fetch(`${BASE_URL}/property/units/?property=${propertyId}&occupied=false`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,6 +124,8 @@ const AddTenant = () => {
             // Handle any errors that occur during the request
             console.error('Error fetching unit data:', error);
             alert('Failed to fetch unit data');
+        } finally {
+            setOpenBackdrop(false); // Close the backdrop regardless of success or failure
         }
     };
 
@@ -158,19 +172,39 @@ const AddTenant = () => {
     
             if (res.ok) {
                 showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-tenant/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
             } else {
                 // Handle other success responses
                 console.log('Unexpected response:', res.json());
             }
+
+
         } catch (error) {
             console.error('Error creating property:', error.message);
             showFailureMessage()
         }
     };
+
+
   return (
     <div>
         <Box style={{marginLeft: "20px"}}>
             <Header title="Add a Tenant"/>
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
             <Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -524,8 +558,8 @@ const AddTenant = () => {
                         </Accordion>
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Add a Tenant
                         </Button>
                     </Box>
                 </form>

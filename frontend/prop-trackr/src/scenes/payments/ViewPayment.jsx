@@ -299,6 +299,9 @@ const ViewPayment = () => {
                                 name="tenant"
                                 error={!!touched.tenant && !!errors.tenant}
                                 helperText={touched.tenant && errors.tenant}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
                             >
                                 {tenantData.map(tenant => (
                                     <MenuItem 
@@ -332,6 +335,9 @@ const ViewPayment = () => {
                             name="paid_amount"
                             error={!!touched.paid_amount && !!errors.paid_amount}
                             helperText={touched.paid_amount && errors.paid_amount}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
@@ -346,6 +352,9 @@ const ViewPayment = () => {
                             name="payment_date"
                             error={!!touched.payment_date && !!errors.payment_date}
                             helperText={touched.payment_date && errors.payment_date}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
@@ -359,6 +368,9 @@ const ViewPayment = () => {
                             name="status"
                             error={!!touched.status && !!errors.status}
                             helperText={touched.status && errors.status}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
@@ -372,6 +384,9 @@ const ViewPayment = () => {
                             name="payment_type"
                             error={!!touched.payment_type && !!errors.payment_type}
                             helperText={touched.payment_type && errors.payment_type}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
@@ -387,6 +402,9 @@ const ViewPayment = () => {
                             name="description"
                             error={!!touched.description && !!errors.description}
                             helperText={touched.description && errors.description}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <TextField
@@ -400,6 +418,9 @@ const ViewPayment = () => {
                             name="bank_transaction_id"
                             error={!!touched.bank_transaction_id && !!errors.bank_transaction_id}
                             helperText={touched.bank_transaction_id && errors.bank_transaction_id}
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
 
                         <input

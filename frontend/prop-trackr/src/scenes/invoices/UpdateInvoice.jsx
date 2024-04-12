@@ -13,6 +13,8 @@ import { BASE_URL } from "../../config";
 
 import React from 'react'
 
+import { Link, useNavigate } from 'react-router-dom';
+
 const UpdateInvoice = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -23,6 +25,8 @@ const UpdateInvoice = () => {
     const [tenantData, setTenantData] = useState('');
     const [propertyData, setPropertyData] = useState('');
 
+    const navigate = useNavigate();
+
     const { id } = useParams();
     console.log('Property ID:', id);
 
@@ -30,7 +34,7 @@ const UpdateInvoice = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     const showSuccessMessage = () => {
-        enqueueSnackbar('Maintainance issue was created successfully', { 
+        enqueueSnackbar('Invoice was updated successfully', { 
           variant: 'success', 
           autoHideDuration: 2000, 
           anchorOrigin: {
@@ -57,7 +61,7 @@ const UpdateInvoice = () => {
         tenant: yup.string().required("Tenant is required"),
         invoice_date: yup.date().required("Invoice date is required"),
         invoice_status: yup.string().required("Invoice status is required"),
-        memo: yup.string().nullable(),
+        description: yup.string().nullable(),
     });
 
     useEffect(() => {
@@ -169,8 +173,10 @@ const UpdateInvoice = () => {
                 property: invoiceData.property, // Initial value for property
                 tenant: invoiceData.tenant,
                 invoice_date: invoiceData.invoice_date,
+                item_name: invoiceData.item_name,
                 invoice_status: invoiceData.invoice_status,
-                memo: invoiceData.memo,
+                description: invoiceData.description,
+                amount: invoiceData.amount,
             });
     
             // Call fetchUnitData with the property ID
@@ -188,9 +194,11 @@ const UpdateInvoice = () => {
                 body: JSON.stringify({
                     "invoice_date": values.invoice_date,
                     "invoice_status": values.invoice_status,
-                    "memo": values.memo,
+                    "description": values.description,
                     "property": values.property,
-                    "tenant": values.tenant
+                    "tenant": values.tenant,
+                    "item_name":values.item_name,
+                    "amount": values.amount,
                 }),
             });
     
@@ -202,10 +210,18 @@ const UpdateInvoice = () => {
     
             if (res.ok) {
                 showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-invoice/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
             } else {
                 // Handle other success responses
                 console.log('Unexpected response:', res.json());
             }
+
+
         } catch (error) {
             console.error('Error creating property:', error.message);
             showFailureMessage()
@@ -322,6 +338,44 @@ const UpdateInvoice = () => {
                         <TextField
                             fullWidth
                             variant="filled"
+                            label="Amount *"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.amount}
+                            name="amount"
+                            type="number" // Set the input type to 'number' to enforce numeric input
+                            error={!!touched.amount && !!errors.amount}
+                            helperText={touched.amount && errors.amount}
+                        />
+                        
+
+                        <TextField
+                            fullWidth
+                            select
+                            variant="filled"
+                            label="Item Name *"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.item_name}
+                            name="itemName"
+                            error={!!touched.item_name && !!errors.item_name}
+                            helperText={touched.item_name && errors.item_name}
+                        >
+                            <MenuItem value="rent">Rent</MenuItem>
+                            <MenuItem value="opening_balance">Opening Balance</MenuItem>
+                            <MenuItem value="vat">VAT</MenuItem>
+                            <MenuItem value="other">Other</MenuItem>
+                            <MenuItem value="rent_deposit">Rent Deposit</MenuItem>
+                            <MenuItem value="water_deposit">Water Deposit</MenuItem>
+                            <MenuItem value="electricity_deposit">Electricity Deposit</MenuItem>
+                            <MenuItem value="contract_charges">Contract Charges</MenuItem>
+                            <MenuItem value="other_deposit">Other Deposit</MenuItem>
+                        </TextField>
+
+                        <TextField
+                            fullWidth
+                            select
+                            variant="filled"
                             type="text"
                             label="Invoice Status *"
                             onBlur={handleBlur}
@@ -330,7 +384,11 @@ const UpdateInvoice = () => {
                             name="invoice_status"
                             error={!!touched.invoice_status && !!errors.invoice_status}
                             helperText={touched.invoice_status && errors.invoice_status}
-                        />
+                        >
+                            <MenuItem value="draft">Draft</MenuItem>
+                            <MenuItem value="open">Open</MenuItem>
+                            <MenuItem value="credit-note">Credit Note</MenuItem>
+                        </TextField>
 
                         <TextField
                             fullWidth
@@ -338,21 +396,21 @@ const UpdateInvoice = () => {
                             rows={4}
                             variant="filled"
                             type="text"
-                            label="Memo (optional)"
+                            label="description (optional)"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values.memo}
-                            name="memo"
-                            error={!!touched.memo && !!errors.memo}
-                            helperText={touched.memo && errors.memo}
+                            value={values.description}
+                            name="description"
+                            error={!!touched.description && !!errors.description}
+                            helperText={touched.description && errors.description}
                         />
 
 
 
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Update Invoice
                         </Button>
                     </Box>
                 </form>

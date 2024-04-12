@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, Checkbox, FormControlLabel} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, TextField, MenuItem, CircularProgress, Backdrop} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 // import useMediaQuery from "@mui/material/useMediaQuery";
@@ -11,6 +11,7 @@ import { BASE_URL } from "../../config";
 import { useSnackbar } from 'notistack';
 
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 
 const AddInvoice = () => {
     const theme = useTheme();
@@ -21,8 +22,15 @@ const AddInvoice = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
+    const [openBackdrop, setOpenBackdrop] = useState(true);
+    const handleCloseBackdrop = () => {
+        setOpenBackdrop(false);
+    };
+
+    const navigate = useNavigate();
+
     const showSuccessMessage = () => {
-        enqueueSnackbar('Maintainance issue was created successfully', { 
+        enqueueSnackbar('Invoice was created successfully', { 
           variant: 'success', 
           autoHideDuration: 2000, 
           anchorOrigin: {
@@ -44,6 +52,7 @@ const AddInvoice = () => {
     };
 
     useEffect(() => {
+        setOpenBackdrop(true);
         const fetchPropertyData = async () => {
             try {
                 // Make a GET request to fetch user landlord data
@@ -74,6 +83,8 @@ const AddInvoice = () => {
                 // Handle any errors that occur during the request
                 console.error('Error fetching user property data:', error);
                 alert('Failed to fetch user property status');
+            } finally {
+                setOpenBackdrop(false);
             }
         };
     
@@ -83,6 +94,7 @@ const AddInvoice = () => {
 
 
     const fetchTenantData = async (propertyId) => {
+        setOpenBackdrop(true);
         try {
             // Make a GET request to fetch unit data for a specific property
             const res = await fetch(`${BASE_URL}/tenants/?property=${propertyId}`, {
@@ -107,6 +119,8 @@ const AddInvoice = () => {
             // Handle any errors that occur during the request
             console.error('Error fetching unit data:', error);
             alert('Failed to fetch unit data');
+        } finally {
+            setOpenBackdrop(false);
         }
     };
 
@@ -122,13 +136,16 @@ const AddInvoice = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+
                 body: JSON.stringify({
                     "invoice_date": values.invoiceDate,
                     "invoice_status": values.invoiceStatus,
-                    "memo": values.memo,
+                    "item_name": values.itemName,
+                    "amount": values.amount,
+                    "description": values.description,
                     "property": values.property,
                     "tenant": values.tenant
-                }),
+                }),                
             });
     
             if (!res.ok) {
@@ -139,10 +156,18 @@ const AddInvoice = () => {
     
             if (res.ok) {
                 showSuccessMessage();
+                res.json().then(data => {
+                    console.log(data.id);
+                    navigate(`/view-invoice/${data.id}`);
+                }).catch(error => {
+                    console.error('Error parsing JSON:', error);
+                });
             } else {
                 // Handle other success responses
                 console.log('Unexpected response:', res.json());
             }
+
+
         } catch (error) {
             console.error('Error creating property:', error.message);
             showFailureMessage()
@@ -152,6 +177,17 @@ const AddInvoice = () => {
     <div>
         <Box style={{marginLeft: "20px"}}>
             <Header title="Add an invoice"/>
+
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openBackdrop}
+                onClick={handleCloseBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+
             <Formik
                 onSubmit={handleFormSubmit}
                 initialValues={initialValues}
@@ -247,7 +283,8 @@ const AddInvoice = () => {
                             fullWidth
                             variant="filled"
                             type="date"
-                            // label="Invoice Date *"
+                            InputLabelProps={{ shrink: true }}
+                            label="Invoice Date *"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.invoiceDate}
@@ -255,6 +292,43 @@ const AddInvoice = () => {
                             error={!!touched.invoiceDate && !!errors.invoiceDate}
                             helperText={touched.invoiceDate && errors.invoiceDate}
                         />
+
+                        <TextField
+                            fullWidth
+                            select
+                            variant="filled"
+                            label="Item Name *"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.itemName}
+                            name="itemName"
+                            error={!!touched.itemName && !!errors.itemName}
+                            helperText={touched.itemName && errors.itemName}
+                        >
+                            <MenuItem value="rent">Rent</MenuItem>
+                            <MenuItem value="opening_balance">Opening Balance</MenuItem>
+                            <MenuItem value="vat">VAT</MenuItem>
+                            <MenuItem value="other">Other</MenuItem>
+                            <MenuItem value="rent_deposit">Rent Deposit</MenuItem>
+                            <MenuItem value="water_deposit">Water Deposit</MenuItem>
+                            <MenuItem value="electricity_deposit">Electricity Deposit</MenuItem>
+                            <MenuItem value="contract_charges">Contract Charges</MenuItem>
+                            <MenuItem value="other_deposit">Other Deposit</MenuItem>
+                        </TextField>
+
+                        <TextField
+                            fullWidth
+                            variant="filled"
+                            label="Amount *"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.amount}
+                            name="amount"
+                            type="number" // Set the input type to 'number' to enforce numeric input
+                            error={!!touched.amount && !!errors.amount}
+                            helperText={touched.amount && errors.amount}
+                        />
+                                                
 
                         <TextField
                             fullWidth
@@ -279,21 +353,21 @@ const AddInvoice = () => {
                             rows={4}
                             variant="filled"
                             type="text"
-                            label="Memo (optional)"
+                            label="Description (optional)"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values.memo}
-                            name="memo"
-                            error={!!touched.memo && !!errors.memo}
-                            helperText={touched.memo && errors.memo}
+                            value={values.description}
+                            name="description"
+                            error={!!touched.description && !!errors.description}
+                            helperText={touched.description && errors.description}
                         />
 
 
 
                     </Box>
                     <Box display="flex" justifyContent="end" mt="20px" mr="75px" mb="300px">
-                        <Button type="submit" color="secondary" variant="contained">
-                            Create New User
+                        <Button type="submit" variant="contained">
+                            Submit
                         </Button>
                     </Box>
                 </form>
@@ -311,18 +385,22 @@ const checkoutSchema = yup.object().shape({
     tenant: yup.string().required("Tenant is required"),
     invoiceDate: yup.date().required("Invoice date is required"),
     invoiceStatus: yup.string().required("Invoice status is required"),
-    memo: yup.string().nullable(),
+    itemName: yup.string().nullable(),
+    amount: yup.number().nullable(),
+    description: yup.string().nullable(),
 });
+
 
 // Define the initial values for the form fields
 const initialValues = {
-    property: "", // Initial value for property
-    tenant: "",
-    invoiceDate: "",
-    invoiceStatus: "",
-    memo: "",
+    property: '', // Initial value for property is empty
+    tenant: '',
+    invoiceDate: '',
+    invoiceStatus: '',
+    itemName: '',
+    amount: null, // Initial value for amount is null
+    description: '',
 };
-
 
 
 

@@ -30,6 +30,9 @@ import UpdateUnit from "./scenes/units/UpdateUnit";
 import Utilities from "./scenes/utilities";
 import AddUtility from "./scenes/utilities/AddUtility";
 import AddVariableUtility from "./scenes/utilities/AddVariableUtility";
+import AddFixedUtility from "./scenes/utilities/AddFixedUtility";
+
+
 import Maintenance from "./scenes/maintenance";
 import AddMaintenance from "./scenes/maintenance/AddMaintenance";
 import ViewMaintenanceIssue from "./scenes/maintenance/ViewMaintenanceIssue";
@@ -102,6 +105,7 @@ function App() {
                     <Route path="/utilities" element={<Utilities />} />
                     <Route path="/add-utility" element={<AddUtility />} />
                     <Route path="/add-variable-utility" element={<AddVariableUtility />} />
+                    <Route path="/add-fixed-utility" element={<AddFixedUtility />} />
 
                     <Route path="/maintenance" element={<Maintenance />} />
                     <Route path="/add-maintenance" element={<AddMaintenance />} />

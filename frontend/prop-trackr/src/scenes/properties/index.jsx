@@ -102,7 +102,7 @@ const Properties = () => {
         { 
             field: 'name', 
             headerName: 'Name', 
-            width: 200,
+            width: 100,
             headerClassName: 'custom-header',
             renderCell: (params) => (
                 <Link to={`/view-property/${params.row.id}`}>
@@ -112,15 +112,15 @@ const Properties = () => {
         },
         { field: 'number_of_units', headerName: 'Number of Units', width: 150, headerClassName: 'custom-header' },
         { field: 'city', headerName: 'City', width: 150, headerClassName: 'custom-header' },
-        { field: 'water_rate', headerName: 'Water Rate', width: 150, headerClassName: 'custom-header' },
-        { field: 'electricity_rate', headerName: 'Electricity Rate', width: 150, headerClassName: 'custom-header' },
+        { field: 'water_rate', headerName: 'Water Rate', width: 100, headerClassName: 'custom-header' },
+        { field: 'electricity_rate', headerName: 'Electricity Rate', width: 100, headerClassName: 'custom-header' },
     ];
 
     return (
         <Box
             style={{marginLeft: "20px"}}
         >
-            <Header title="Properties" subtitle="Welcome to the Properties page" />
+            <Header title="Properties"/>
 
             <Box
                 sx={{
@@ -255,14 +255,14 @@ const Properties = () => {
                         },
                         
                         '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: colors.blueAccent[800],
+                            backgroundColor: colors.grey[900],
                         },    
 
                         '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-track': {
                             background: colors.grey[900],
                         },
                         '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb': {
-                            backgroundColor: colors.primary[600],
+                            backgroundColor: colors.grey[800],
                             borderRadius: '5px',
                         },
                         '& .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover': {
